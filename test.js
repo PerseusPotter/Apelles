@@ -7,7 +7,7 @@ const egg = r => {
 };
 
 register('renderEntity', ent => {
-  renderBoxOutline(0x00FFFFFF, ent.getRenderX(), ent.getRenderY(), ent.getRenderZ(), ent.getWidth(), ent.getHeight(), true, undefined, 3, 0, true);
+  renderBoxOutline(0x00FFFFFF, ent.getRenderX(), ent.getRenderY(), ent.getRenderZ(), ent.getWidth(), ent.getHeight());
 });
 register('renderWorld', () => {
   renderLine(0x00FF00FF, [

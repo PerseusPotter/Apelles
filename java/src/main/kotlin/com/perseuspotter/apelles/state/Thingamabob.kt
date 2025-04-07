@@ -80,7 +80,7 @@ open class Thingamabob(
                 lw.toRawBits() xor
                 (if (lighting == 1) 8 else 0) xor
                 (if (lighting == 2) 16 else 0) xor
-                (getDrawMode() shl 5) xor
+                (getDrawMode() shl 6) xor
                 color.r.toRawBits() xor
                 color.g.toRawBits() xor
                 color.b.toRawBits() xor

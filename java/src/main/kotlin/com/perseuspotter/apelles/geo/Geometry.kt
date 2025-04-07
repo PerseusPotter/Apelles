@@ -252,7 +252,6 @@ abstract class Geometry {
                 remove(tri)
             }
 
-
             strip.flip()
             return strip
         }

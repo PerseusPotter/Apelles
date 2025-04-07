@@ -113,5 +113,8 @@ object GlState {
         depthTest = null
         lighting = null
         boundShader = null
+        colorArray = null
+        normalArray = null
+        texArray = null
     }
 }
