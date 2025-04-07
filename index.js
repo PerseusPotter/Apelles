@@ -7,7 +7,7 @@ const GlState = JavaTypeOrNull('com.perseuspotter.apelles.state.GlState')?.INSTA
 const Frustum = JavaTypeOrNull('com.perseuspotter.apelles.geo.Frustum')?.INSTANCE ?? throwExp('jar not loaded correctly');
 const Point = JavaTypeOrNull('com.perseuspotter.apelles.geo.Point') ?? throwExp('jar not loaded correctly');
 const Geometry = JavaTypeOrNull('com.perseuspotter.apelles.geo.Geometry') ?? throwExp('jar not loaded correctly');
-const GeometryC = Geometry.Companion
+const GeometryC = Geometry.Companion;
 
 /**
  * packed int is RGBA
@@ -109,7 +109,7 @@ export function renderBoxOutline(color, x, y, z, w, h, { centered = true, wz = w
     x -= w / 2;
     z -= wz / 2;
   }
-  renderAABBOutline(color, x, y, z, x + w, y + h, z + wz, lw, lighting, phase, smooth, cull);
+  renderAABBOutline(color, x, y, z, x + w, y + h, z + wz, { lw, lighting, phase, smooth, cull });
 }
 
 const addAABBFN = APRendererI['addAABBF(long,double,double,double,double,double,double,int,boolean,boolean)'];
@@ -153,7 +153,7 @@ export function renderBoxFilled(color, x, y, z, w, h, { centered = true, wz = w,
     x -= w / 2;
     z -= wz / 2;
   }
-  renderAABBFilled(color, x, y, z, x + w, y + h, z + wz, lighting, phase, cull);
+  renderAABBFilled(color, x, y, z, x + w, y + h, z + wz, { lighting, phase, cull });
 }
 
 const addBeaconN = APRendererI['addBeacon(long,double,double,double,double,int,boolean,boolean)'];
