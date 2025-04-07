@@ -2,3 +2,5 @@
 .idea/
 build/*/*
 !build/libs/apelles-1.0.jar
+gradle.properties
+.kotlin/
