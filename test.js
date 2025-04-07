@@ -54,9 +54,3 @@ register('renderWorld', () => {
     }
   }
 });
-
-/*
-try packing color into vertex to combine more models
-license
-check if the far plane culling fix worked
-*/
