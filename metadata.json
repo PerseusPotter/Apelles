@@ -2,5 +2,6 @@
   "name": "Apelles",
   "creator": "Ch1ck3nNeedsRNG",
   "description": "rendering library",
-  "entry": "index.js"
+  "entry": "index.js",
+  "version": "1.0.0"
 }
