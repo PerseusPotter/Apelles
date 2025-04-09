@@ -299,7 +299,7 @@ export function renderTracer(color, x, y, z, { lw = 1, lighting = 0, phase = fal
       getRenderY() + look.field_72448_b + p.func_70047_e(),
       getRenderZ() + look.field_72449_c
     ]
-  ], lw, lighting, phase, smooth, cull);
+  ], { lw, lighting, phase, smooth, cull });
 }
 
 const _lineWidth = GlState['lineWidth(float)'];
