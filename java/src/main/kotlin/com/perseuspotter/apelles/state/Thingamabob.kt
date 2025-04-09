@@ -20,7 +20,7 @@ open class Thingamabob(
     fun prerender() {
         GlState.lineWidth(lw)
         GlState.setLighting(lighting)
-        GlState.color(
+        if (!Renderer.USE_NEW_SHIT) GlState.color(
             color.r,
             color.g,
             color.b,
@@ -81,10 +81,10 @@ open class Thingamabob(
                 (if (lighting == 1) 8 else 0) xor
                 (if (lighting == 2) 16 else 0) xor
                 (getDrawMode() shl 6) xor
-                color.r.toRawBits() xor
-                color.g.toRawBits() xor
-                color.b.toRawBits() xor
-                color.a.toRawBits() xor
+                // color.r.toRawBits() xor
+                // color.g.toRawBits() xor
+                // color.b.toRawBits() xor
+                // color.a.toRawBits() xor
                 (tex?.hashCode() ?: 0)
     }
 
