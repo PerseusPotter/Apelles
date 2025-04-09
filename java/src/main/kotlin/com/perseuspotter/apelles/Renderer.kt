@@ -724,7 +724,7 @@ object Renderer {
                     it.getVBOGroupingId(),
                     it.getVertexCount(),
                     it.getIndicesCount() + 1,
-                    false,
+                    true,
                     it.lighting > 0,
                     true,
                     it.getDrawMode(),
@@ -734,7 +734,7 @@ object Renderer {
             Geometry.prepare()
         }
         texturedOpaque.forEach {
-            if (USE_NEW_SHIT) Geometry.bind(it.getVBOGroupingId())
+            if (USE_NEW_SHIT) Geometry.bind(it)
             it.render(pt)
         }
         texturedOpaque.clear()
@@ -751,7 +751,7 @@ object Renderer {
                     it.getVBOGroupingId(),
                     it.getVertexCount(),
                     it.getIndicesCount() + 1,
-                    false,
+                    true,
                     it.lighting > 0,
                     true,
                     it.getDrawMode(),
@@ -761,7 +761,7 @@ object Renderer {
             Geometry.prepare()
         }
         texturedTranslucent.forEach {
-            if (USE_NEW_SHIT) Geometry.bind(it.getVBOGroupingId())
+            if (USE_NEW_SHIT) Geometry.bind(it)
             it.render(pt)
         }
         texturedTranslucent.clear()
@@ -778,7 +778,7 @@ object Renderer {
                     it.getVBOGroupingId(),
                     it.getVertexCount(),
                     it.getIndicesCount() + 1,
-                    false,
+                    true,
                     it.lighting > 0,
                     false,
                     it.getDrawMode(),
@@ -788,7 +788,7 @@ object Renderer {
             Geometry.prepare()
         }
         opaque.forEach {
-            if (USE_NEW_SHIT) Geometry.bind(it.getVBOGroupingId())
+            if (USE_NEW_SHIT) Geometry.bind(it)
             it.render(pt)
         }
         opaque.clear()
@@ -805,7 +805,7 @@ object Renderer {
                     it.getVBOGroupingId(),
                     it.getVertexCount(),
                     it.getIndicesCount() + 1,
-                    false,
+                    true,
                     it.lighting > 0,
                     false,
                     it.getDrawMode(),
@@ -815,7 +815,7 @@ object Renderer {
             Geometry.prepare()
         }
         translucent.forEach {
-            if (USE_NEW_SHIT) Geometry.bind(it.getVBOGroupingId())
+            if (USE_NEW_SHIT) Geometry.bind(it)
             it.render(pt)
         }
         translucent.clear()

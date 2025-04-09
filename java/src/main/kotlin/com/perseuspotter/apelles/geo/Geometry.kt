@@ -2,6 +2,7 @@ package com.perseuspotter.apelles.geo
 
 import com.perseuspotter.apelles.Renderer
 import com.perseuspotter.apelles.depression.VAO
+import com.perseuspotter.apelles.state.Color
 import com.perseuspotter.apelles.state.GlState
 import com.perseuspotter.apelles.state.Thingamabob
 import net.minecraft.client.Minecraft
@@ -260,6 +261,7 @@ abstract class Geometry {
         var currBufM = buffers[0]
         var currBuf: VAO? = null
         var currBufI: VAOInfo? = null
+        var currCol: Color? = null
         val unusedBufs = mutableSetOf<Int>()
         val bufInfo = mutableMapOf<Int, VAOInfo>()
         var PRIMITIVE_RESTART_INDEX = 0xFFFF
@@ -306,9 +308,11 @@ abstract class Geometry {
             GL30.glBindVertexArray(0)
         }
 
-        fun bind(k: Int) {
+        fun bind(thing: Thingamabob) {
+            val k = thing.getVBOGroupingId()
             currBuf = currBufM[k]
             currBufI = bufInfo[k]
+            currCol = thing.color
             vertOffset = currBuf!!.vertCount
             PRIMITIVE_RESTART_INDEX = bufInfo[k]!!.vert
             reset()
@@ -331,11 +335,13 @@ abstract class Geometry {
         @JvmStatic
         fun addVert(x: Double, y: Double, z: Double, nx: Double, ny: Double, nz: Double) {
             currBuf!!.putP(x.toFloat(), y.toFloat(), z.toFloat())
+            currBuf!!.putC(currCol!!.r, currCol!!.g, currCol!!.b, currCol!!.a)
             addNormVert(nx, ny, nz)
         }
         @JvmStatic
         fun addVert(x: Double, y: Double, z: Double, u: Double, v: Double, nx: Double, ny: Double, nz: Double) {
             currBuf!!.putP(x.toFloat(), y.toFloat(), z.toFloat())
+            currBuf!!.putC(currCol!!.r, currCol!!.g, currCol!!.b, currCol!!.a)
             addNormVert(nx, ny, nz)
             currBuf!!.putT(u.toFloat(), v.toFloat())
         }
