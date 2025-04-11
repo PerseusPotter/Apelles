@@ -441,4 +441,4 @@ export function draw() {
   _func_78381_a.call(tess);
 }
 
-require('./test');
+// require('./test');
