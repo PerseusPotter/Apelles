@@ -44,6 +44,7 @@ open class Thingamabob(
 
     fun getRenderer(): Geometry = when (type) {
         Type.Line -> Geometry3D.line
+        Type.TriStrip -> Geometry3D.tristrip
         Type.AABBO -> Geometry3D.aabbO
         Type.AABBF -> Geometry3D.aabbF
         Type.BeaconI -> Geometry3D.beaconI
@@ -111,6 +112,7 @@ open class Thingamabob(
 
     enum class Type() {
         Line,
+        TriStrip,
         AABBO,
         AABBF,
         BeaconTI,

@@ -87,6 +87,51 @@ object Renderer {
         )
     }
 
+    fun addTriStrip(
+        color: Long,
+        points: Array<DoubleArray>,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Boolean
+    ) = addTriStrip(Color(color), points, lighting, phase, cull, chroma)
+    fun addTriStrip(
+        color: FloatArray,
+        points: Array<DoubleArray>,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Boolean
+    ) = addTriStrip(Color(color), points, lighting, phase, cull, chroma)
+    fun addTriStrip(
+        color: Color,
+        points: Array<DoubleArray>,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Boolean
+    ) {
+        val params = DoubleArray(points.size * 3)
+        points.forEachIndexed { i, v ->
+            params[i * 3 + 0] = v[0]
+            params[i * 3 + 1] = v[1]
+            params[i * 3 + 2] = v[2]
+        }
+        addThing(
+            Thingamabob(
+                Thingamabob.Type.TriStrip,
+                params,
+                color,
+                1f,
+                lighting,
+                phase,
+                false,
+                cull,
+                chroma
+            )
+        )
+    }
+
     fun addAABBO(
         color: Long,
         x1: Double,
