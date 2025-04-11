@@ -115,7 +115,7 @@ class VAO(val vertexCount: Int, val indicesCount: Int, val hasC: Boolean, val ha
 
     fun draw() {
         if (!hasMeaningfulData) return
-        // Shader.get(hasC, hasN, hasT).bind()
+        // VAOShader.get(hasC, hasN, hasT).bind()
         // GL30.glBindVertexArray(vaoId)
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboPId)
         GL11.glVertexPointer(

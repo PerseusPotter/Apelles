@@ -6,9 +6,6 @@ const egg = r => {
   return [-guess, guess];
 };
 
-register('renderEntity', ent => {
-  renderBoxOutline(0x00FFFFFF, ent.getRenderX(), ent.getRenderY(), ent.getRenderZ(), ent.getWidth(), ent.getHeight());
-});
 register('renderWorld', () => {
   renderLine(0x00FF00FF, [
     [-6, 10, -6],
@@ -19,12 +16,12 @@ register('renderWorld', () => {
   ], { lw: 5 });
   for (let x = -5; x <= 5; x += 2) {
     for (let z = -5; z <= 5; z += 2) {
-      renderBoxFilled(0xFF0000A0, x, 10, z, 1, 1);
+      renderBoxFilled([1.0, 0.01, 0.3, 0.5], x, 10, z, 1, 1, { chroma: true });
       renderBoxOutline(0x00FFFFFF, x, 10, z, 1, 1);
       renderBeacon(0xFFFFFFFF, x, 11, z, { h: 10 });
     }
   }
-  renderTracer(0x000000FF, 0, 5, 0);
+  // renderTracer(0x000000FF, 0, 5, 0);
   renderCircle(0xFF00FFFF, 20, 5, 20, 3, 20, { lw: 3 });
   renderSphere(0x007FFFFF, 10, 10, 20, 4, 0, { lighting: 2 });
   renderSphere(0x007FFFFF, 10, 20, 20, 4, 1, { lighting: 2 });
@@ -33,7 +30,7 @@ register('renderWorld', () => {
 
   renderPyramidOutline(0xD11D05FF, 10, 10, 30, 2, 4, 3);
   renderPyramidOutline(0xD11D05FF, 10, 15, 30, 2, 4, 4);
-  renderPyramidOutline(0xD11D05FF, 10, 25, 30, 2, -4, 8);
+  renderPyramidOutline([0.3, 0.1, 1.0, 1.0], 10, 25, 30, 2, -4, 8, { chroma: true, lw: 5 });
   renderPyramidFilled(0xD11D05FF, 20, 10, 30, 2, 4, 3, { lighting: 2 });
   renderPyramidFilled(0xD11D05FF, 20, 15, 30, 2, 4, 4, { lighting: 2 });
   renderPyramidFilled(0xD11D05FF, 20, 25, 30, 2, -4, 8, { lighting: 2 });
@@ -50,7 +47,7 @@ register('renderWorld', () => {
     for (let z = -eggScale; z <= eggScale; z += beaconDensity) {
       let [y1, y2] = egg(Math.hypot(x, z) / eggScale);
       if (Number.isNaN(y1) || Number.isNaN(y2)) continue;
-      renderBeacon(0xF0EAD6FF, x + eggCenter[0], y1 + eggCenter[1], z + eggCenter[2], { h: (y2 - y1) * eggScale });
+      renderBeacon([0.3, 0.1, 1.0, 1.0], x + eggCenter[0], y1 + eggCenter[1], z + eggCenter[2], { h: (y2 - y1) * eggScale, chroma: true });
     }
   }
 });

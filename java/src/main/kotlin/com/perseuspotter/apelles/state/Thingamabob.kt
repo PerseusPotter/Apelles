@@ -1,6 +1,8 @@
 package com.perseuspotter.apelles.state
 
 import com.perseuspotter.apelles.Renderer
+import com.perseuspotter.apelles.depression.ChromaShader
+import com.perseuspotter.apelles.depression.Shader
 import com.perseuspotter.apelles.geo.Frustum
 import com.perseuspotter.apelles.geo.Geometry
 import com.perseuspotter.apelles.geo.Geometry3D
@@ -15,17 +17,26 @@ open class Thingamabob(
     val phase: Boolean,
     val smooth: Boolean,
     val cull: Boolean,
+    val chroma: Boolean,
     val tex: ResourceLocation? = null
 ) : Comparable<Thingamabob> {
-    fun prerender() {
+    fun prerender(pt: Double) {
         GlState.lineWidth(lw)
         GlState.setLighting(lighting)
-        if (!Renderer.USE_NEW_SHIT) GlState.color(
-            color.r,
-            color.g,
-            color.b,
-            color.a
-        )
+        if (!Renderer.USE_NEW_SHIT) {
+            GlState.color(
+                color.r,
+                color.g,
+                color.b,
+                color.a
+            )
+        }
+        if (chroma) {
+            // val shader = if (tex == null) ChromaShader.CHROMA_3D else ChromaShader.CHROMA_3D_TEX
+            val shader = ChromaShader.CHROMA_3D
+            shader.bind()
+            shader.updateUniforms(pt)
+        } else GlState.bindShader(0)
         GlState.setDepthTest(!phase)
         GlState.lineSmooth(smooth)
         if (tex != null) GlState.bindTexture(tex)
@@ -58,7 +69,7 @@ open class Thingamabob(
             if (points.isNotEmpty() && points.all { !Frustum.test(it) }) return
         }
 
-        if (!Renderer.USE_NEW_SHIT) prerender()
+        if (!Renderer.USE_NEW_SHIT) prerender(pt)
 
         geo.render(pt, params)
     }
@@ -69,7 +80,8 @@ open class Thingamabob(
 
     // who cares about sorting translucent objects by distance?
     fun getRenderPriority(): Int {
-        return (if (lighting > 0) 4 else 0) or
+        return (if (lighting > 0) 8 else 0) or
+                (if (chroma) 4 else 0) or
                 (if (phase) 2 else 0) or
                 (if (smooth) 1 else 0)
     }
@@ -78,9 +90,9 @@ open class Thingamabob(
     fun getVBOGroupingId(): Int {
         return getRenderPriority() xor
                 lw.toRawBits() xor
-                (if (lighting == 1) 8 else 0) xor
-                (if (lighting == 2) 16 else 0) xor
-                (getDrawMode() shl 6) xor
+                (if (lighting == 1) 16 else 0) xor
+                (if (lighting == 2) 32 else 0) xor
+                (getDrawMode() shl 7) xor
                 // color.r.toRawBits() xor
                 // color.g.toRawBits() xor
                 // color.b.toRawBits() xor
