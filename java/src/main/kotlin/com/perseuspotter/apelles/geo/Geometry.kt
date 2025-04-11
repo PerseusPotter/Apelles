@@ -293,12 +293,12 @@ abstract class Geometry {
             }
             unusedBufs.forEach { currBufM.remove(it)!!.destroy() }
         }
-        fun render() {
+        fun render(pt: Double) {
             currBufM.forEach { (k, v) ->
                 val i = bufInfo[k]!!
                 PRIMITIVE_RESTART_INDEX = i.vert
                 GL31.glPrimitiveRestartIndex(PRIMITIVE_RESTART_INDEX)
-                i.th.prerender()
+                i.th.prerender(pt)
                 GlState.setColorArray(i.c)
                 GlState.setNormalArray(i.n)
                 GlState.setTexArray(i.t)

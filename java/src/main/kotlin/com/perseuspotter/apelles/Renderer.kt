@@ -43,8 +43,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
-        cull: Boolean
-    ) = addLine(Color(color), points, lw, lighting, phase, smooth, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addLine(Color(color), points, lw, lighting, phase, smooth, cull, chroma)
     fun addLine(
         color: FloatArray,
         points: Array<DoubleArray>,
@@ -52,8 +53,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
-        cull: Boolean
-    ) = addLine(Color(color), points, lw, lighting, phase, smooth, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addLine(Color(color), points, lw, lighting, phase, smooth, cull, chroma)
     fun addLine(
         color: Color,
         points: Array<DoubleArray>,
@@ -61,7 +63,8 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
-        cull: Boolean
+        cull: Boolean,
+        chroma: Boolean
     ) {
         val params = DoubleArray(points.size * 3)
         points.forEachIndexed { i, v ->
@@ -78,7 +81,8 @@ object Renderer {
                 lighting,
                 phase,
                 smooth,
-                cull
+                cull,
+                chroma
             )
         )
     }
@@ -95,8 +99,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
-        cull: Boolean
-    ) = addAABBO(Color(color), x1, y1, z1, x2, y2, z2, lw, lighting, phase, smooth, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addAABBO(Color(color), x1, y1, z1, x2, y2, z2, lw, lighting, phase, smooth, cull, chroma)
     fun addAABBO(
         color: FloatArray,
         x1: Double,
@@ -109,8 +114,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
-        cull: Boolean
-    ) = addAABBO(Color(color), x1, y1, z1, x2, y2, z2, lw, lighting, phase, smooth, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addAABBO(Color(color), x1, y1, z1, x2, y2, z2, lw, lighting, phase, smooth, cull, chroma)
     fun addAABBO(
         color: Color,
         x1: Double,
@@ -123,7 +129,8 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
-        cull: Boolean
+        cull: Boolean,
+        chroma: Boolean
     ) {
         addThing(
             Thingamabob(
@@ -134,7 +141,8 @@ object Renderer {
                 lighting,
                 phase,
                 smooth,
-                cull
+                cull,
+                chroma
             )
         )
     }
@@ -149,8 +157,9 @@ object Renderer {
         z2: Double,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
-    ) = addAABBF(Color(color), x1, y1, z1, x2, y2, z2, lighting, phase, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addAABBF(Color(color), x1, y1, z1, x2, y2, z2, lighting, phase, cull, chroma)
     fun addAABBF(
         color: FloatArray,
         x1: Double,
@@ -161,8 +170,9 @@ object Renderer {
         z2: Double,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
-    ) = addAABBF(Color(color), x1, y1, z1, x2, y2, z2, lighting, phase, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addAABBF(Color(color), x1, y1, z1, x2, y2, z2, lighting, phase, cull, chroma)
     fun addAABBF(
         color: Color,
         x1: Double,
@@ -173,7 +183,8 @@ object Renderer {
         z2: Double,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
+        cull: Boolean,
+        chroma: Boolean
     ) {
         addThing(
             Thingamabob(
@@ -184,7 +195,8 @@ object Renderer {
                 lighting,
                 phase,
                 false,
-                cull
+                cull,
+                chroma
             )
         )
     }
@@ -198,8 +210,9 @@ object Renderer {
         h: Double,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
-    ) = addBeacon(Color(color), x, y, z, h, lighting, phase, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addBeacon(Color(color), x, y, z, h, lighting, phase, cull, chroma)
     fun addBeacon(
         color: FloatArray,
         x: Double,
@@ -208,8 +221,9 @@ object Renderer {
         h: Double,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
-    ) = addBeacon(Color(color), x, y, z, h, lighting, phase, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addBeacon(Color(color), x, y, z, h, lighting, phase, cull, chroma)
     fun addBeacon(
         color: Color,
         x: Double,
@@ -218,7 +232,8 @@ object Renderer {
         h: Double,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
+        cull: Boolean,
+        chroma: Boolean
     ) {
         val (sx, sy, sz, s) = Geometry.rescale(x, y, z)
         var y1 = sy
@@ -254,6 +269,7 @@ object Renderer {
                 phase,
                 false,
                 cull,
+                chroma,
                 beaconBeamTexture
             )
         )
@@ -267,6 +283,7 @@ object Renderer {
                 phase,
                 false,
                 cull,
+                chroma,
                 beaconBeamTexture
             )
         )
@@ -279,7 +296,8 @@ object Renderer {
                 lighting,
                 phase,
                 false,
-                cull
+                cull,
+                chroma
             )
         )
         addThing(
@@ -291,7 +309,8 @@ object Renderer {
                 lighting,
                 phase,
                 false,
-                cull
+                cull,
+                chroma
             )
         )
     }
@@ -307,8 +326,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
-        cull: Boolean
-    ) = addCircle(Color(color), x, y, z, r, segments, lw, lighting, phase, smooth, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addCircle(Color(color), x, y, z, r, segments, lw, lighting, phase, smooth, cull, chroma)
     fun addCircle(
         color: FloatArray,
         x: Double,
@@ -320,8 +340,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
-        cull: Boolean
-    ) = addCircle(Color(color), x, y, z, r, segments, lw, lighting, phase, smooth, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addCircle(Color(color), x, y, z, r, segments, lw, lighting, phase, smooth, cull, chroma)
     fun addCircle(
         color: Color,
         x: Double,
@@ -333,7 +354,8 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
-        cull: Boolean
+        cull: Boolean,
+        chroma: Boolean
     ) {
         val points = DoubleArray((segments + 1) * 3)
         for (i in 0 until segments) {
@@ -355,7 +377,8 @@ object Renderer {
                 lighting,
                 phase,
                 smooth,
-                cull
+                cull,
+                chroma
             )
         )
     }
@@ -369,8 +392,9 @@ object Renderer {
         divisions: Int,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
-    ) = addIcosphere(Color(color), x, y, z, r, divisions, lighting, phase, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addIcosphere(Color(color), x, y, z, r, divisions, lighting, phase, cull, chroma)
     fun addIcosphere(
         color: FloatArray,
         x: Double,
@@ -380,8 +404,9 @@ object Renderer {
         divisions: Int,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
-    ) = addIcosphere(Color(color), x, y, z, r, divisions, lighting, phase, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addIcosphere(Color(color), x, y, z, r, divisions, lighting, phase, cull, chroma)
     fun addIcosphere(
         color: Color,
         x: Double,
@@ -391,7 +416,8 @@ object Renderer {
         divisions: Int,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
+        cull: Boolean,
+        chroma: Boolean
     ) {
         addThing(
             Thingamabob(
@@ -402,7 +428,8 @@ object Renderer {
                 lighting,
                 phase,
                 false,
-                cull
+                cull,
+                chroma
             )
         )
     }
@@ -419,8 +446,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
-        cull: Boolean
-    ) = addPyramidO(Color(color), x, y, z, r, h, n, lw, lighting, phase, smooth, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addPyramidO(Color(color), x, y, z, r, h, n, lw, lighting, phase, smooth, cull, chroma)
     fun addPyramidO(
         color: FloatArray,
         x: Double,
@@ -433,8 +461,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
-        cull: Boolean
-    ) = addPyramidO(Color(color), x, y, z, r, h, n, lw, lighting, phase, smooth, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addPyramidO(Color(color), x, y, z, r, h, n, lw, lighting, phase, smooth, cull, chroma)
     fun addPyramidO(
         color: Color,
         x: Double,
@@ -447,7 +476,8 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
-        cull: Boolean
+        cull: Boolean,
+        chroma: Boolean
     ) {
         addThing(
             Thingamabob(
@@ -458,7 +488,8 @@ object Renderer {
                 lighting,
                 phase,
                 smooth,
-                cull
+                cull,
+                chroma
             )
         )
     }
@@ -473,8 +504,9 @@ object Renderer {
         n: Int,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
-    ) = addPyramidF(Color(color), x, y, z, r, h, n, lighting, phase, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addPyramidF(Color(color), x, y, z, r, h, n, lighting, phase, cull, chroma)
     fun addPyramidF(
         color: FloatArray,
         x: Double,
@@ -485,8 +517,9 @@ object Renderer {
         n: Int,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
-    ) = addPyramidF(Color(color), x, y, z, r, h, n, lighting, phase, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addPyramidF(Color(color), x, y, z, r, h, n, lighting, phase, cull, chroma)
     fun addPyramidF(
         color: Color,
         x: Double,
@@ -497,7 +530,8 @@ object Renderer {
         n: Int,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
+        cull: Boolean,
+        chroma: Boolean
     ) {
         addThing(
             Thingamabob(
@@ -508,7 +542,8 @@ object Renderer {
                 lighting,
                 phase,
                 false,
-                cull
+                cull,
+                chroma
             )
         )
     }
@@ -523,8 +558,9 @@ object Renderer {
         segments: Int,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
-    ) = addVertCylinder(Color(color), x, y, z, r, h, segments, lighting, phase, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addVertCylinder(Color(color), x, y, z, r, h, segments, lighting, phase, cull, chroma)
     fun addVertCylinder(
         color: FloatArray,
         x: Double,
@@ -535,8 +571,9 @@ object Renderer {
         segments: Int,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
-    ) = addVertCylinder(Color(color), x, y, z, r, h, segments, lighting, phase, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addVertCylinder(Color(color), x, y, z, r, h, segments, lighting, phase, cull, chroma)
     fun addVertCylinder(
         color: Color,
         x: Double,
@@ -547,7 +584,8 @@ object Renderer {
         segments: Int,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
+        cull: Boolean,
+        chroma: Boolean
     ) {
         addThing(
             Thingamabob(
@@ -558,7 +596,8 @@ object Renderer {
                 lighting,
                 phase,
                 false,
-                cull
+                cull,
+                chroma
             )
         )
         addThing(
@@ -570,7 +609,8 @@ object Renderer {
                 lighting,
                 phase,
                 false,
-                cull
+                cull,
+                chroma
             )
         )
     }
@@ -586,8 +626,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
-        cull: Boolean
-    ) = addOctahedronO(Color(color), x, y, z, w, h, lw, lighting, phase, smooth, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addOctahedronO(Color(color), x, y, z, w, h, lw, lighting, phase, smooth, cull, chroma)
     fun addOctahedronO(
         color: FloatArray,
         x: Double,
@@ -599,8 +640,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
-        cull: Boolean
-    ) = addOctahedronO(Color(color), x, y, z, w, h, lw, lighting, phase, smooth, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addOctahedronO(Color(color), x, y, z, w, h, lw, lighting, phase, smooth, cull, chroma)
     fun addOctahedronO(
         color: Color,
         x: Double,
@@ -612,7 +654,8 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
-        cull: Boolean
+        cull: Boolean,
+        chroma: Boolean
     ) {
         addThing(
             Thingamabob(
@@ -623,7 +666,8 @@ object Renderer {
                 lighting,
                 phase,
                 smooth,
-                cull
+                cull,
+                chroma
             )
         )
     }
@@ -637,8 +681,9 @@ object Renderer {
         h: Double,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
-    ) = addOctahedronF(Color(color), x, y, z, w, h, lighting, phase, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addOctahedronF(Color(color), x, y, z, w, h, lighting, phase, cull, chroma)
     fun addOctahedronF(
         color: FloatArray,
         x: Double,
@@ -648,8 +693,9 @@ object Renderer {
         h: Double,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
-    ) = addOctahedronF(Color(color), x, y, z, w, h, lighting, phase, cull)
+        cull: Boolean,
+        chroma: Boolean
+    ) = addOctahedronF(Color(color), x, y, z, w, h, lighting, phase, cull, chroma)
     fun addOctahedronF(
         color: Color,
         x: Double,
@@ -659,7 +705,8 @@ object Renderer {
         h: Double,
         lighting: Int,
         phase: Boolean,
-        cull: Boolean
+        cull: Boolean,
+        chroma: Boolean
     ) {
         addThing(
             Thingamabob(
@@ -670,7 +717,8 @@ object Renderer {
                 lighting,
                 phase,
                 false,
-                cull
+                cull,
+                chroma
             )
         )
     }
@@ -738,7 +786,7 @@ object Renderer {
             it.render(pt)
         }
         texturedOpaque.clear()
-        if (USE_NEW_SHIT) Geometry.render()
+        if (USE_NEW_SHIT) Geometry.render(pt)
 
         glEnable(GL_BLEND)
         OpenGlHelper.glBlendFunc(770, 771, 1, 771)
@@ -765,7 +813,7 @@ object Renderer {
             it.render(pt)
         }
         texturedTranslucent.clear()
-        if (USE_NEW_SHIT) Geometry.render()
+        if (USE_NEW_SHIT) Geometry.render(pt)
         glDisable(GL_TEXTURE_2D)
 
         glDisable(GL_BLEND)
@@ -792,7 +840,7 @@ object Renderer {
             it.render(pt)
         }
         opaque.clear()
-        if (USE_NEW_SHIT) Geometry.render()
+        if (USE_NEW_SHIT) Geometry.render(pt)
 
         glEnable(GL_BLEND)
         // OpenGlHelper.glBlendFunc(770, 771, 1, 771)
@@ -820,7 +868,7 @@ object Renderer {
         }
         translucent.clear()
         if (USE_NEW_SHIT) {
-            Geometry.render()
+            Geometry.render(pt)
 
             GlState.bindShader(0)
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
