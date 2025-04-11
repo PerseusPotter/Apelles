@@ -67,6 +67,17 @@ export function renderLine(color, points, { lw = 1, lighting = 0, phase = false,
   (typeof color === 'number' ? addLineN : addLineF).call(APRendererI, color, points, lw, lighting, phase, smooth, cull, chroma);
 }
 
+const addTriStripN = APRendererI['addTriStrip(long,double[][],int,boolean,boolean,boolean)'];
+const addTriStripF = APRendererI['addTriStrip(float[],double[][],int,boolean,boolean,boolean)'];
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {[number, number, number][]} points
+ * @param {RenderOptions} options
+ */
+export function renderTriStrip(color, points, { lighting = 0, phase = false, cull = true, chroma = false } = {}) {
+  (typeof color === 'number' ? addTriStripN : addTriStripF).call(APRendererI, color, points, lighting, phase, cull, chroma);
+}
+
 const addAABBON = APRendererI['addAABBO(long,double,double,double,double,double,double,double,int,boolean,boolean,boolean,boolean)'];
 const addAABBOF = APRendererI['addAABBO(float[],double,double,double,double,double,double,double,int,boolean,boolean,boolean,boolean)'];
 /**

@@ -26,6 +26,26 @@ object Geometry3D {
         override fun getIndicesCount(params: DoubleArray): Int = params.size / 3
         override fun getDrawMode(): Int = GL11.GL_LINE_STRIP
     }
+    @JvmField
+    val tristrip = object : Geometry() {
+        override val name = "tristrip"
+        override fun render(pt: Double, params: DoubleArray) {
+            begin(GL11.GL_TRIANGLE_STRIP, false, params[0], params[1], params[2])
+            for (i in params.indices step 3) {
+                val (x, y, z) = rescale(params[i + 0], params[i + 1], params[i + 2])
+                pos(x, y, z)
+            }
+            draw()
+        }
+
+        override fun testPoints(params: DoubleArray): Array<Point> {
+            return arrayOf()
+        }
+
+        override fun getVertexCount(params: DoubleArray): Int = params.size / 3
+        override fun getIndicesCount(params: DoubleArray): Int = params.size / 3
+        override fun getDrawMode(): Int = GL11.GL_TRIANGLE_STRIP
+    }
 
     @JvmField
     val aabbO = object : Geometry() {
