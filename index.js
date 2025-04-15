@@ -82,6 +82,22 @@ const addAABBON = APRendererI['addAABBO(long,double,double,double,double,double,
 const addAABBOF = APRendererI['addAABBO(float[],double,double,double,double,double,double,double,int,boolean,boolean,boolean,boolean)'];
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @param {number} w
+ * @param {number} h
+ * @param {LineRenderOptions & AABBOptions} options
+ */
+export function renderBoxOutline(color, x, y, z, w, h, { centered = true, wz = w, lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = false } = {}) {
+  if (centered) {
+    x -= w / 2;
+    z -= wz / 2;
+  }
+  renderAABBOutline(color, x, y, z, x + w, y + h, z + wz, { lw, lighting, phase, smooth, cull, chroma });
+}
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x1
  * @param {number} y1
  * @param {number} z1
@@ -107,22 +123,27 @@ export function renderAABBOutline(color, x1, y1, z1, x2, y2, z2, { lw = 1, light
     chroma
   );
 }
-
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
- * @param {number} x
- * @param {number} y
- * @param {number} z
- * @param {number} w
- * @param {number} h
- * @param {LineRenderOptions & AABBOptions} options
+ * @param aabb net.minecraft.util.AxisAlignedBB
+ * @param {RenderOptions} options
  */
-export function renderBoxOutline(color, x, y, z, w, h, { centered = true, wz = w, lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = false } = {}) {
-  if (centered) {
-    x -= w / 2;
-    z -= wz / 2;
-  }
-  renderAABBOutline(color, x, y, z, x + w, y + h, z + wz, { lw, lighting, phase, smooth, cull, chroma });
+export function renderMCAABBOutline(color, aabb, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = false } = {}) {
+  (typeof color === 'number' ? addAABBON : addAABBOF).call(APRendererI,
+    color,
+    aabb.field_72340_a,
+    aabb.field_72338_b,
+    aabb.field_72339_c,
+    aabb.field_72336_d,
+    aabb.field_72337_e,
+    aabb.field_72334_f,
+    lw,
+    lighting,
+    phase,
+    smooth,
+    cull,
+    chroma
+  );
 }
 
 const addAABBFN = APRendererI['addAABBF(long,double,double,double,double,double,double,int,boolean,boolean,boolean)'];
@@ -146,6 +167,26 @@ export function renderAABBFilled(color, x1, y1, z1, x2, y2, z2, { lighting = 0, 
     Math.max(x1, x2),
     Math.max(y1, y2),
     Math.max(z1, z2),
+    lighting,
+    phase,
+    cull,
+    chroma
+  );
+}
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param aabb net.minecraft.util.AxisAlignedBB
+ * @param {RenderOptions} options
+ */
+export function renderMCAABBFilled(color, aabb, { lighting = 0, phase = false, cull = true, chroma = false } = {}) {
+  (typeof color === 'number' ? addAABBFN : addAABBFF).call(APRendererI,
+    color,
+    aabb.field_72340_a,
+    aabb.field_72338_b,
+    aabb.field_72339_c,
+    aabb.field_72336_d,
+    aabb.field_72337_e,
+    aabb.field_72334_f,
     lighting,
     phase,
     cull,
