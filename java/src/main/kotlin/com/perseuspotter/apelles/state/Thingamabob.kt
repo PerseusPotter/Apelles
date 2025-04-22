@@ -17,7 +17,7 @@ open class Thingamabob(
     val phase: Boolean,
     val smooth: Boolean,
     val cull: Boolean,
-    val chroma: Boolean,
+    val chroma: Int,
     val tex: ResourceLocation? = null
 ) : Comparable<Thingamabob> {
     fun prerender(pt: Double) {
@@ -31,9 +31,8 @@ open class Thingamabob(
                 color.a
             )
         }
-        if (chroma) {
-            val shader = if (tex == null) ChromaShader.CHROMA_3D else ChromaShader.CHROMA_3D_TEX
-            // val shader = ChromaShader.CHROMA_3D
+        if (chroma > 0) {
+            val shader = ChromaShader.get(chroma, tex != null)
             shader.bind()
             // shader.updateUniforms(pt)
         } else GlState.bindShader(0)
@@ -81,8 +80,9 @@ open class Thingamabob(
 
     // who cares about sorting translucent objects by distance?
     fun getRenderPriority(): Int {
-        return (if (lighting > 0) 8 else 0) or
-                (if (chroma) 4 else 0) or
+        return (if (lighting > 0) 16 else 0) or
+                (if (chroma == 1) 8 else 0) or
+                (if (chroma == 2) 4 else 0) or
                 (if (phase) 2 else 0) or
                 (if (smooth) 1 else 0)
     }
@@ -91,9 +91,9 @@ open class Thingamabob(
     fun getVBOGroupingId(): Int {
         return getRenderPriority() xor
                 lw.toRawBits() xor
-                (if (lighting == 1) 16 else 0) xor
-                (if (lighting == 2) 32 else 0) xor
-                (getDrawMode() shl 7) xor
+                (if (lighting == 1) 32 else 0) xor
+                (if (lighting == 2) 64 else 0) xor
+                (getDrawMode() shl 8) xor
                 // color.r.toRawBits() xor
                 // color.g.toRawBits() xor
                 // color.b.toRawBits() xor
