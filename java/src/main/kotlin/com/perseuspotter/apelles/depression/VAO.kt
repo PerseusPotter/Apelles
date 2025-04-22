@@ -105,12 +105,12 @@ class VAO(val vertexCount: Int, val indicesCount: Int, val hasC: Boolean, val ha
 
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboPId)
         bufP.flip()
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, bufP, GL15.GL_STATIC_DRAW)
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, bufP, GL15.GL_STREAM_DRAW)
 
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, iboId)
         drawCount = bufI.position()
         bufI.flip()
-        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, bufI, GL15.GL_STATIC_DRAW)
+        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, bufI, GL15.GL_STREAM_DRAW)
     }
 
     fun draw() {
