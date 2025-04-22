@@ -493,4 +493,112 @@ export function draw() {
   _func_78381_a.call(tess);
 }
 
+const APColor = JavaTypeOrNull('com.perseuspotter.apelles.state.Color') ?? throwExp('jar not loaded correctly');
+/**
+ * @param {ColorLike} color
+ * @returns {typeof APColor}
+ */
+function coerceColor(color) {
+  if (typeof color === 'number') return new APColor(
+    (color >>> 24) / 255,
+    ((color >> 16) & 0xFF) / 255,
+    ((color >> 8) & 0xFF) / 255,
+    (color & 0xFF) / 255
+  );
+  return new APColor(color[0], color[1], color[2], color[3] ?? 1);
+}
+
+/**
+ * @typedef MCEntity
+ */
+
+const outliners = [];
+register('gameUnload', () => outliners.forEach(v => v.unregister()));
+
+/**
+ * @typedef OutlineRenderOptions
+ * @property {boolean} [phase=false] `false`
+ * @property {boolean} [chroma=false] `false` - use chroma, the color will be interpreted as [chromaSize, speed, saturation, alpha] all with values ranging from [0, 1]
+ * @property {boolean} [blackOutline=true] `true` - outermost pixel is a black outline
+ * @property {boolean} [absoluteSize=true] `true` - if true pixel scales with size in world (distance)
+ */
+
+const ManualOutliner = JavaTypeOrNull('com.perseuspotter.apelles.outline.outliner.ManualOutliner') ?? throwExp('jar not loaded correctly');
+/**
+ * INITIALLY UNREGISTERED
+ *
+ * must manually add entities to be outlined with `.add()`/`.remove()`
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} width int in pixels
+ * @param {OutlineRenderOptions} options
+ * @returns {{ add(ent: MCEntity): void, remove(ent: MCEntity): void, register(): void, unregister(): void }}
+ */
+export function createManualOutliner(color, width, { phase = false, chroma = false, blackOutline = true, absoluteSize = true } = {}) {
+  const o = new ManualOutliner(coerceColor(color), width, phase, chroma, blackOutline, absoluteSize);
+  outliners.push(o);
+  return o;
+}
+
+const OutlineTester = JavaTypeOrNull('com.perseuspotter.apelles.outline.OutlineTester') ?? throwExp('jar not loaded correctly');
+/**
+ * @typedef MCEntityClass
+ */
+/**
+ * @typedef OutlineTester
+ * @property {(clazz: MCEntityClass) => boolean} addWhitelist
+ * @property {(clazz: MCEntityClass) => boolean} addBlacklist
+ * @property {(clazz: MCEntityClass) => boolean} removeWhitelist
+ * @property {(clazz: MCEntityClass) => boolean} removeBlacklist
+ * @property {(ent: MCEntity) => boolean} test you should not need to call this
+ * @property {(ent: MCEntity) => boolean} shouldOutline you should not need to call this
+ */
+/**
+ * @param {(ent: MCEntity) => boolean} func
+ * @returns {OutlineTester}
+ */
+export function createCustomOutlineTester(func) {
+  return new OutlineTester.Custom(func);
+}
+/**
+ * equivalent to `createCustomOutlineTester(() => true);`
+ * @returns {OutlineTester}
+ */
+export function createPassthroughOutlineTester() {
+  return new OutlineTester.Always();
+}
+
+const PerEntityOutliner = JavaTypeOrNull('com.perseuspotter.apelles.outline.outliner.PerEntityOutliner') ?? throwExp('jar not loaded correctly');
+/**
+ * INITIALLY UNREGISTERED
+ *
+ * will outline entities that pass the `tester`, only tested once per entity (the first attempt at outlining it)
+ * @param {OutlineTester} tester
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} width int in pixels
+ * @param {OutlineRenderOptions} options
+ * @returns {{ add(ent: MCEntity): void, remove(ent: MCEntity): void, register(): void, unregister(): void }}
+ */
+export function createPerEntityOutliner(tester, color, width, { phase = false, chroma = false, blackOutline = true, absoluteSize = true } = {}) {
+  const o = new PerEntityOutliner(tester, coerceColor(color), width, phase, chroma, blackOutline, absoluteSize);
+  outliners.push(o);
+  return o;
+}
+
+const PerFrameOutliner = JavaTypeOrNull('com.perseuspotter.apelles.outline.outliner.PerFrameOutliner') ?? throwExp('jar not loaded correctly');
+/**
+ * INITIALLY UNREGISTERED
+ *
+ * will outline entities that pass the `tester`, retested every frame
+ * @param {OutlineTester} tester
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} width int in pixels
+ * @param {OutlineRenderOptions} options
+ * @returns {{ add(ent: MCEntity): void, remove(ent: MCEntity): void, register(): void, unregister(): void }}
+ */
+export function createPerFrameOutliner(tester, color, width, { phase = false, chroma = false, blackOutline = true, absoluteSize = true } = {}) {
+  const o = new PerFrameOutliner(tester, coerceColor(color), width, phase, chroma, blackOutline, absoluteSize);
+  outliners.push(o);
+  return o;
+}
+
 // require('./test');

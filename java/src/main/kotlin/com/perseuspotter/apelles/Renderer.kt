@@ -5,6 +5,7 @@ import com.perseuspotter.apelles.depression.ChromaShader
 import com.perseuspotter.apelles.geo.Frustum
 import com.perseuspotter.apelles.geo.Geometry
 import com.perseuspotter.apelles.geo.Point
+import com.perseuspotter.apelles.outline.EntityOutlineRenderer
 import com.perseuspotter.apelles.state.Color
 import com.perseuspotter.apelles.state.GlState
 import com.perseuspotter.apelles.state.Thingamabob
@@ -772,6 +773,7 @@ object Renderer {
     @JvmField
     var USE_NEW_SHIT: Boolean = false
     private var checked = false
+    private var errored = false
     fun render(pt: Double) {
         if (!checked) {
             val cap = GLContext.getCapabilities()
@@ -932,6 +934,15 @@ object Renderer {
         }
 
         glPopMatrix()
+        if (!errored) {
+            try {
+                EntityOutlineRenderer.renderOutlines(pt)
+            } catch (e: Exception) {
+                println("gg shitter")
+                e.printStackTrace()
+                errored = true
+            }
+        }
         GlState.pop()
         empty = true
     }

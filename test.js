@@ -1,4 +1,4 @@
-import { begin, clipLine, draw, isInView, pos, renderAABBOutline, renderBeacon, renderBoxFilled, renderBoxOutline, renderCircle, renderLine, renderOctahedronFilled, renderOctahedronOutline, renderPyramidFilled, renderPyramidOutline, renderSphere, renderTracer, renderVerticalCylinder } from './index';
+import { begin, clipLine, createPassthroughOutlineTester, createPerEntityOutliner, draw, isInView, pos, renderAABBOutline, renderBeacon, renderBoxFilled, renderBoxOutline, renderCircle, renderLine, renderOctahedronFilled, renderOctahedronOutline, renderPyramidFilled, renderPyramidOutline, renderSphere, renderTracer, renderVerticalCylinder } from './index';
 
 const egg = r => {
   let guess = Math.sqrt(1 - 2 * r * r);
@@ -51,3 +51,17 @@ register('renderWorld', () => {
     }
   }
 });
+
+const tester = createPassthroughOutlineTester();
+tester.addBlacklist(net.minecraft.entity.item.EntityArmorStand);
+// tester.addWhitelist(net.minecraft.entity.passive.EntityPig);
+const outliner = createPerEntityOutliner(tester, [0.3, 0.01, 1, 0.5], 5, { phase: true, chroma: true, absoluteSize: false });
+// outliner.register();
+
+const tester2 = createPassthroughOutlineTester();
+// tester.addWhitelist(net.minecraft.entity.item.EntityArmorStand);
+// tester.addWhitelist(net.minecraft.entity.passive.EntityPig);
+const outliner2 = createPerEntityOutliner(tester2, 0xFF0000FF, 2, { phase: false, chroma: false, absoluteSize: true });
+// outliner2.register();
+
+// register('command', () => Java.type('com.perseuspotter.apelles.outline.EntityOutlineRenderer').dump = true).setName('dumpfbo', true);
