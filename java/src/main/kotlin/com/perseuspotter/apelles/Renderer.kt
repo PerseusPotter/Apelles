@@ -9,6 +9,7 @@ import com.perseuspotter.apelles.outline.EntityOutlineRenderer
 import com.perseuspotter.apelles.state.Color
 import com.perseuspotter.apelles.state.GlState
 import com.perseuspotter.apelles.state.Thingamabob
+import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11.*
@@ -783,6 +784,8 @@ object Renderer {
         }
         if (empty) return
 
+        val prof = Minecraft.getMinecraft().mcProfiler
+        prof.startSection("Apelles")
         GlState.reset()
         GlState.push()
         glPushMatrix()
@@ -822,6 +825,7 @@ object Renderer {
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.toFloat())
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT.toFloat())
 
+        prof.startSection("texturedOpaque")
         if (USE_NEW_SHIT) {
             Geometry.bindBufGroup(0)
             texturedOpaque.forEach {
@@ -849,6 +853,7 @@ object Renderer {
         OpenGlHelper.glBlendFunc(770, 771, 1, 771)
         glDepthMask(false)
 
+        prof.endStartSection("texturedTranslucent")
         if (USE_NEW_SHIT) {
             Geometry.bindBufGroup(1)
             texturedTranslucent.forEach {
@@ -876,6 +881,7 @@ object Renderer {
         glDisable(GL_BLEND)
         glDepthMask(true)
 
+        prof.endStartSection("opaque")
         if (USE_NEW_SHIT) {
             Geometry.bindBufGroup(2)
             opaque.forEach {
@@ -903,6 +909,7 @@ object Renderer {
         // OpenGlHelper.glBlendFunc(770, 771, 1, 771)
         glDepthMask(false)
 
+        prof.endStartSection("translucent")
         if (USE_NEW_SHIT) {
             Geometry.bindBufGroup(3)
             translucent.forEach {
@@ -940,14 +947,18 @@ object Renderer {
         glPopMatrix()
         if (!errored) {
             try {
+                prof.endStartSection("outlines")
                 EntityOutlineRenderer.renderOutlines(pt)
             } catch (e: Exception) {
                 println("gg shitter")
                 e.printStackTrace()
                 errored = true
+            } finally {
+                prof.endSection()
             }
         }
         GlState.pop()
         empty = true
+        prof.endSection()
     }
 }

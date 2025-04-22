@@ -52,6 +52,8 @@ object EntityOutlineRenderer {
         val phase = mutableListOf<OutlineState>()
         val occluded = mutableListOf<OutlineState>()
         var isThereShit = false
+        val prof = Minecraft.getMinecraft().mcProfiler
+        prof.startSection("testEntities")
         Minecraft.getMinecraft().theWorld.loadedEntityList.forEach { e ->
             // good enough
             if (!Frustum.test(e.posX, e.posY, e.posZ)) return@forEach
@@ -65,8 +67,10 @@ object EntityOutlineRenderer {
             isThereShit = true
             (if (s.getPhase()) phase else occluded).add(s)
         }
+        prof.endSection()
         if (!isThereShit) return
 
+        prof.startSection("setup")
         if (fb1 == null) {
             fb1 = createFB()
             fb2 = createFB()
@@ -88,9 +92,11 @@ object EntityOutlineRenderer {
         GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, fb1!!.framebufferObject)
         GL30.glBlitFramebuffer(0, 0, mainFb.framebufferWidth, mainFb.framebufferHeight, 0, 0, fb1!!.width, fb1!!.height, GL11.GL_DEPTH_BUFFER_BIT, GL11.GL_NEAREST)
 
+        prof.endStartSection("phase")
         GL11.glDisable(GL11.GL_DEPTH_TEST)
         doOutline(pt, phase, 0)
 
+        prof.endStartSection("occluded")
         fb1!!.clear(GL11.GL_COLOR_BUFFER_BIT)
         GL11.glEnable(GL11.GL_DEPTH_TEST)
         GlState.setDepthTest(true)
@@ -101,6 +107,7 @@ object EntityOutlineRenderer {
         Minecraft.getMinecraft().framebuffer.bindFramebuffer(false)
         outliners.forEach { it.clear() }
         dump = false
+        prof.endSection()
     }
 
     @JvmField
