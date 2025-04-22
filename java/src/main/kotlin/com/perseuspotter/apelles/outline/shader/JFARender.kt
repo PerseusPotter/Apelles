@@ -1,16 +1,13 @@
 package com.perseuspotter.apelles.outline.shader
 
 import com.perseuspotter.apelles.depression.ChromaShader
-import com.perseuspotter.apelles.outline.OutlineState
 import com.perseuspotter.apelles.state.Color
-import net.minecraft.client.Minecraft
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL15
-import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL30
 import org.lwjgl.opengl.GL31
 
-object JFARender : ChromaShader(getResource("/shaders/jfaRender.frag"), getResource("/shaders/jfaRender.vert")) {
+object JFARender : ChromaShader(getResource("/shaders/jfaRender.frag"), getResource("/shaders/jfaRender.vert"), true) {
     var uboId = -1
     override fun init() {
         this.bind()
@@ -46,10 +43,5 @@ object JFARender : ChromaShader(getResource("/shaders/jfaRender.frag"), getResou
         }
         buff.flip()
         GL15.glBufferSubData(GL31.GL_UNIFORM_BUFFER, 0, buff)
-    }
-
-    override fun updateUniforms(pt: Double) {
-        GL20.glUniform1f(getUniformLoc("oneOverDisplayWidth"), 1f / Minecraft.getMinecraft().displayWidth)
-        super.updateUniforms(pt)
     }
 }
