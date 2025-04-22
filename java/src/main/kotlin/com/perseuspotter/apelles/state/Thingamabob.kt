@@ -32,10 +32,10 @@ open class Thingamabob(
             )
         }
         if (chroma) {
-            // val shader = if (tex == null) ChromaShader.CHROMA_3D else ChromaShader.CHROMA_3D_TEX
-            val shader = ChromaShader.CHROMA_3D
+            val shader = if (tex == null) ChromaShader.CHROMA_3D else ChromaShader.CHROMA_3D_TEX
+            // val shader = ChromaShader.CHROMA_3D
             shader.bind()
-            shader.updateUniforms(pt)
+            // shader.updateUniforms(pt)
         } else GlState.bindShader(0)
         GlState.setDepthTest(!phase)
         GlState.lineSmooth(smooth)

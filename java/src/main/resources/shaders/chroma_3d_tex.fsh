@@ -5,6 +5,7 @@ uniform float timeOffset;
 
 uniform sampler2D outTexture;
 
+varying vec2 outTextureCoords;
 varying vec3 outPosition;
 varying vec4 outColor;
 

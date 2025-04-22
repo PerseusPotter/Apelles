@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL20
 class ChromaShader(fragSrc: String?, vertSrc: String?) : Shader(fragSrc, vertSrc) {
     companion object {
         val CHROMA_3D = ChromaShader(getResource("/shaders/chroma_3d.fsh"), getResource("/shaders/chroma_3d.vsh"))
-        // val CHROMA_3D_TEX = ChromaShader(getResource("/shaders/chroma_3d_tex.fsh"), getResource("/shaders/chroma_3d_tex.vsh"))
+        val CHROMA_3D_TEX = ChromaShader(getResource("/shaders/chroma_3d_tex.fsh"), getResource("/shaders/chroma_3d_tex.vsh"))
     }
 
     fun updateUniforms(pt: Double) {

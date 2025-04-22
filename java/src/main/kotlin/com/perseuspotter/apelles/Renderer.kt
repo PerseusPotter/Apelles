@@ -1,6 +1,7 @@
 package com.perseuspotter.apelles
 
 import com.google.common.collect.TreeMultiset
+import com.perseuspotter.apelles.depression.ChromaShader
 import com.perseuspotter.apelles.geo.Frustum
 import com.perseuspotter.apelles.geo.Geometry
 import com.perseuspotter.apelles.geo.Point
@@ -801,6 +802,11 @@ object Renderer {
             glEnable(GL31.GL_PRIMITIVE_RESTART)
             // GL31.glPrimitiveRestartIndex(Geometry.PRIMITIVE_RESTART_INDEX)
             glEnableClientState(GL_VERTEX_ARRAY)
+            ChromaShader.CHROMA_3D.bind()
+            ChromaShader.CHROMA_3D.updateUniforms(pt)
+            ChromaShader.CHROMA_3D_TEX.bind()
+            ChromaShader.CHROMA_3D_TEX.updateUniforms(pt)
+            ChromaShader.CHROMA_3D_TEX.unbind()
         }
 
         glDisable(GL_BLEND)
