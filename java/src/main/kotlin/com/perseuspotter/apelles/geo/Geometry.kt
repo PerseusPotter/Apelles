@@ -290,14 +290,14 @@ abstract class Geometry {
                     currBufM[k]!!.destroy()
                     currBufM[k] = VAO(s.vert, s.index, s.c, s.n, s.t, s.m)
                 } else currBufM[k]!!.reset()
+                if (s.vert > PRIMITIVE_RESTART_INDEX) PRIMITIVE_RESTART_INDEX = s.vert
             }
             unusedBufs.forEach { currBufM.remove(it)!!.destroy() }
         }
         fun render(pt: Double) {
+            GlState.setPrimitiveRestart(PRIMITIVE_RESTART_INDEX)
             currBufM.forEach { (k, v) ->
                 val i = bufInfo[k]!!
-                PRIMITIVE_RESTART_INDEX = i.vert
-                GL31.glPrimitiveRestartIndex(PRIMITIVE_RESTART_INDEX)
                 i.th.prerender(pt)
                 GlState.setColorArray(i.c)
                 GlState.setNormalArray(i.n)
@@ -314,7 +314,6 @@ abstract class Geometry {
             currBufI = bufInfo[k]
             currCol = thing.color
             vertOffset = currBuf!!.vertCount
-            PRIMITIVE_RESTART_INDEX = bufInfo[k]!!.vert
             reset()
         }
 

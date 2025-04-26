@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL20
+import org.lwjgl.opengl.GL31
 import java.lang.reflect.Field
 
 object GlState {
@@ -571,6 +572,13 @@ object GlState {
             texArray = enabled
         }
     }
+    private var primitiveRestart: Int? = null
+    fun setPrimitiveRestart(restart: Int) {
+        if (restart != primitiveRestart) {
+            GL31.glPrimitiveRestartIndex(restart)
+            primitiveRestart = restart
+        }
+    }
 
     fun reset() {
         prevLw = null
@@ -586,5 +594,6 @@ object GlState {
         colorArray = null
         normalArray = null
         texArray = null
+        primitiveRestart = null
     }
 }

@@ -803,7 +803,6 @@ object Renderer {
 
         if (USE_NEW_SHIT) {
             glEnable(GL31.GL_PRIMITIVE_RESTART)
-            // GL31.glPrimitiveRestartIndex(Geometry.PRIMITIVE_RESTART_INDEX)
             glEnableClientState(GL_VERTEX_ARRAY)
         }
         if (CAN_USE_CHROMA) {
