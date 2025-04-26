@@ -770,13 +770,15 @@ object Renderer {
 
     @JvmField
     var USE_NEW_SHIT: Boolean = false
+    @JvmField
+    var CAN_USE_CHROMA: Boolean = false
     private var checked = false
     private var errored = false
-    fun render(pt: Double) {
+    fun render(pt: Double, t: Int) {
         if (!checked) {
             val cap = GLContext.getCapabilities()
             USE_NEW_SHIT =
-                cap.GL_ARB_vertex_buffer_object && cap.GL_NV_primitive_restart && cap.GL_ARB_vertex_array_object && cap.GL_ARB_vertex_shader
+            CAN_USE_CHROMA = cap.GL_ARB_vertex_shader && cap.GL_ARB_fragment_shader
             checked = true
         }
 
@@ -803,14 +805,16 @@ object Renderer {
             glEnable(GL31.GL_PRIMITIVE_RESTART)
             // GL31.glPrimitiveRestartIndex(Geometry.PRIMITIVE_RESTART_INDEX)
             glEnableClientState(GL_VERTEX_ARRAY)
+        }
+        if (CAN_USE_CHROMA) {
             ChromaShader.CHROMA_3D.bind()
-            ChromaShader.CHROMA_3D.updateUniforms(pt)
+            ChromaShader.CHROMA_3D.updateUniforms(pt, t)
             ChromaShader.CHROMA_3D_TEX.bind()
-            ChromaShader.CHROMA_3D_TEX.updateUniforms(pt)
+            ChromaShader.CHROMA_3D_TEX.updateUniforms(pt, t)
             ChromaShader.CHROMA_2D.bind()
-            ChromaShader.CHROMA_2D.updateUniforms(pt)
+            ChromaShader.CHROMA_2D.updateUniforms(pt, t)
             ChromaShader.CHROMA_2D_TEX.bind()
-            ChromaShader.CHROMA_2D_TEX.updateUniforms(pt)
+            ChromaShader.CHROMA_2D_TEX.updateUniforms(pt, t)
             ChromaShader.CHROMA_2D_TEX.unbind()
         }
 
@@ -930,7 +934,6 @@ object Renderer {
         if (USE_NEW_SHIT) {
             Geometry.render(pt)
 
-            GlState.bindShader(0)
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
             GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0)
             glDisable(GL31.GL_PRIMITIVE_RESTART)
@@ -939,12 +942,13 @@ object Renderer {
             GlState.setNormalArray(false)
             GlState.setTexArray(false)
         }
+        if (CAN_USE_CHROMA) GlState.bindShader(0)
 
         glPopMatrix()
         if (!errored) {
             try {
                 prof.endStartSection("outlines")
-                EntityOutlineRenderer.renderOutlines(pt)
+                EntityOutlineRenderer.renderOutlines(pt, t)
             } catch (e: Exception) {
                 println("gg shitter")
                 e.printStackTrace()

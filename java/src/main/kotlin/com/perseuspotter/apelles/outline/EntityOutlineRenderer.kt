@@ -36,7 +36,7 @@ object EntityOutlineRenderer {
     @JvmField
     var CAN_OUTLINE = false
     private var checked = false
-    fun renderOutlines(pt: Double) {
+    fun renderOutlines(pt: Double, t: Int) {
         if (!checked) {
             val cap = GLContext.getCapabilities()
             CAN_OUTLINE = cap.GL_ARB_fragment_shader && cap.GL_ARB_framebuffer_object && cap.GL_ARB_uniform_buffer_object && cap.GL_ARB_shading_language_420pack
@@ -96,13 +96,13 @@ object EntityOutlineRenderer {
 
         prof.endStartSection("phase")
         GL11.glDisable(GL11.GL_DEPTH_TEST)
-        doOutline(pt, phase, 0)
+        doOutline(pt, t, phase, 0)
 
         prof.endStartSection("occluded")
         fb1!!.clear(GL11.GL_COLOR_BUFFER_BIT)
         GL11.glEnable(GL11.GL_DEPTH_TEST)
         GlState.setDepthTest(true)
-        doOutline(pt, occluded, 1)
+        doOutline(pt, t, occluded, 1)
 
         GlState.bindShader(0)
         Minecraft.getMinecraft().renderManager.setRenderOutlines(false)
@@ -115,7 +115,7 @@ object EntityOutlineRenderer {
     @JvmField
     var dump = false
     private fun ceilLog2(x: Int): Int = 32 - (x - 1).coerceAtLeast(0).countLeadingZeroBits()
-    private fun doOutline(pt: Double, ents: List<OutlineState>, pass: Int) {
+    private fun doOutline(pt: Double, t: Int, ents: List<OutlineState>, pass: Int) {
         if (ents.isEmpty()) return
 
         val rm = Minecraft.getMinecraft().renderManager
@@ -192,7 +192,7 @@ object EntityOutlineRenderer {
         GL11.glEnable(GL11.GL_BLEND)
         OpenGlHelper.glBlendFunc(770, 771, 1, 771)
         JFARender.bind()
-        JFARender.updateUniforms(pt)
+        JFARender.updateUniforms(pt, t)
         JFARender.bindUbo()
         var colList = colors.toList().sortedBy { it.second }.map { it.first }
         if (colList.size > 256) {
