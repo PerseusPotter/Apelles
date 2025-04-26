@@ -23,20 +23,17 @@ object Renderer {
     private val texturedTranslucent = TreeMultiset.create<Thingamabob>()
     private val opaque = TreeMultiset.create<Thingamabob>()
     private val translucent = TreeMultiset.create<Thingamabob>()
-    private var empty = true
 
     fun addTexturedThing(thing: Thingamabob) {
         if (thing.color.a == 1f) texturedOpaque.add(thing)
         else if (thing.color.a > 0f) texturedTranslucent.add(thing)
         else return
-        empty = false
     }
 
     fun addThing(thing: Thingamabob) {
         if (thing.color.a == 1f) opaque.add(thing)
         else if (thing.color.a > 0f) translucent.add(thing)
         else return
-        empty = false
     }
 
     fun addLine(
@@ -782,7 +779,6 @@ object Renderer {
                 cap.GL_ARB_vertex_buffer_object && cap.GL_NV_primitive_restart && cap.GL_ARB_vertex_array_object && cap.GL_ARB_vertex_shader
             checked = true
         }
-        if (empty) return
 
         val prof = Minecraft.getMinecraft().mcProfiler
         prof.startSection("Apelles")
@@ -958,7 +954,6 @@ object Renderer {
             }
         }
         GlState.pop()
-        empty = true
         prof.endSection()
     }
 }
