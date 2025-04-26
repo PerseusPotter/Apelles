@@ -2,7 +2,13 @@ import { JavaTypeOrNull, throwExp } from './util';
 
 const APRenderer = JavaTypeOrNull('com.perseuspotter.apelles.Renderer') ?? throwExp('jar not loaded correctly');
 const APRendererI = APRenderer.INSTANCE;
-register(net.minecraftforge.client.event.RenderWorldLastEvent, evn => APRendererI.render(evn.partialTicks));
+register(net.minecraftforge.client.event.RenderWorldLastEvent, evn => {
+  try {
+    APRendererI.render(evn.partialTicks);
+  } catch (e) {
+    console.error(e);
+  }
+});
 const GlState = JavaTypeOrNull('com.perseuspotter.apelles.state.GlState')?.INSTANCE ?? throwExp('jar not loaded correctly');
 const Frustum = JavaTypeOrNull('com.perseuspotter.apelles.geo.Frustum')?.INSTANCE ?? throwExp('jar not loaded correctly');
 const Point = JavaTypeOrNull('com.perseuspotter.apelles.geo.Point') ?? throwExp('jar not loaded correctly');
