@@ -12,8 +12,8 @@ open class ChromaShader(fragSrc: String?, vertSrc: String?, private val twoD: Bo
         fun get(num: Int, tex: Boolean) = if (tex) (if (num == 1) CHROMA_2D else CHROMA_3D) else (if (num == 1) CHROMA_2D_TEX else CHROMA_3D_TEX)
     }
 
-    open fun updateUniforms(pt: Double) {
-        GL20.glUniform1f(getUniformLoc("timeOffset"), (Minecraft.getMinecraft().theWorld.worldTime + pt).toFloat())
+    open fun updateUniforms(pt: Double, t: Int) {
+        GL20.glUniform1f(getUniformLoc("timeOffset"), (t + pt).toFloat() / (if (twoD) 20f else 5f))
         if (twoD) GL20.glUniform1f(getUniformLoc("oneOverDisplayWidth"), 1f / Minecraft.getMinecraft().displayWidth)
     }
 }

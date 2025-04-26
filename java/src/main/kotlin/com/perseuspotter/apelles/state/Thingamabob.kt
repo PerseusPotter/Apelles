@@ -31,11 +31,12 @@ open class Thingamabob(
                 color.a
             )
         }
-        if (chroma > 0) {
-            val shader = ChromaShader.get(chroma, tex != null)
-            shader.bind()
-            // shader.updateUniforms(pt)
-        } else GlState.bindShader(0)
+        if (Renderer.CAN_USE_CHROMA) {
+            if (chroma > 0) {
+                val shader = ChromaShader.get(chroma, tex != null)
+                shader.bind()
+            } else GlState.bindShader(0)
+        }
         GlState.setDepthTest(!phase)
         GlState.lineSmooth(smooth)
         if (tex != null) GlState.bindTexture(tex)
