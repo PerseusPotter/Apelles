@@ -40,7 +40,7 @@ object EntityOutlineRenderer {
     fun renderOutlines(pt: Double, t: Int) {
         if (!checked) {
             val cap = GLContext.getCapabilities()
-            CAN_OUTLINE = cap.GL_ARB_fragment_shader && cap.GL_ARB_framebuffer_object && cap.GL_ARB_uniform_buffer_object && cap.GL_ARB_shading_language_420pack
+            CAN_OUTLINE = cap.GL_ARB_fragment_shader && cap.GL_ARB_framebuffer_object && cap.GL_ARB_uniform_buffer_object
             checked = true
             // GL11.glEnable(GL43.GL_DEBUG_OUTPUT)
             // GL43.glDebugMessageCallback(KHRDebugCallback { source: Int, type: Int, id: Int, severity: Int, message: String? ->
