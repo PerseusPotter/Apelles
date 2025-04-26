@@ -33,6 +33,7 @@ object EntityOutlineRenderer {
         return fb
     }
 
+    @JvmField
     var CAN_OUTLINE = false
     private var checked = false
     fun renderOutlines(pt: Double) {
