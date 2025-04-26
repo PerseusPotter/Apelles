@@ -23,6 +23,8 @@ void main() {
 
         vec4 sample = texelFetch(pingPong, samplePos, 0);
         if (sample.w == 0.0) continue;
+        float w = 1.0 / fract(sample.w);
+        if (w < outlineGap) continue;
 
         vec2 dPos = sample.yz - gl_FragCoord.xy;
         float dist = dot(dPos, dPos);
