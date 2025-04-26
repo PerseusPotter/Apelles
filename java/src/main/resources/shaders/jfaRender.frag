@@ -21,9 +21,8 @@ void main() {
   // if (data.w == 0.0) discard;
   if (data.x == 0.0) discard;
   float w = 1.0 / fract(data.w);
-  float d = w * w - data.x;
-  if (d < 0.0) discard;
-  d = w - sqrt(data.x);
+  if (w * w < data.x) discard;
+  float d = w - sqrt(data.x);
   vec4 col = colors[int(data.w)];
   if (col.b < 0.0) {
     if (d < w * 0.25) {

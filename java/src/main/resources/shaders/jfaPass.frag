@@ -8,7 +8,6 @@ out vec4 fragColor;
 
 void main() {
   ivec2 pos = ivec2(gl_FragCoord.xy);
-  vec2 posf = vec2(pos) + 0.5;
   vec4 data = texelFetch(pingPong, pos, 0);
   float minDist = (data.w == 0.0 ? -1.0 : data.x);
   if (minDist == 0.0) fragColor = data;
@@ -25,7 +24,7 @@ void main() {
         vec4 sample = texelFetch(pingPong, samplePos, 0);
         if (sample.w == 0.0) continue;
 
-        vec2 dPos = sample.yz - posf;
+        vec2 dPos = sample.yz - gl_FragCoord.xy;
         float dist = dot(dPos, dPos);
 
         if (minDist < 0.0 || dist < minDist) {
