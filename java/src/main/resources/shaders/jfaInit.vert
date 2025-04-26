@@ -15,6 +15,6 @@ void main() {
     vec4 pos2 = gl_ModelViewProjectionMatrix * vec4(gl_Vertex.xyz / gl_Vertex.w + normalize(vec3(gl_ModelViewMatrix[0][0], gl_ModelViewMatrix[1][0], gl_ModelViewMatrix[2][0])) * 0.0125, 1.0);
     vec2 ndcDelta = (pos2.xy / pos2.w) - (pos.xy / pos.w);
     vec2 pixelDelta = ndcDelta * dim * 0.5;
-    actualWidth = -outlineWidth * length(pixelDelta);
+    actualWidth = max(-outlineWidth * length(pixelDelta), 2.0);
   }
 }
