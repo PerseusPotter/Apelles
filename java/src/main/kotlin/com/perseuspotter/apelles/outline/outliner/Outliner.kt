@@ -14,6 +14,7 @@ abstract class Outliner(
     val color = Color(color.r, color.g, negateIf(color.b, blackOutline), negateIf(color.a, chroma))
     override fun compareTo(other: Outliner): Int {
         if (phase != other.phase) return if (phase) -1 else 1
+        if (absoluteSize != other.absoluteSize) return if (absoluteSize) -1 else 1
         return -(width.compareTo(other.width))
     }
 
