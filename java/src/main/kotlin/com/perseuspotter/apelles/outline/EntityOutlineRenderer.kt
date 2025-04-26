@@ -1,5 +1,6 @@
 package com.perseuspotter.apelles.outline
 
+import com.perseuspotter.apelles.Renderer
 import com.perseuspotter.apelles.depression.Framebuffer
 import com.perseuspotter.apelles.geo.Frustum
 import com.perseuspotter.apelles.outline.outliner.RenderOutliner
@@ -48,7 +49,6 @@ object EntityOutlineRenderer {
             //     println("source: $source type: $type id: $id severity $severity message: $message")
             // })
         }
-        if (!CAN_OUTLINE) return
         val phase = mutableListOf<OutlineState>()
         val occluded = mutableListOf<OutlineState>()
         var isThereShit = false
@@ -71,6 +71,27 @@ object EntityOutlineRenderer {
         }
         prof.endSection()
         if (!isThereShit) return
+        if (!CAN_OUTLINE) {
+            phase.forEach {
+                val ent = it.entity.get()!!
+                val x = ent.lastTickPosX + (ent.posX - ent.lastTickPosX) * pt
+                val y = ent.lastTickPosY + (ent.posY - ent.lastTickPosY) * pt
+                val z = ent.lastTickPosZ + (ent.posZ - ent.lastTickPosZ) * pt
+                val w = ent.width
+                val h = ent.height
+                Renderer.addAABBO(it.getColor(), x - w / 2.0, y, z - w / 2.0, x + w / 2.0, y + h, z + w / 2.0, it.getWidth().toDouble(), 0, true, false, true, if (it.isChroma()) 1 else 0)
+            }
+            occluded.forEach {
+                val ent = it.entity.get()!!
+                val x = ent.lastTickPosX + (ent.posX - ent.lastTickPosX) * pt
+                val y = ent.lastTickPosY + (ent.posY - ent.lastTickPosY) * pt
+                val z = ent.lastTickPosZ + (ent.posZ - ent.lastTickPosZ) * pt
+                val w = ent.width
+                val h = ent.height
+                Renderer.addAABBO(it.getColor(), x - w / 2.0, y, z - w / 2.0, x + w / 2.0, y + h, z + w / 2.0, it.getWidth().toDouble(), 0, false, false, true, if (it.isChroma()) 1 else 0)
+            }
+            return
+        }
 
         prof.startSection("setup")
         if (fb1 == null) {
