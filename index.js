@@ -8,7 +8,7 @@ register(net.minecraftforge.client.event.RenderWorldLastEvent, evn => {
   } catch (e) {
     console.error(e);
   }
-});
+}).setPriority(Priority.LOWEST);
 const GlState = JavaTypeOrNull('com.perseuspotter.apelles.state.GlState')?.INSTANCE ?? throwExp('jar not loaded correctly');
 const Frustum = JavaTypeOrNull('com.perseuspotter.apelles.geo.Frustum')?.INSTANCE ?? throwExp('jar not loaded correctly');
 const Point = JavaTypeOrNull('com.perseuspotter.apelles.geo.Point') ?? throwExp('jar not loaded correctly');
