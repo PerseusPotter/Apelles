@@ -1,6 +1,6 @@
-#version 420
+#version 140
 
-layout(std140, binding = 0) uniform colorsUbo {
+uniform colorsUbo {
   vec4 colors[256];
 };
 uniform sampler2D pingPong;
