@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL30.*
 import java.awt.image.BufferedImage
 import java.lang.IllegalStateException
 import java.nio.ByteBuffer
+import kotlin.math.sqrt
 
 
 class Framebuffer(var width: Int, var height: Int, var useDepth: Boolean) {
@@ -177,7 +178,7 @@ class Framebuffer(var width: Int, var height: Int, var useDepth: Boolean) {
             for (x in 0 until width) {
                 val index = ((height - 1 - y) * width + x) * 4
 
-                val r = (buffer[index + 0] / 1000f).coerceIn(0f, 1f)
+                val r = (sqrt(buffer[index + 0]) / 255f).coerceIn(0f, 1f)
                 val g = (buffer[index + 1] / 1000f).coerceIn(0f, 1f)
                 val b = (buffer[index + 2] / 1000f).coerceIn(0f, 1f)
                 val a = (buffer[index + 3]).coerceIn(0f, 1f)
