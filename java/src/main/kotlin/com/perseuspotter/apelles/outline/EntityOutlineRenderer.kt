@@ -138,7 +138,7 @@ object EntityOutlineRenderer {
         ents.groupBy { it.getWidth() }.forEach { (w, e) ->
             InitPass.setWidth(w)
             // "fixed"
-            val w2 = if (w < 0) -16 * w else w
+            val w2 = if (w < 0) -32 * w else w
             if (w2 > maxW) maxW = w2
             e.forEach {
                 val col = it.getColor()
