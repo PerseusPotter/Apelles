@@ -27,13 +27,11 @@ object Renderer {
     fun addTexturedThing(thing: Thingamabob) {
         if (thing.color.a == 1f) texturedOpaque.add(thing)
         else if (thing.color.a > 0f) texturedTranslucent.add(thing)
-        else return
     }
 
     fun addThing(thing: Thingamabob) {
         if (thing.color.a == 1f) opaque.add(thing)
         else if (thing.color.a > 0f) translucent.add(thing)
-        else return
     }
 
     fun addLine(

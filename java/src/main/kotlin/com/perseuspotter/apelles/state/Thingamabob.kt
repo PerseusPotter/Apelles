@@ -2,7 +2,6 @@ package com.perseuspotter.apelles.state
 
 import com.perseuspotter.apelles.Renderer
 import com.perseuspotter.apelles.depression.ChromaShader
-import com.perseuspotter.apelles.depression.Shader
 import com.perseuspotter.apelles.geo.Frustum
 import com.perseuspotter.apelles.geo.Geometry
 import com.perseuspotter.apelles.geo.Geometry3D

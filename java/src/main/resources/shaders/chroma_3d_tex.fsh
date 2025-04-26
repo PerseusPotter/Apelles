@@ -1,5 +1,5 @@
 #version 120
-// does not work
+// taken from SBA
 
 uniform float timeOffset;
 
