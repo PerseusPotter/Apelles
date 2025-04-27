@@ -541,7 +541,7 @@ const ManualOutliner = JavaTypeOrNull('com.perseuspotter.apelles.outline.outline
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} width int in pixels
  * @param {OutlineRenderOptions} options
- * @returns {{ add(ent: MCEntity): void, remove(ent: MCEntity): void, register(): void, unregister(): void }}
+ * @returns {{ add(ent: MCEntity): void, remove(ent: MCEntity): void, clear(): void, register(): void, unregister(): void }}
  */
 export function createManualOutliner(color, width, { phase = false, chroma = false, blackOutline = true, absoluteSize = true } = {}) {
   const o = new ManualOutliner(coerceColor(color), width, phase, chroma, blackOutline, absoluteSize);
