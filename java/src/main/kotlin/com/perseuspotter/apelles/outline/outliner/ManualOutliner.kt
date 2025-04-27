@@ -22,6 +22,10 @@ class ManualOutliner(
     fun remove(e: Entity) {
         if (hits.remove(e)) EntityOutlineRenderer.getOutlineState(e).remove(this)
     }
+    fun clear() {
+        hits.forEach { EntityOutlineRenderer.getOutlineState(it).remove(this) }
+        hits.clear()
+    }
 
     override fun register() {
         hits.forEach { EntityOutlineRenderer.getOutlineState(it).add(this) }
