@@ -355,11 +355,11 @@ abstract class Geometry {
         }
     }
     abstract val name: String
-    abstract fun render(pt: Double, params: DoubleArray)
-    abstract fun testPoints(params: DoubleArray): Array<Point>
-    abstract fun getVertexCount(params: DoubleArray): Int
-    abstract fun getIndicesCount(params: DoubleArray): Int
-    abstract fun getDrawMode(): Int
+    abstract fun render(pt: Double, params: List<Double>)
+    abstract fun testPoints(params: List<Double>): Array<Point>
+    abstract fun getVertexCount(params: List<Double>): Int
+    abstract fun getIndicesCount(params: List<Double>): Int
+    abstract fun getDrawMode(params: List<Double>): Int
 }
-operator fun DoubleArray.component6() = get(5)
-operator fun DoubleArray.component7() = get(6)
+operator fun <E> List<E>.component6() = get(5)
+operator fun <E> List<E>.component7() = get(6)

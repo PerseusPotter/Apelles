@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation
 
 open class Thingamabob(
     val type: Type,
-    val params: DoubleArray,
+    val params: List<Double>,
     val color: Color,
     val lw: Float,
     val lighting: Int,
@@ -42,8 +42,7 @@ open class Thingamabob(
     }
 
     fun getRenderer(): Geometry = when (type) {
-        Type.Line -> Geometry3D.line
-        Type.TriStrip -> Geometry3D.tristrip
+        Type.Primitive -> Geometry3D.primitive
         Type.AABBO -> Geometry3D.aabbO
         Type.AABBF -> Geometry3D.aabbF
         Type.BeaconI -> Geometry3D.beaconI
@@ -76,7 +75,7 @@ open class Thingamabob(
 
     open fun getVertexCount() = getRenderer().getVertexCount(params)
     open fun getIndicesCount() = getRenderer().getIndicesCount(params)
-    open fun getDrawMode() = getRenderer().getDrawMode()
+    open fun getDrawMode() = getRenderer().getDrawMode(params)
 
     // who cares about sorting translucent objects by distance?
     fun getRenderPriority(): Int {
@@ -112,8 +111,7 @@ open class Thingamabob(
     }
 
     enum class Type() {
-        Line,
-        TriStrip,
+        Primitive,
         AABBO,
         AABBF,
         BeaconTI,

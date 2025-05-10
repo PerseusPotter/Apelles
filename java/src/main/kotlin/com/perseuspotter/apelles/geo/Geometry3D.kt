@@ -7,50 +7,29 @@ import kotlin.math.*
 
 object Geometry3D {
     @JvmField
-    val line = object : Geometry() {
-        override val name = "line"
-        override fun render(pt: Double, params: DoubleArray) {
-            begin(GL11.GL_LINE_STRIP, false, params[0], params[1], params[2])
-            for (i in params.indices step 3) {
-                val (x, y, z) = rescale(params[i + 0], params[i + 1], params[i + 2])
+    val primitive = object : Geometry() {
+        override val name = "primitive"
+        override fun render(pt: Double, params: List<Double>) {
+            begin(params[0].toInt(), false, params[1], params[2], params[3])
+            val iter = params.listIterator(1)
+            while (iter.hasNext()) {
+                val (x, y, z) = rescale(iter.next(), iter.next(), iter.next())
                 pos(x, y, z)
             }
             draw()
         }
 
-        override fun testPoints(params: DoubleArray): Array<Point> {
-            return arrayOf()
-        }
+        override fun testPoints(params: List<Double>): Array<Point> = emptyArray()
 
-        override fun getVertexCount(params: DoubleArray): Int = params.size / 3
-        override fun getIndicesCount(params: DoubleArray): Int = params.size / 3
-        override fun getDrawMode(): Int = GL11.GL_LINE_STRIP
-    }
-    @JvmField
-    val tristrip = object : Geometry() {
-        override val name = "tristrip"
-        override fun render(pt: Double, params: DoubleArray) {
-            begin(GL11.GL_TRIANGLE_STRIP, false, params[0], params[1], params[2])
-            for (i in params.indices step 3) {
-                val (x, y, z) = rescale(params[i + 0], params[i + 1], params[i + 2])
-                pos(x, y, z)
-            }
-            draw()
-        }
-
-        override fun testPoints(params: DoubleArray): Array<Point> {
-            return arrayOf()
-        }
-
-        override fun getVertexCount(params: DoubleArray): Int = params.size / 3
-        override fun getIndicesCount(params: DoubleArray): Int = params.size / 3
-        override fun getDrawMode(): Int = GL11.GL_TRIANGLE_STRIP
+        override fun getVertexCount(params: List<Double>): Int = params.size / 3
+        override fun getIndicesCount(params: List<Double>): Int = params.size / 3
+        override fun getDrawMode(params: List<Double>): Int = params[0].toInt()
     }
 
     @JvmField
     val aabbO = object : Geometry() {
         override val name = "aabbO"
-        override fun render(pt: Double, params: DoubleArray) {
+        override fun render(pt: Double, params: List<Double>) {
             val (_x1, _y1, _z1, _x2, _y2, _z2) = params
             val (x1, y1, z1, s) = rescale(_x1, _y1, _z1)
             val x2 = x1 + (_x2 - _x1) * s
@@ -128,7 +107,7 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: DoubleArray): Array<Point> {
+        override fun testPoints(params: List<Double>): Array<Point> {
             val (x1, y1, z1, x2, y2, z2) = params
             return arrayOf(
                 Point(x1, y1, z1),
@@ -142,15 +121,15 @@ object Geometry3D {
             )
         }
 
-        override fun getVertexCount(params: DoubleArray): Int = 8
-        override fun getIndicesCount(params: DoubleArray): Int = if (Renderer.USE_NEW_SHIT) 19 else 24
-        override fun getDrawMode(): Int = if (Renderer.USE_NEW_SHIT) GL11.GL_LINE_STRIP else GL11.GL_LINES
+        override fun getVertexCount(params: List<Double>): Int = 8
+        override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 19 else 24
+        override fun getDrawMode(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) GL11.GL_LINE_STRIP else GL11.GL_LINES
     }
 
     @JvmField
     val aabbF = object : Geometry() {
         override val name = "aabbF"
-        override fun render(pt: Double, params: DoubleArray) {
+        override fun render(pt: Double, params: List<Double>) {
             val (_x1, _y1, _z1, _x2, _y2, _z2) = params
             val (x1, y1, z1, s) = rescale(_x1, _y1, _z1)
             val x2 = x1 + (_x2 - _x1) * s
@@ -225,7 +204,7 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: DoubleArray): Array<Point> {
+        override fun testPoints(params: List<Double>): Array<Point> {
             val (x1, y1, z1, x2, y2, z2) = params
             return arrayOf(
                 Point(x1, y1, z1),
@@ -239,15 +218,15 @@ object Geometry3D {
             )
         }
 
-        override fun getVertexCount(params: DoubleArray): Int = 8
-        override fun getIndicesCount(params: DoubleArray): Int = if (Renderer.USE_NEW_SHIT) 20 else 20
-        override fun getDrawMode(): Int = GL11.GL_TRIANGLE_STRIP
+        override fun getVertexCount(params: List<Double>): Int = 8
+        override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 20 else 20
+        override fun getDrawMode(params: List<Double>): Int = GL11.GL_TRIANGLE_STRIP
     }
 
     @JvmField
     val beaconI = object : Geometry() {
         override val name = "beaconI"
-        override fun render(pt: Double, params: DoubleArray) {
+        override fun render(pt: Double, params: List<Double>) {
             val (x, y1, z, h, s) = params
 
             val time = 0.2 * ((Minecraft.getMinecraft()?.theWorld?.totalWorldTime ?: 0L) + pt)
@@ -285,19 +264,17 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: DoubleArray): Array<Point> {
-            return arrayOf()
-        }
+        override fun testPoints(params: List<Double>): Array<Point> = emptyArray()
 
-        override fun getVertexCount(params: DoubleArray): Int = 10
-        override fun getIndicesCount(params: DoubleArray): Int = 10
-        override fun getDrawMode(): Int = GL11.GL_TRIANGLE_STRIP
+        override fun getVertexCount(params: List<Double>): Int = 10
+        override fun getIndicesCount(params: List<Double>): Int = 10
+        override fun getDrawMode(params: List<Double>): Int = GL11.GL_TRIANGLE_STRIP
     }
 
     @JvmField
     val beaconO = object : Geometry() {
         override val name = "beaconO"
-        override fun render(pt: Double, params: DoubleArray) {
+        override fun render(pt: Double, params: List<Double>) {
             val (x, y1, z, h, s) = params
 
             val time = 0.2 * ((Minecraft.getMinecraft()?.theWorld?.totalWorldTime ?: 0L) + pt)
@@ -326,19 +303,17 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: DoubleArray): Array<Point> {
-            return arrayOf()
-        }
+        override fun testPoints(params: List<Double>): Array<Point> = emptyArray()
 
-        override fun getVertexCount(params: DoubleArray): Int = 10
-        override fun getIndicesCount(params: DoubleArray): Int = 10
-        override fun getDrawMode(): Int = GL11.GL_TRIANGLE_STRIP
+        override fun getVertexCount(params: List<Double>): Int = 10
+        override fun getIndicesCount(params: List<Double>): Int = 10
+        override fun getDrawMode(params: List<Double>): Int = GL11.GL_TRIANGLE_STRIP
     }
 
     @JvmField
     val beaconTI = object : Geometry() {
         override val name = "beaconTI"
-        override fun render(pt: Double, params: DoubleArray) {
+        override fun render(pt: Double, params: List<Double>) {
             val (x, y1, z, h, s) = params
 
             val time = 0.2 * ((Minecraft.getMinecraft()?.theWorld?.totalWorldTime ?: 0L) + pt)
@@ -384,19 +359,17 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: DoubleArray): Array<Point> {
-            return arrayOf()
-        }
+        override fun testPoints(params: List<Double>): Array<Point> = emptyArray()
 
-        override fun getVertexCount(params: DoubleArray): Int = 8
-        override fun getIndicesCount(params: DoubleArray): Int = if (Renderer.USE_NEW_SHIT) 9 else 8
-        override fun getDrawMode(): Int = if (Renderer.USE_NEW_SHIT) GL11.GL_TRIANGLE_STRIP else GL11.GL_QUADS
+        override fun getVertexCount(params: List<Double>): Int = 8
+        override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 9 else 8
+        override fun getDrawMode(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) GL11.GL_TRIANGLE_STRIP else GL11.GL_QUADS
     }
 
     @JvmField
     val beaconTO = object : Geometry() {
         override val name = "beaconTO"
-        override fun render(pt: Double, params: DoubleArray) {
+        override fun render(pt: Double, params: List<Double>) {
             val (x, y1, z, h, s) = params
 
             val x1 = x - 0.3 * s
@@ -432,13 +405,11 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: DoubleArray): Array<Point> {
-            return arrayOf()
-        }
+        override fun testPoints(params: List<Double>): Array<Point> = emptyArray()
 
-        override fun getVertexCount(params: DoubleArray): Int = 8
-        override fun getIndicesCount(params: DoubleArray): Int = if (Renderer.USE_NEW_SHIT) 9 else 8
-        override fun getDrawMode(): Int = if (Renderer.USE_NEW_SHIT) GL11.GL_TRIANGLE_STRIP else GL11.GL_QUADS
+        override fun getVertexCount(params: List<Double>): Int = 8
+        override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 9 else 8
+        override fun getDrawMode(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) GL11.GL_TRIANGLE_STRIP else GL11.GL_QUADS
     }
 
     @JvmField
@@ -581,7 +552,7 @@ object Geometry3D {
             )
         }
 
-        override fun render(pt: Double, params: DoubleArray) {
+        override fun render(pt: Double, params: List<Double>) {
             val (_x, _y, _z, _r, d) = params
             val (x, y, z, s) = rescale(_x, _y, _z)
             val r = _r * s
@@ -610,7 +581,7 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: DoubleArray): Array<Point> {
+        override fun testPoints(params: List<Double>): Array<Point> {
             val (x, y, z, r) = params
             return arrayOf(
                 Point(x, y, z),
@@ -625,22 +596,22 @@ object Geometry3D {
             )
         }
 
-        override fun getVertexCount(params: DoubleArray): Int {
+        override fun getVertexCount(params: List<Double>): Int {
             val d = params[4].toInt()
             checkIcosphere(d)
             return icoVertices[d].size
         }
-        override fun getIndicesCount(params: DoubleArray): Int {
+        override fun getIndicesCount(params: List<Double>): Int {
             val d = params[4].toInt()
             checkIcosphere(d)
             return if (Renderer.USE_NEW_SHIT) icoStripsI[d].size else icoStripsD[d].size / 3
         }
-        override fun getDrawMode(): Int = GL11.GL_TRIANGLE_STRIP
+        override fun getDrawMode(params: List<Double>): Int = GL11.GL_TRIANGLE_STRIP
     }
 
     val pyramidO = object : Geometry() {
         override val name = "pyramidO"
-        override fun render(pt: Double, params: DoubleArray) {
+        override fun render(pt: Double, params: List<Double>) {
             val (_x, _y, _z, _r, _h, _n) = params
             val (x, y, z, s) = rescale(_x, _y, _z)
             val r = _r * s
@@ -704,7 +675,7 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: DoubleArray): Array<Point> {
+        override fun testPoints(params: List<Double>): Array<Point> {
             val (x, y, z, r, h) = params
             return arrayOf(
                 Point(x, y + h, z),
@@ -715,17 +686,17 @@ object Geometry3D {
             )
         }
 
-        override fun getVertexCount(params: DoubleArray): Int = 1 + params[5].toInt()
-        override fun getIndicesCount(params: DoubleArray): Int {
+        override fun getVertexCount(params: List<Double>): Int = 1 + params[5].toInt()
+        override fun getIndicesCount(params: List<Double>): Int {
             val n = params[5].toInt()
             return if (Renderer.USE_NEW_SHIT) 3 * n + 1 + (n and 1) else 4 * n
         }
-        override fun getDrawMode(): Int = if (Renderer.USE_NEW_SHIT) GL11.GL_LINE_STRIP else GL11.GL_LINES
+        override fun getDrawMode(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) GL11.GL_LINE_STRIP else GL11.GL_LINES
     }
 
     val pyramidF = object : Geometry() {
         override val name = "pyramidF"
-        override fun render(pt: Double, params: DoubleArray) {
+        override fun render(pt: Double, params: List<Double>) {
             val (_x, _y, _z, _r, _h, _n) = params
             val (x, y, z, s) = rescale(_x, _y, _z)
             val r = _r * s
@@ -794,7 +765,7 @@ object Geometry3D {
             }
         }
 
-        override fun testPoints(params: DoubleArray): Array<Point> {
+        override fun testPoints(params: List<Double>): Array<Point> {
             val (x, y, z, r, h) = params
             return arrayOf(
                 Point(x, y + h, z),
@@ -805,14 +776,14 @@ object Geometry3D {
             )
         }
 
-        override fun getVertexCount(params: DoubleArray): Int = 2 + params[5].toInt()
-        override fun getIndicesCount(params: DoubleArray): Int = 2 * (params[5].toInt() + 2) + if (Renderer.USE_NEW_SHIT) 1 else 0
-        override fun getDrawMode(): Int = GL11.GL_TRIANGLE_FAN
+        override fun getVertexCount(params: List<Double>): Int = 2 + params[5].toInt()
+        override fun getIndicesCount(params: List<Double>): Int = 2 * (params[5].toInt() + 2) + if (Renderer.USE_NEW_SHIT) 1 else 0
+        override fun getDrawMode(params: List<Double>): Int = GL11.GL_TRIANGLE_FAN
     }
 
     val vertCylinderR = object : Geometry() {
         override val name = "vertCylinderR"
-        override fun render(pt: Double, params: DoubleArray) {
+        override fun render(pt: Double, params: List<Double>) {
             val (_x, _y, _z, _r, _h, _n) = params
             val (x, y, z, s) = rescale(_x, _y, _z)
             val r = _r * s
@@ -878,7 +849,7 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: DoubleArray): Array<Point> {
+        override fun testPoints(params: List<Double>): Array<Point> {
             val (x, y, z, r, h) = params
             return arrayOf(
                 Point(x, y + h, z),
@@ -889,14 +860,14 @@ object Geometry3D {
             )
         }
 
-        override fun getVertexCount(params: DoubleArray): Int = 2 * params[5].toInt()
-        override fun getIndicesCount(params: DoubleArray): Int = 2 * (params[5].toInt() + 1)
-        override fun getDrawMode(): Int = GL11.GL_TRIANGLE_STRIP
+        override fun getVertexCount(params: List<Double>): Int = 2 * params[5].toInt()
+        override fun getIndicesCount(params: List<Double>): Int = 2 * (params[5].toInt() + 1)
+        override fun getDrawMode(params: List<Double>): Int = GL11.GL_TRIANGLE_STRIP
     }
 
     val vertCylinderC = object : Geometry() {
         override val name = "vertCylinderC"
-        override fun render(pt: Double, params: DoubleArray) {
+        override fun render(pt: Double, params: List<Double>) {
             val (_x, _y, _z, _r, _h, _n) = params
             val (x, y, z, s) = rescale(_x, _y, _z)
             val r = _r * s
@@ -983,7 +954,7 @@ object Geometry3D {
             }
         }
 
-        override fun testPoints(params: DoubleArray): Array<Point> {
+        override fun testPoints(params: List<Double>): Array<Point> {
             val (x, y, z, r, h) = params
             return arrayOf(
                 Point(x, y + h, z),
@@ -994,14 +965,14 @@ object Geometry3D {
             )
         }
 
-        override fun getVertexCount(params: DoubleArray): Int = 2 * (params[5].toInt() + 1)
-        override fun getIndicesCount(params: DoubleArray): Int = 2 * (params[5].toInt() + 2) + if (Renderer.USE_NEW_SHIT) 1 else 0
-        override fun getDrawMode(): Int = GL11.GL_TRIANGLE_FAN
+        override fun getVertexCount(params: List<Double>): Int = 2 * (params[5].toInt() + 1)
+        override fun getIndicesCount(params: List<Double>): Int = 2 * (params[5].toInt() + 2) + if (Renderer.USE_NEW_SHIT) 1 else 0
+        override fun getDrawMode(params: List<Double>): Int = GL11.GL_TRIANGLE_FAN
     }
 
     val octahedronO = object : Geometry() {
         override val name = "octahedronO"
-        override fun render(pt: Double, params: DoubleArray) {
+        override fun render(pt: Double, params: List<Double>) {
             val (_x, _y, _z, _w, _h) = params
             val (x, y, z, s) = rescale(_x, _y, _z)
             val w = _w * s
@@ -1063,7 +1034,7 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: DoubleArray): Array<Point> {
+        override fun testPoints(params: List<Double>): Array<Point> {
             val (x, y, z, w, h) = params
             return arrayOf(
                 Point(x, y + h, z),
@@ -1075,14 +1046,14 @@ object Geometry3D {
             )
         }
 
-        override fun getVertexCount(params: DoubleArray): Int = 6
-        override fun getIndicesCount(params: DoubleArray): Int = if (Renderer.USE_NEW_SHIT) 15 else 24
-        override fun getDrawMode(): Int = if (Renderer.USE_NEW_SHIT) GL11.GL_LINE_STRIP else GL11.GL_LINES
+        override fun getVertexCount(params: List<Double>): Int = 6
+        override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 15 else 24
+        override fun getDrawMode(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) GL11.GL_LINE_STRIP else GL11.GL_LINES
     }
 
     val octahedronF = object : Geometry() {
         override val name = "octahedronF"
-        override fun render(pt: Double, params: DoubleArray) {
+        override fun render(pt: Double, params: List<Double>) {
             val (_x, _y, _z, _w, _h) = params
             val (x, y, z, s) = rescale(_x, _y, _z)
             val w = _w * s
@@ -1134,7 +1105,7 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: DoubleArray): Array<Point> {
+        override fun testPoints(params: List<Double>): Array<Point> {
             val (x, y, z, w, h) = params
             return arrayOf(
                 Point(x, y + h, z),
@@ -1146,8 +1117,8 @@ object Geometry3D {
             )
         }
 
-        override fun getVertexCount(params: DoubleArray): Int = 6
-        override fun getIndicesCount(params: DoubleArray): Int = if (Renderer.USE_NEW_SHIT) 16 else 16
-        override fun getDrawMode(): Int = GL11.GL_TRIANGLE_STRIP
+        override fun getVertexCount(params: List<Double>): Int = 6
+        override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 16 else 16
+        override fun getDrawMode(params: List<Double>): Int = GL11.GL_TRIANGLE_STRIP
     }
 }

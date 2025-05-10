@@ -34,29 +34,32 @@ object Renderer {
         else if (thing.color.a > 0f) translucent.add(thing)
     }
 
-    fun addLine(
+    fun addPrimitive(
         color: Long,
-        points: Array<DoubleArray>,
+        mode: Int,
+        points: List<List<Double>>,
         lw: Double,
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
         cull: Boolean,
         chroma: Int
-    ) = addLine(Color(color), points, lw, lighting, phase, smooth, cull, chroma)
-    fun addLine(
-        color: FloatArray,
-        points: Array<DoubleArray>,
+    ) = addPrimitive(Color(color), mode, points, lw, lighting, phase, smooth, cull, chroma)
+    fun addPrimitive(
+        color: List<Double>,
+        mode: Int,
+        points: List<List<Double>>,
         lw: Double,
         lighting: Int,
         phase: Boolean,
         smooth: Boolean,
         cull: Boolean,
         chroma: Int
-    ) = addLine(Color(color), points, lw, lighting, phase, smooth, cull, chroma)
-    fun addLine(
+    ) = addPrimitive(Color(color), mode, points, lw, lighting, phase, smooth, cull, chroma)
+    fun addPrimitive(
         color: Color,
-        points: Array<DoubleArray>,
+        mode: Int,
+        points: List<List<Double>>,
         lw: Double,
         lighting: Int,
         phase: Boolean,
@@ -64,66 +67,17 @@ object Renderer {
         cull: Boolean,
         chroma: Int
     ) {
-        val params = DoubleArray(points.size * 3)
-        points.forEachIndexed { i, v ->
-            params[i * 3 + 0] = v[0]
-            params[i * 3 + 1] = v[1]
-            params[i * 3 + 2] = v[2]
-        }
+        val params = points.flatten().toMutableList()
+        params.add(0, mode.toDouble())
         addThing(
             Thingamabob(
-                Thingamabob.Type.Line,
+                Thingamabob.Type.Primitive,
                 params,
                 color,
                 lw.toFloat(),
                 lighting,
                 phase,
                 smooth,
-                cull,
-                chroma
-            )
-        )
-    }
-
-    fun addTriStrip(
-        color: Long,
-        points: Array<DoubleArray>,
-        lighting: Int,
-        phase: Boolean,
-        cull: Boolean,
-        chroma: Int
-    ) = addTriStrip(Color(color), points, lighting, phase, cull, chroma)
-    fun addTriStrip(
-        color: FloatArray,
-        points: Array<DoubleArray>,
-        lighting: Int,
-        phase: Boolean,
-        cull: Boolean,
-        chroma: Int
-    ) = addTriStrip(Color(color), points, lighting, phase, cull, chroma)
-    fun addTriStrip(
-        color: Color,
-        points: Array<DoubleArray>,
-        lighting: Int,
-        phase: Boolean,
-        cull: Boolean,
-        chroma: Int
-    ) {
-        val params = DoubleArray(points.size * 3)
-        points.forEachIndexed { i, v ->
-            params[i * 3 + 0] = v[0]
-            params[i * 3 + 1] = v[1]
-            params[i * 3 + 2] = v[2]
-        }
-        addThing(
-            Thingamabob(
-                Thingamabob.Type.TriStrip,
-                params,
-                color,
-                1f,
-                lighting,
-                phase,
-                false,
                 cull,
                 chroma
             )
@@ -146,7 +100,7 @@ object Renderer {
         chroma: Int
     ) = addAABBO(Color(color), x1, y1, z1, x2, y2, z2, lw, lighting, phase, smooth, cull, chroma)
     fun addAABBO(
-        color: FloatArray,
+        color: List<Double>,
         x1: Double,
         y1: Double,
         z1: Double,
@@ -178,7 +132,7 @@ object Renderer {
         addThing(
             Thingamabob(
                 Thingamabob.Type.AABBO,
-                doubleArrayOf(x1, y1, z1, x2, y2, z2),
+                listOf(x1, y1, z1, x2, y2, z2),
                 color,
                 lw.toFloat(),
                 lighting,
@@ -204,7 +158,7 @@ object Renderer {
         chroma: Int
     ) = addAABBF(Color(color), x1, y1, z1, x2, y2, z2, lighting, phase, cull, chroma)
     fun addAABBF(
-        color: FloatArray,
+        color: List<Double>,
         x1: Double,
         y1: Double,
         z1: Double,
@@ -232,7 +186,7 @@ object Renderer {
         addThing(
             Thingamabob(
                 Thingamabob.Type.AABBF,
-                doubleArrayOf(x1, y1, z1, x2, y2, z2),
+                listOf(x1, y1, z1, x2, y2, z2),
                 color,
                 1f,
                 lighting,
@@ -257,7 +211,7 @@ object Renderer {
         chroma: Int
     ) = addBeacon(Color(color), x, y, z, h, lighting, phase, cull, chroma)
     fun addBeacon(
-        color: FloatArray,
+        color: List<Double>,
         x: Double,
         y: Double,
         z: Double,
@@ -305,7 +259,7 @@ object Renderer {
         addTexturedThing(
             Thingamabob(
                 Thingamabob.Type.BeaconI,
-                doubleArrayOf(sx, y1, sz, y2 - y1, s),
+                listOf(sx, y1, sz, y2 - y1, s),
                 color,
                 1f,
                 lighting,
@@ -319,7 +273,7 @@ object Renderer {
         addTexturedThing(
             Thingamabob(
                 Thingamabob.Type.BeaconO,
-                doubleArrayOf(sx, y1, sz, y2 - y1, s),
+                listOf(sx, y1, sz, y2 - y1, s),
                 color2,
                 1f,
                 lighting,
@@ -333,7 +287,7 @@ object Renderer {
         addThing(
             Thingamabob(
                 Thingamabob.Type.BeaconTI,
-                doubleArrayOf(sx, y1, sz, y2 - y1, s),
+                listOf(sx, y1, sz, y2 - y1, s),
                 color,
                 1f,
                 lighting,
@@ -346,7 +300,7 @@ object Renderer {
         addThing(
             Thingamabob(
                 Thingamabob.Type.BeaconTO,
-                doubleArrayOf(sx, y1, sz, y2 - y1, s),
+                listOf(sx, y1, sz, y2 - y1, s),
                 color2,
                 1f,
                 lighting,
@@ -373,7 +327,7 @@ object Renderer {
         chroma: Int
     ) = addCircle(Color(color), x, y, z, r, segments, lw, lighting, phase, smooth, cull, chroma)
     fun addCircle(
-        color: FloatArray,
+        color: List<Double>,
         x: Double,
         y: Double,
         z: Double,
@@ -400,20 +354,21 @@ object Renderer {
         cull: Boolean,
         chroma: Int
     ) {
-        val points = DoubleArray((segments + 1) * 3)
+        val points = mutableListOf<Double>()
+        points.add(GL_LINE_STRIP.toDouble())
         for (i in 0 until segments) {
             val t = 2.0 * PI * i / segments
-            points[i * 3 + 0] = x + cos(t) * r
-            points[i * 3 + 1] = y
-            points[i * 3 + 2] = z + sin(t) * r
+            points.add(x + cos(t) * r)
+            points.add(y)
+            points.add(z + sin(t) * r)
         }
         // something something floating point cos(0) ~= cos(2pi)
-        points[segments * 3 + 0] = points[0]
-        points[segments * 3 + 1] = points[1]
-        points[segments * 3 + 2] = points[2]
+        points.add(points[0])
+        points.add(points[1])
+        points.add(points[2])
         addThing(
             Thingamabob(
-                Thingamabob.Type.Line,
+                Thingamabob.Type.Primitive,
                 points,
                 color,
                 lw.toFloat(),
@@ -439,7 +394,7 @@ object Renderer {
         chroma: Int
     ) = addIcosphere(Color(color), x, y, z, r, divisions, lighting, phase, cull, chroma)
     fun addIcosphere(
-        color: FloatArray,
+        color: List<Double>,
         x: Double,
         y: Double,
         z: Double,
@@ -465,7 +420,7 @@ object Renderer {
         addThing(
             Thingamabob(
                 Thingamabob.Type.Icosphere,
-                doubleArrayOf(x, y, z, r, divisions.toDouble()),
+                listOf(x, y, z, r, divisions.toDouble()),
                 color,
                 1f,
                 lighting,
@@ -493,7 +448,7 @@ object Renderer {
         chroma: Int
     ) = addPyramidO(Color(color), x, y, z, r, h, n, lw, lighting, phase, smooth, cull, chroma)
     fun addPyramidO(
-        color: FloatArray,
+        color: List<Double>,
         x: Double,
         y: Double,
         z: Double,
@@ -525,7 +480,7 @@ object Renderer {
         addThing(
             Thingamabob(
                 Thingamabob.Type.PyramidO,
-                doubleArrayOf(x, y, z, r, h, n.toDouble()),
+                listOf(x, y, z, r, h, n.toDouble()),
                 color,
                 lw.toFloat(),
                 lighting,
@@ -551,7 +506,7 @@ object Renderer {
         chroma: Int
     ) = addPyramidF(Color(color), x, y, z, r, h, n, lighting, phase, cull, chroma)
     fun addPyramidF(
-        color: FloatArray,
+        color: List<Double>,
         x: Double,
         y: Double,
         z: Double,
@@ -579,7 +534,7 @@ object Renderer {
         addThing(
             Thingamabob(
                 Thingamabob.Type.PyramidF,
-                doubleArrayOf(x, y, z, r, h, n.toDouble()),
+                listOf(x, y, z, r, h, n.toDouble()),
                 color,
                 1f,
                 lighting,
@@ -605,7 +560,7 @@ object Renderer {
         chroma: Int
     ) = addVertCylinder(Color(color), x, y, z, r, h, segments, lighting, phase, cull, chroma)
     fun addVertCylinder(
-        color: FloatArray,
+        color: List<Double>,
         x: Double,
         y: Double,
         z: Double,
@@ -633,7 +588,7 @@ object Renderer {
         addThing(
             Thingamabob(
                 Thingamabob.Type.VertCylinderR,
-                doubleArrayOf(x, y, z, r, h, segments.toDouble()),
+                listOf(x, y, z, r, h, segments.toDouble()),
                 color,
                 1f,
                 lighting,
@@ -646,7 +601,7 @@ object Renderer {
         addThing(
             Thingamabob(
                 Thingamabob.Type.VertCylinderC,
-                doubleArrayOf(x, y, z, r, h, segments.toDouble()),
+                listOf(x, y, z, r, h, segments.toDouble()),
                 color,
                 1f,
                 lighting,
@@ -673,7 +628,7 @@ object Renderer {
         chroma: Int
     ) = addOctahedronO(Color(color), x, y, z, w, h, lw, lighting, phase, smooth, cull, chroma)
     fun addOctahedronO(
-        color: FloatArray,
+        color: List<Double>,
         x: Double,
         y: Double,
         z: Double,
@@ -703,7 +658,7 @@ object Renderer {
         addThing(
             Thingamabob(
                 Thingamabob.Type.OctahedronO,
-                doubleArrayOf(x, y, z, w, h),
+                listOf(x, y, z, w, h),
                 color,
                 lw.toFloat(),
                 lighting,
@@ -728,7 +683,7 @@ object Renderer {
         chroma: Int
     ) = addOctahedronF(Color(color), x, y, z, w, h, lighting, phase, cull, chroma)
     fun addOctahedronF(
-        color: FloatArray,
+        color: List<Double>,
         x: Double,
         y: Double,
         z: Double,
@@ -754,7 +709,7 @@ object Renderer {
         addThing(
             Thingamabob(
                 Thingamabob.Type.OctahedronF,
-                doubleArrayOf(x, y, z, w, h),
+                listOf(x, y, z, w, h),
                 color,
                 1f,
                 lighting,
@@ -957,4 +912,7 @@ object Renderer {
         GlState.pop()
         prof.endSection()
     }
+
+    fun perfTestArr(arr: DoubleArray): Double = arr.reduce { a, v -> a + v }
+    fun perfTestList(list: List<Double>): Double = list.reduce { a, v -> a + v }
 }
