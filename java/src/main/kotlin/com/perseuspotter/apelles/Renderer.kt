@@ -775,9 +775,8 @@ object Renderer {
     fun render(pt: Double, t: Int) {
         if (!checked) {
             val cap = GLContext.getCapabilities()
-            USE_NEW_SHIT =
-                cap.GL_ARB_vertex_buffer_object && cap.GL_NV_primitive_restart && cap.GL_ARB_vertex_array_object && cap.GL_ARB_vertex_shader && cap.GL_ARB_color_buffer_float
-            CAN_USE_CHROMA = cap.GL_ARB_vertex_shader && cap.GL_ARB_fragment_shader
+            USE_NEW_SHIT = cap.GL_NV_primitive_restart && cap.OpenGL15
+            CAN_USE_CHROMA = cap.OpenGL20
             checked = true
         }
 
