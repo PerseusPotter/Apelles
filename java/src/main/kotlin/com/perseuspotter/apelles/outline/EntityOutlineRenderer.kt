@@ -55,14 +55,12 @@ object EntityOutlineRenderer {
         val prof = Minecraft.getMinecraft().mcProfiler
         prof.startSection("testEntities")
         Minecraft.getMinecraft().theWorld.loadedEntityList.forEach { e ->
-            if (e.isInvisible) return@forEach
             // good enough
             if (!Frustum.test(e.posX, e.posY, e.posZ)) return@forEach
             outliners.forEach { if (it.registered) it.test(e) }
         }
         outlined.forEach { (e, s) ->
             if (e.isDead) return@forEach
-            if (e.isInvisible) return@forEach
             if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 0 && e is EntityPlayerSP) return@forEach
             if (!s.doOutline()) return@forEach
             if (s.getColor().a == 0f) return@forEach
