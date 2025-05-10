@@ -17,6 +17,7 @@ data class Color @JvmOverloads constructor(
         (packed and 0xFF) / 255f
     )
     constructor(arr: FloatArray) : this(arr[0], arr[1], arr[2], arr.getOrElse(3) { 1f })
+    constructor(arr: List<Double>) : this(arr[0].toFloat(), arr[1].toFloat(), arr[2].toFloat(), arr.getOrElse(3) { 1f }.toFloat())
 
     override fun toString(): String = "($r, $g, $b, $a)"
 }

@@ -66,30 +66,29 @@ function coerceResourceLocation(rl) {
   return rl;
 }
 
-const addLineN = APRendererI['addLine(long,double[][],double,int,boolean,boolean,boolean,int)'];
-const addLineF = APRendererI['addLine(float[],double[][],double,int,boolean,boolean,boolean,int)'];
+const addPrimitiveN = APRendererI['addPrimitive(long,int,java.util.List,double,int,boolean,boolean,boolean,int)'];
+const addPrimitiveA = APRendererI['addPrimitive(java.util.List,int,java.util.List,double,int,boolean,boolean,boolean,int)'];
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {[number, number, number][]} points
  * @param {LineRenderOptions} options
  */
 export function renderLine(color, points, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  (typeof color === 'number' ? addLineN : addLineF).call(APRendererI, color, points, lw, lighting, phase, smooth, cull, chroma);
+  (typeof color === 'number' ? addPrimitiveN : addPrimitiveA).call(APRendererI, color, 3, points, lw, lighting, phase, smooth, cull, chroma);
 }
 
-const addTriStripN = APRendererI['addTriStrip(long,double[][],int,boolean,boolean,int)'];
-const addTriStripF = APRendererI['addTriStrip(float[],double[][],int,boolean,boolean,int)'];
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} mode GL primitive constant
  * @param {[number, number, number][]} points
- * @param {RenderOptions} options
+ * @param {LineRenderOptions} options
  */
-export function renderTriStrip(color, points, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  (typeof color === 'number' ? addTriStripN : addTriStripF).call(APRendererI, color, points, lighting, phase, cull, chroma);
+export function renderPrimitive(color, mode, points, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addPrimitiveN : addPrimitiveA).call(APRendererI, color, mode, points, lw, lighting, phase, smooth, cull, chroma);
 }
 
 const addAABBON = APRendererI['addAABBO(long,double,double,double,double,double,double,double,int,boolean,boolean,boolean,int)'];
-const addAABBOF = APRendererI['addAABBO(float[],double,double,double,double,double,double,double,int,boolean,boolean,boolean,int)'];
+const addAABBOA = APRendererI['addAABBO(java.util.List,double,double,double,double,double,double,double,int,boolean,boolean,boolean,int)'];
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -117,7 +116,7 @@ export function renderBoxOutline(color, x, y, z, w, h, { centered = true, wz = w
  * @param {LineRenderOptions} options
  */
 export function renderAABBOutline(color, x1, y1, z1, x2, y2, z2, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  (typeof color === 'number' ? addAABBON : addAABBOF).call(APRendererI,
+  (typeof color === 'number' ? addAABBON : addAABBOA).call(APRendererI,
     color,
     Math.min(x1, x2),
     Math.min(y1, y2),
@@ -139,7 +138,7 @@ export function renderAABBOutline(color, x1, y1, z1, x2, y2, z2, { lw = 1, light
  * @param {RenderOptions} options
  */
 export function renderMCAABBOutline(color, aabb, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  (typeof color === 'number' ? addAABBON : addAABBOF).call(APRendererI,
+  (typeof color === 'number' ? addAABBON : addAABBOA).call(APRendererI,
     color,
     aabb.field_72340_a,
     aabb.field_72338_b,
@@ -157,7 +156,7 @@ export function renderMCAABBOutline(color, aabb, { lw = 1, lighting = 0, phase =
 }
 
 const addAABBFN = APRendererI['addAABBF(long,double,double,double,double,double,double,int,boolean,boolean,int)'];
-const addAABBFF = APRendererI['addAABBF(float[],double,double,double,double,double,double,int,boolean,boolean,int)'];
+const addAABBFA = APRendererI['addAABBF(java.util.List,double,double,double,double,double,double,int,boolean,boolean,int)'];
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x1
@@ -169,7 +168,7 @@ const addAABBFF = APRendererI['addAABBF(float[],double,double,double,double,doub
  * @param {RenderOptions} options
  */
 export function renderAABBFilled(color, x1, y1, z1, x2, y2, z2, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  (typeof color === 'number' ? addAABBFN : addAABBFF).call(APRendererI,
+  (typeof color === 'number' ? addAABBFN : addAABBFA).call(APRendererI,
     color,
     Math.min(x1, x2),
     Math.min(y1, y2),
@@ -189,7 +188,7 @@ export function renderAABBFilled(color, x1, y1, z1, x2, y2, z2, { lighting = 0, 
  * @param {RenderOptions} options
  */
 export function renderMCAABBFilled(color, aabb, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  (typeof color === 'number' ? addAABBFN : addAABBFF).call(APRendererI,
+  (typeof color === 'number' ? addAABBFN : addAABBFA).call(APRendererI,
     color,
     aabb.field_72340_a,
     aabb.field_72338_b,
@@ -222,7 +221,7 @@ export function renderBoxFilled(color, x, y, z, w, h, { centered = true, wz = w,
 }
 
 const addBeaconN = APRendererI['addBeacon(long,double,double,double,double,int,boolean,boolean,int)'];
-const addBeaconF = APRendererI['addBeacon(float[],double,double,double,double,int,boolean,boolean,int)'];
+const addBeaconA = APRendererI['addBeacon(java.util.List,double,double,double,double,int,boolean,boolean,int)'];
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -235,11 +234,11 @@ export function renderBeacon(color, x, y, z, { centered = true, h = 300 - y, lig
     x += 0.5;
     z += 0.5;
   }
-  (typeof color === 'number' ? addBeaconN : addBeaconF).call(APRendererI, color, x, y, z, h, lighting, phase, cull, chroma);
+  (typeof color === 'number' ? addBeaconN : addBeaconA).call(APRendererI, color, x, y, z, h, lighting, phase, cull, chroma);
 }
 
 const addCircleN = APRendererI['addCircle(long,double,double,double,double,int,double,int,boolean,boolean,boolean,int)'];
-const addCircleF = APRendererI['addCircle(float[],double,double,double,double,int,double,int,boolean,boolean,boolean,int)'];
+const addCircleA = APRendererI['addCircle(java.util.List,double,double,double,double,int,double,int,boolean,boolean,boolean,int)'];
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -250,11 +249,11 @@ const addCircleF = APRendererI['addCircle(float[],double,double,double,double,in
  * @param {LineRenderOptions} options
  */
 export function renderCircle(color, x, y, z, r, segments, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  (typeof color === 'number' ? addCircleN : addCircleF).call(APRendererI, color, x, y, z, r, segments, lw, lighting, phase, smooth, cull, chroma);
+  (typeof color === 'number' ? addCircleN : addCircleA).call(APRendererI, color, x, y, z, r, segments, lw, lighting, phase, smooth, cull, chroma);
 }
 
 const addIcosphereN = APRendererI['addIcosphere(long,double,double,double,double,int,int,boolean,boolean,int)'];
-const addIcosphereF = APRendererI['addIcosphere(float[],double,double,double,double,int,int,boolean,boolean,int)'];
+const addIcosphereA = APRendererI['addIcosphere(java.util.List,double,double,double,double,int,int,boolean,boolean,int)'];
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -265,11 +264,11 @@ const addIcosphereF = APRendererI['addIcosphere(float[],double,double,double,dou
  * @param {RenderOptions} options
  */
 export function renderSphere(color, x, y, z, r, divisions, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  (typeof color === 'number' ? addIcosphereN : addIcosphereF).call(APRendererI, color, x, y, z, r, divisions, lighting, phase, cull, chroma);
+  (typeof color === 'number' ? addIcosphereN : addIcosphereA).call(APRendererI, color, x, y, z, r, divisions, lighting, phase, cull, chroma);
 }
 
 const addPyramidON = APRendererI['addPyramidO(long,double,double,double,double,double,int,double,int,boolean,boolean,boolean,int)'];
-const addPyramidOF = APRendererI['addPyramidO(float[],double,double,double,double,double,int,double,int,boolean,boolean,boolean,int)'];
+const addPyramidOA = APRendererI['addPyramidO(java.util.List,double,double,double,double,double,int,double,int,boolean,boolean,boolean,int)'];
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -281,11 +280,11 @@ const addPyramidOF = APRendererI['addPyramidO(float[],double,double,double,doubl
  * @param {LineRenderOptions} options
  */
 export function renderPyramidOutline(color, x, y, z, r, h, n, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  (typeof color === 'number' ? addPyramidON : addPyramidOF).call(APRendererI, color, x, y, z, r, h, n, lw, lighting, phase, smooth, cull, chroma);
+  (typeof color === 'number' ? addPyramidON : addPyramidOA).call(APRendererI, color, x, y, z, r, h, n, lw, lighting, phase, smooth, cull, chroma);
 }
 
 const addPyramidFN = APRendererI['addPyramidF(long,double,double,double,double,double,int,int,boolean,boolean,int)'];
-const addPyramidFF = APRendererI['addPyramidF(float[],double,double,double,double,double,int,int,boolean,boolean,int)'];
+const addPyramidFA = APRendererI['addPyramidF(java.util.List,double,double,double,double,double,int,int,boolean,boolean,int)'];
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -297,11 +296,11 @@ const addPyramidFF = APRendererI['addPyramidF(float[],double,double,double,doubl
  * @param {RenderOptions} options
  */
 export function renderPyramidFilled(color, x, y, z, r, h, n, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  (typeof color === 'number' ? addPyramidFN : addPyramidFF).call(APRendererI, color, x, y, z, r, h, n, lighting, phase, cull, chroma);
+  (typeof color === 'number' ? addPyramidFN : addPyramidFA).call(APRendererI, color, x, y, z, r, h, n, lighting, phase, cull, chroma);
 }
 
 const addVertCylinderN = APRendererI['addVertCylinder(long,double,double,double,double,double,int,int,boolean,boolean,int)'];
-const addVertCylinderF = APRendererI['addVertCylinder(float[],double,double,double,double,double,int,int,boolean,boolean,int)'];
+const addVertCylinderA = APRendererI['addVertCylinder(java.util.List,double,double,double,double,double,int,int,boolean,boolean,int)'];
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -313,11 +312,11 @@ const addVertCylinderF = APRendererI['addVertCylinder(float[],double,double,doub
  * @param {RenderOptions} options
  */
 export function renderVerticalCylinder(color, x, y, z, r, h, segments, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  (typeof color === 'number' ? addVertCylinderN : addVertCylinderF).call(APRendererI, color, x, y, z, r, h, segments, lighting, phase, cull, chroma);
+  (typeof color === 'number' ? addVertCylinderN : addVertCylinderA).call(APRendererI, color, x, y, z, r, h, segments, lighting, phase, cull, chroma);
 }
 
 const addOctahedronON = APRendererI['addOctahedronO(long,double,double,double,double,double,double,int,boolean,boolean,boolean,int)'];
-const addOctahedronOF = APRendererI['addOctahedronO(float[],double,double,double,double,double,double,int,boolean,boolean,boolean,int)'];
+const addOctahedronOA = APRendererI['addOctahedronO(java.util.List,double,double,double,double,double,double,int,boolean,boolean,boolean,int)'];
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -328,11 +327,11 @@ const addOctahedronOF = APRendererI['addOctahedronO(float[],double,double,double
  * @param {LineRenderOptions} options
  */
 export function renderOctahedronOutline(color, x, y, z, w, h, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  (typeof color === 'number' ? addOctahedronON : addOctahedronOF).call(APRendererI, color, x, y, z, w / 2, h / 2, lw, lighting, phase, smooth, cull, chroma);
+  (typeof color === 'number' ? addOctahedronON : addOctahedronOA).call(APRendererI, color, x, y, z, w / 2, h / 2, lw, lighting, phase, smooth, cull, chroma);
 }
 
 const addOctahedronFN = APRendererI['addOctahedronF(long,double,double,double,double,double,int,boolean,boolean,int)'];
-const addOctahedronFF = APRendererI['addOctahedronF(float[],double,double,double,double,double,int,boolean,boolean,int)'];
+const addOctahedronFA = APRendererI['addOctahedronF(java.util.List,double,double,double,double,double,int,boolean,boolean,int)'];
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -343,7 +342,7 @@ const addOctahedronFF = APRendererI['addOctahedronF(float[],double,double,double
  * @param {RenderOptions} options
  */
 export function renderOctahedronFilled(color, x, y, z, w, h, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  (typeof color === 'number' ? addOctahedronFN : addOctahedronFF).call(APRendererI, color, x, y, z, w / 2, h / 2, lighting, phase, cull, chroma);
+  (typeof color === 'number' ? addOctahedronFN : addOctahedronFA).call(APRendererI, color, x, y, z, w / 2, h / 2, lighting, phase, cull, chroma);
 }
 
 /**
