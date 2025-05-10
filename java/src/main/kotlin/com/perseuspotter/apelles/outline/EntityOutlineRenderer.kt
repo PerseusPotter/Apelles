@@ -54,10 +54,12 @@ object EntityOutlineRenderer {
         var isThereShit = false
         val prof = Minecraft.getMinecraft().mcProfiler
         prof.startSection("testEntities")
-        Minecraft.getMinecraft().theWorld.loadedEntityList.forEach { e ->
-            // good enough
-            if (!Frustum.test(e.posX, e.posY, e.posZ)) return@forEach
-            outliners.forEach { if (it.registered) it.test(e) }
+        if (outliners.isNotEmpty()) {
+            Minecraft.getMinecraft().theWorld.loadedEntityList.forEach { e ->
+                // good enough
+                if (!Frustum.test(e.posX, e.posY, e.posZ)) return@forEach
+                outliners.forEach { if (it.registered) it.test(e) }
+            }
         }
         outlined.forEach { (e, s) ->
             if (e.isDead) return@forEach
