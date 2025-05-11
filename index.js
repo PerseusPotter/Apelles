@@ -66,8 +66,8 @@ function coerceResourceLocation(rl) {
   return rl;
 }
 
-const addPrimitiveN = APRendererI['addPrimitive(long,int,java.util.List,double,int,boolean,boolean,boolean,int)'];
-const addPrimitiveA = APRendererI['addPrimitive(java.util.List,int,java.util.List,double,int,boolean,boolean,boolean,int)'];
+const addPrimitiveN = APRendererI['addPrimitive(long,int,java.util.List,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+const addPrimitiveA = APRendererI['addPrimitive(java.util.List,int,java.util.List,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {[number, number, number][]} points
@@ -87,8 +87,8 @@ export function renderPrimitive(color, mode, points, { lw = 1, lighting = 0, pha
   (typeof color === 'number' ? addPrimitiveN : addPrimitiveA).call(APRendererI, color, mode, points, lw, lighting, phase, smooth, cull, chroma);
 }
 
-const addAABBON = APRendererI['addAABBO(long,double,double,double,double,double,double,double,int,boolean,boolean,boolean,int)'];
-const addAABBOA = APRendererI['addAABBO(java.util.List,double,double,double,double,double,double,double,int,boolean,boolean,boolean,int)'];
+const addAABBON = APRendererI['addAABBO(long,double,double,double,double,double,double,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+const addAABBOA = APRendererI['addAABBO(java.util.List,double,double,double,double,double,double,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -155,8 +155,8 @@ export function renderMCAABBOutline(color, aabb, { lw = 1, lighting = 0, phase =
   );
 }
 
-const addAABBFN = APRendererI['addAABBF(long,double,double,double,double,double,double,int,boolean,boolean,int)'];
-const addAABBFA = APRendererI['addAABBF(java.util.List,double,double,double,double,double,double,int,boolean,boolean,int)'];
+const addAABBFN = APRendererI['addAABBF(long,double,double,double,double,double,double,int,boolean,boolean,int)'] ?? throwExp('bad');
+const addAABBFA = APRendererI['addAABBF(java.util.List,double,double,double,double,double,double,int,boolean,boolean,int)'] ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x1
@@ -220,8 +220,8 @@ export function renderBoxFilled(color, x, y, z, w, h, { centered = true, wz = w,
   renderAABBFilled(color, x, y, z, x + w, y + h, z + wz, { lighting, phase, cull, chroma });
 }
 
-const addBeaconN = APRendererI['addBeacon(long,double,double,double,double,int,boolean,boolean,int)'];
-const addBeaconA = APRendererI['addBeacon(java.util.List,double,double,double,double,int,boolean,boolean,int)'];
+const addBeaconN = APRendererI['addBeacon(long,double,double,double,double,int,boolean,boolean,int)'] ?? throwExp('bad');
+const addBeaconA = APRendererI['addBeacon(java.util.List,double,double,double,double,int,boolean,boolean,int)'] ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -237,8 +237,8 @@ export function renderBeacon(color, x, y, z, { centered = true, h = 300 - y, lig
   (typeof color === 'number' ? addBeaconN : addBeaconA).call(APRendererI, color, x, y, z, h, lighting, phase, cull, chroma);
 }
 
-const addCircleN = APRendererI['addCircle(long,double,double,double,double,int,double,int,boolean,boolean,boolean,int)'];
-const addCircleA = APRendererI['addCircle(java.util.List,double,double,double,double,int,double,int,boolean,boolean,boolean,int)'];
+const addCircleN = APRendererI['addCircle(long,double,double,double,double,int,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+const addCircleA = APRendererI['addCircle(java.util.List,double,double,double,double,int,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -252,8 +252,8 @@ export function renderCircle(color, x, y, z, r, segments, { lw = 1, lighting = 0
   (typeof color === 'number' ? addCircleN : addCircleA).call(APRendererI, color, x, y, z, r, segments, lw, lighting, phase, smooth, cull, chroma);
 }
 
-const addIcosphereN = APRendererI['addIcosphere(long,double,double,double,double,int,int,boolean,boolean,int)'];
-const addIcosphereA = APRendererI['addIcosphere(java.util.List,double,double,double,double,int,int,boolean,boolean,int)'];
+const addIcosphereN = APRendererI['addIcosphere(long,double,double,double,double,int,int,boolean,boolean,int)'] ?? throwExp('bad');
+const addIcosphereA = APRendererI['addIcosphere(java.util.List,double,double,double,double,int,int,boolean,boolean,int)'] ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -267,8 +267,8 @@ export function renderSphere(color, x, y, z, r, divisions, { lighting = 0, phase
   (typeof color === 'number' ? addIcosphereN : addIcosphereA).call(APRendererI, color, x, y, z, r, divisions, lighting, phase, cull, chroma);
 }
 
-const addPyramidON = APRendererI['addPyramidO(long,double,double,double,double,double,int,double,int,boolean,boolean,boolean,int)'];
-const addPyramidOA = APRendererI['addPyramidO(java.util.List,double,double,double,double,double,int,double,int,boolean,boolean,boolean,int)'];
+const addPyramidON = APRendererI['addPyramidO(long,double,double,double,double,double,int,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+const addPyramidOA = APRendererI['addPyramidO(java.util.List,double,double,double,double,double,int,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -283,8 +283,8 @@ export function renderPyramidOutline(color, x, y, z, r, h, n, { lw = 1, lighting
   (typeof color === 'number' ? addPyramidON : addPyramidOA).call(APRendererI, color, x, y, z, r, h, n, lw, lighting, phase, smooth, cull, chroma);
 }
 
-const addPyramidFN = APRendererI['addPyramidF(long,double,double,double,double,double,int,int,boolean,boolean,int)'];
-const addPyramidFA = APRendererI['addPyramidF(java.util.List,double,double,double,double,double,int,int,boolean,boolean,int)'];
+const addPyramidFN = APRendererI['addPyramidF(long,double,double,double,double,double,int,int,boolean,boolean,int)'] ?? throwExp('bad');
+const addPyramidFA = APRendererI['addPyramidF(java.util.List,double,double,double,double,double,int,int,boolean,boolean,int)'] ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -299,8 +299,8 @@ export function renderPyramidFilled(color, x, y, z, r, h, n, { lighting = 0, pha
   (typeof color === 'number' ? addPyramidFN : addPyramidFA).call(APRendererI, color, x, y, z, r, h, n, lighting, phase, cull, chroma);
 }
 
-const addVertCylinderN = APRendererI['addVertCylinder(long,double,double,double,double,double,int,int,boolean,boolean,int)'];
-const addVertCylinderA = APRendererI['addVertCylinder(java.util.List,double,double,double,double,double,int,int,boolean,boolean,int)'];
+const addVertCylinderN = APRendererI['addVertCylinder(long,double,double,double,double,double,int,int,boolean,boolean,int)'] ?? throwExp('bad');
+const addVertCylinderA = APRendererI['addVertCylinder(java.util.List,double,double,double,double,double,int,int,boolean,boolean,int)'] ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -315,8 +315,8 @@ export function renderVerticalCylinder(color, x, y, z, r, h, segments, { lightin
   (typeof color === 'number' ? addVertCylinderN : addVertCylinderA).call(APRendererI, color, x, y, z, r, h, segments, lighting, phase, cull, chroma);
 }
 
-const addOctahedronON = APRendererI['addOctahedronO(long,double,double,double,double,double,double,int,boolean,boolean,boolean,int)'];
-const addOctahedronOA = APRendererI['addOctahedronO(java.util.List,double,double,double,double,double,double,int,boolean,boolean,boolean,int)'];
+const addOctahedronON = APRendererI['addOctahedronO(long,double,double,double,double,double,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+const addOctahedronOA = APRendererI['addOctahedronO(java.util.List,double,double,double,double,double,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -330,8 +330,8 @@ export function renderOctahedronOutline(color, x, y, z, w, h, { lw = 1, lighting
   (typeof color === 'number' ? addOctahedronON : addOctahedronOA).call(APRendererI, color, x, y, z, w / 2, h / 2, lw, lighting, phase, smooth, cull, chroma);
 }
 
-const addOctahedronFN = APRendererI['addOctahedronF(long,double,double,double,double,double,int,boolean,boolean,int)'];
-const addOctahedronFA = APRendererI['addOctahedronF(java.util.List,double,double,double,double,double,int,boolean,boolean,int)'];
+const addOctahedronFN = APRendererI['addOctahedronF(long,double,double,double,double,double,int,boolean,boolean,int)'] ?? throwExp('bad');
+const addOctahedronFA = APRendererI['addOctahedronF(java.util.List,double,double,double,double,double,int,boolean,boolean,int)'] ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
@@ -345,8 +345,8 @@ export function renderOctahedronFilled(color, x, y, z, w, h, { lighting = 0, pha
   (typeof color === 'number' ? addOctahedronFN : addOctahedronFA).call(APRendererI, color, x, y, z, w / 2, h / 2, lighting, phase, cull, chroma);
 }
 
-const addStairON = APRendererI['addStairO(long,int,int,int,int,double,int,boolean,boolean,boolean,int)'];
-const addStairOF = APRendererI['addStairO(java.util.List,int,int,int,int,double,int,boolean,boolean,boolean,int)'];
+const addStairON = APRendererI['addStairO(long,int,int,int,int,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+const addStairOF = APRendererI['addStairO(java.util.List,int,int,int,int,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x int (BlockPos)
@@ -359,8 +359,8 @@ export function renderStairOutline(color, x, y, z, type, { lw = 1, lighting = 0,
   (typeof color === 'number' ? addStairON : addStairOF).call(APRendererI, color, x, y, z, type, lw, lighting, phase, smooth, cull, chroma);
 }
 
-const addStairFN = APRendererI['addStairF(long,int,int,int,int,int,boolean,boolean,int)'];
-const addStairFA = APRendererI['addStairF(java.util.List,int,int,int,int,int,boolean,boolean,int)'];
+const addStairFN = APRendererI['addStairF(long,int,int,int,int,int,boolean,boolean,int)'] ?? throwExp('bad');
+const addStairFA = APRendererI['addStairF(java.util.List,int,int,int,int,int,boolean,boolean,int)'] ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x int (BlockPos)
@@ -394,7 +394,7 @@ export function renderTracer(color, x, y, z, { lw = 1, lighting = 0, phase = fal
   ], { lw, lighting, phase, smooth, cull, chroma });
 }
 
-const _lineWidth = GlState['lineWidth(float)'];
+const _lineWidth = GlState['lineWidth(float)'] ?? throwExp('bad');
 /**
  * @param {number} lw
  */
@@ -402,7 +402,7 @@ export function lineWidth(lw) {
   _lineWidth.call(GlState, lw);
 }
 
-const _lineSmooth = GlState['lineSmooth(float)'];
+const _lineSmooth = GlState['lineSmooth(float)'] ?? throwExp('bad');
 /**
  * @param {boolean} enabled
  */
@@ -410,7 +410,7 @@ export function lineSmooth(enabled) {
   _lineSmooth.call(GlState, enabled);
 }
 
-const _bindTexture = GlState['bindTexture(net.minecraft.util.ResourceLocation)'];
+const _bindTexture = GlState['bindTexture(net.minecraft.util.ResourceLocation)'] ?? throwExp('bad');
 /**
  * @param {string} tex `ResourceLocation` or texture path, e.g. `'textures/entity/beacon_beam.png'`
  */
@@ -418,7 +418,7 @@ export function bindTexture(tex) {
   _bindTexture.call(GlState, coerceResourceLocation(tex));
 }
 
-const _color = GlState['color(float,float,float,float)'];
+const _color = GlState['color(float,float,float,float)'] ?? throwExp('bad');
 /**
  * @param {number} r [0, 1]
  * @param {number} g [0, 1]
@@ -429,7 +429,7 @@ export function color(r, g, b, a) {
   _color.call(GlState, r, g, b, a);
 }
 
-const _setDepthTest = GlState['setDepthTest(boolean)'];
+const _setDepthTest = GlState['setDepthTest(boolean)'] ?? throwExp('bad');
 /**
  * @param {boolean} enabled
  */
@@ -437,7 +437,7 @@ export function depthTest(enabled) {
   _setDepthTest.call(GlState, enabled);
 }
 
-const _setLighting = GlState['setLighting(int)'];
+const _setLighting = GlState['setLighting(int)'] ?? throwExp('bad');
 /**
  * @param {number} mode 0 = none | 1 = smooth | 2 = flat
  */
@@ -445,7 +445,7 @@ export function lighting(mode) {
   _setLighting.call(GlState, mode);
 }
 
-const _test = Frustum['test(double,double,double)'];
+const _test = Frustum['test(double,double,double)'] ?? throwExp('bad');
 /**
  * frustum check, not hitscan
  * @param {number} x
@@ -457,7 +457,7 @@ export function isInView(x, y, z) {
   return _test.call(Frustum, x, y, z);
 }
 
-const _clip = Frustum['clip(com.perseuspotter.apelles.geo.Point,com.perseuspotter.apelles.geo.Point)'];
+const _clip = Frustum['clip(com.perseuspotter.apelles.geo.Point,com.perseuspotter.apelles.geo.Point)'] ?? throwExp('bad');
 /**
  * clips line segment to frustum
  * @param {number} x1
@@ -472,9 +472,9 @@ export function clipLine(x1, y1, z1, x2, y2, z2) {
   return _clip.call(Frustum, new Point(x1, y1, z1), new Point(x2, y2, z2));
 }
 
-const _getRenderX = GeometryC['getRenderX()'];
-const _getRenderY = GeometryC['getRenderY()'];
-const _getRenderZ = GeometryC['getRenderZ()'];
+const _getRenderX = GeometryC['getRenderX()'] ?? throwExp('bad');
+const _getRenderY = GeometryC['getRenderY()'] ?? throwExp('bad');
+const _getRenderZ = GeometryC['getRenderZ()'] ?? throwExp('bad');
 /**
  * @returns {number}
  */
@@ -494,18 +494,18 @@ export function getRenderZ() {
   return _getRenderZ.call(GeometryC);
 };
 
-export const DefaultVertexFormats = Java.type('net.minecraft.client.renderer.vertex.DefaultVertexFormats');
+export const DefaultVertexFormats = JavaTypeOrNull('net.minecraft.client.renderer.vertex.DefaultVertexFormats') ?? throwExp('bad');
 const worldRen = Geometry.worldRen;
-const _func_181668_a = worldRen['func_181668_a(int,net.minecraft.client.renderer.vertex.DefaultVertexFormats)'];
+const _func_181668_a = worldRen['func_181668_a(int,net.minecraft.client.renderer.vertex.DefaultVertexFormats)'] ?? throwExp('bad');
 /**
  * @param {number} mode
  */
 export function begin(mode, format = DefaultVertexFormats.field_181705_e) {
   _func_181668_a.call(worldRen, mode, format);
 }
-const _func_181662_b = worldRen['func_181662_b(double,double,double)'];
-const _func_181673_a = worldRen['func_181673_a(double,double)'];
-const _func_181675_d = worldRen['func_181675_d()'];
+const _func_181662_b = worldRen['func_181662_b(double,double,double)'] ?? throwExp('bad');
+const _func_181673_a = worldRen['func_181673_a(double,double)'] ?? throwExp('bad');
+const _func_181675_d = worldRen['func_181675_d()'] ?? throwExp('bad');
 /**
  * @overload
  * @param {number} x
@@ -525,7 +525,7 @@ export function pos(x, y, z, u, v) {
   _func_181675_d.call(worldRen);
 }
 const tess = Geometry.tess;
-const _func_78381_a = tess['func_78381_a()'];
+const _func_78381_a = tess['func_78381_a()'] ?? throwExp('bad');
 export function draw() {
   _func_78381_a.call(tess);
 }
