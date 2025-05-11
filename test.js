@@ -1,4 +1,4 @@
-import { begin, clipLine, createPassthroughOutlineTester, createPerEntityOutliner, draw, isInView, pos, renderAABBOutline, renderBeacon, renderBoxFilled, renderBoxOutline, renderCircle, renderLine, renderOctahedronFilled, renderOctahedronOutline, renderPyramidFilled, renderPyramidOutline, renderSphere, renderTracer, renderVerticalCylinder } from './index';
+import { begin, clipLine, createPassthroughOutlineTester, createPerEntityOutliner, draw, isInView, pos, renderAABBOutline, renderBeacon, renderBoxFilled, renderBoxOutline, renderCircle, renderLine, renderOctahedronFilled, renderOctahedronOutline, renderPyramidFilled, renderPyramidOutline, renderSphere, renderStairFilled, renderStairOutline, renderTracer, renderVerticalCylinder } from './index';
 
 const egg = r => {
   let guess = Math.sqrt(1 - 2 * r * r);
@@ -39,6 +39,11 @@ register('renderWorld', () => {
 
   renderOctahedronOutline(0xDADD1EFF, 30, 10, 10, 2, 3);
   renderOctahedronFilled(0xDADD1EFF, 30, 15, 10, 3, 4, { lighting: 2 });
+
+  for (let i = 0; i < 8; i++) {
+    renderStairOutline(0xBADB01FF, i * 2, 10, -10, i, { lw: 2 });
+    renderStairFilled(0xD1AB1080, i * 2, 10, -10, i);
+  }
 
   const eggCenter = [-10, 10, -10];
   const eggScale = 3;

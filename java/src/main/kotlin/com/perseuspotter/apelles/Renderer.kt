@@ -363,9 +363,9 @@ object Renderer {
             points.add(z + sin(t) * r)
         }
         // something something floating point cos(0) ~= cos(2pi)
-        points.add(points[0])
         points.add(points[1])
         points.add(points[2])
+        points.add(points[3])
         addThing(
             Thingamabob(
                 Thingamabob.Type.Primitive,
@@ -721,6 +721,108 @@ object Renderer {
         )
     }
 
+    fun addStairO(
+        color: Long,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairO(Color(color), x, y, z, type, lw, lighting, phase, smooth, cull, chroma)
+    fun addStairO(
+        color: List<Double>,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairO(Color(color), x, y, z, type, lw, lighting, phase, smooth, cull, chroma)
+    fun addStairO(
+        color: Color,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) {
+        addThing(
+            Thingamabob(
+                Thingamabob.Type.StairO,
+                listOf(x + 0.5, y + 0.5, z + 0.5, type.toDouble()),
+                color,
+                lw.toFloat(),
+                lighting,
+                phase,
+                smooth,
+                cull,
+                chroma
+            )
+        )
+    }
+
+    fun addStairF(
+        color: Long,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairF(Color(color), x, y, z, type, lighting, phase, cull, chroma)
+    fun addStairF(
+        color: List<Double>,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairF(Color(color), x, y, z, type, lighting, phase, cull, chroma)
+    fun addStairF(
+        color: Color,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) {
+        addThing(
+            Thingamabob(
+                Thingamabob.Type.StairF,
+                listOf(x + 0.5, y + 0.5, z + 0.5, type.toDouble()),
+                color,
+                1f,
+                lighting,
+                phase,
+                false,
+                cull,
+                chroma
+            )
+        )
+    }
+
     @JvmField
     var USE_NEW_SHIT: Boolean = false
     @JvmField
@@ -912,7 +1014,4 @@ object Renderer {
         GlState.pop()
         prof.endSection()
     }
-
-    fun perfTestArr(arr: DoubleArray): Double = arr.reduce { a, v -> a + v }
-    fun perfTestList(list: List<Double>): Double = list.reduce { a, v -> a + v }
 }
