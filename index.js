@@ -345,6 +345,34 @@ export function renderOctahedronFilled(color, x, y, z, w, h, { lighting = 0, pha
   (typeof color === 'number' ? addOctahedronFN : addOctahedronFA).call(APRendererI, color, x, y, z, w / 2, h / 2, lighting, phase, cull, chroma);
 }
 
+const addStairON = APRendererI['addStairO(long,int,int,int,int,double,int,boolean,boolean,boolean,int)'];
+const addStairOF = APRendererI['addStairO(java.util.List,int,int,int,int,double,int,boolean,boolean,boolean,int)'];
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x int (BlockPos)
+ * @param {number} y int (BlockPos)
+ * @param {number} z int (BlockPos)
+ * @param {number} type int (metadata)
+ * @param {LineRenderOptions} options
+ */
+export function renderStairOutline(color, x, y, z, type, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addStairON : addStairOF).call(APRendererI, color, x, y, z, type, lw, lighting, phase, smooth, cull, chroma);
+}
+
+const addStairFN = APRendererI['addStairF(long,int,int,int,int,int,boolean,boolean,int)'];
+const addStairFA = APRendererI['addStairF(java.util.List,int,int,int,int,int,boolean,boolean,int)'];
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x int (BlockPos)
+ * @param {number} y int (BlockPos)
+ * @param {number} z int (BlockPos)
+ * @param {number} type int (metadata)
+ * @param {RenderOptions} options
+ */
+export function renderStairFilled(color, x, y, z, type, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addStairFN : addStairFA).call(APRendererI, color, x, y, z, type, lighting, phase, cull, chroma);
+}
+
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
