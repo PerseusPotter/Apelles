@@ -1104,8 +1104,8 @@ object Geometry3D {
         object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(-z, +y, +x) },
         object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(+x, -y, -z) },
         object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(-x, -y, +z) },
-        object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(+z, -y, +x) },
-        object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(-z, -y, -x) }
+        object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(-z, -y, -x) },
+        object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(+z, -y, +x) }
     )
     val stairVertices: Array<Array<Point>>
     init {
