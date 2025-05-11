@@ -1100,41 +1100,36 @@ object Geometry3D {
     val orientations = arrayOf(
         object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(+x, +y, +z) },
         object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(-x, +y, -z) },
-        object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(+z, +y, -x) },
         object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(-z, +y, +x) },
+        object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(+z, +y, -x) },
         object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(+x, -y, -z) },
         object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(-x, -y, +z) },
-        object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(-z, -y, -x) },
         object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(+z, -y, +x) }
+        object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(-z, -y, -x) },
     )
     val stairVertices: Array<Array<Point>>
     init {
+        val ep = 0.01
         val vertices = arrayOf(
             Point(0.75, 0.25, 0.5),
             // 0
-            Point(0.0, 0.0, 0.0),
-            Point(0.0, 0.0, 1.0),
-            Point(1.0, 0.0, 0.0),
-            Point(1.0, 0.0, 1.0),
+            Point(0.0 - ep, 0.0 - ep, 0.0 - ep),
+            Point(0.0 - ep, 0.0 - ep, 1.0 + ep),
+            Point(1.0 + ep, 0.0 - ep, 0.0 - ep),
+            Point(1.0 + ep, 0.0 - ep, 1.0 + ep),
             // 4
-            Point(0.0, 0.5, 0.0),
-            Point(0.0, 0.5, 1.0),
+            Point(0.0 - ep, 0.5 + ep, 0.0 - ep),
+            Point(0.0 - ep, 0.5 + ep, 1.0 + ep),
             // 6
-            Point(0.5, 0.5, 0.0),
-            Point(0.5, 0.5, 1.0),
+            Point(0.5 - ep, 0.5 + ep, 0.0 - ep),
+            Point(0.5 - ep, 0.5 + ep, 1.0 + ep),
             // 8
-            Point(0.5, 1.0, 0.0),
-            Point(0.5, 1.0, 1.0),
+            Point(0.5 - ep, 1.0 + ep, 0.0 - ep),
+            Point(0.5 - ep, 1.0 + ep, 1.0 + ep),
             // 10
-            Point(1.0, 1.0, 0.0),
-            Point(1.0, 1.0, 1.0)
-        ).mapIndexed { i, v ->
-            Point(
-            (v.x - 0.5) * (if (i > 0) 1.001 else 1.0),
-            (v.y - 0.5) * (if (i > 0) 1.001 else 1.0),
-            (v.z - 0.5) * (if (i > 0) 1.001 else 1.0)
-            )
-        }
+            Point(1.0 + ep, 1.0 + ep, 0.0 - ep),
+            Point(1.0 + ep, 1.0 + ep, 1.0 + ep)
+        ).map { Point(it.x - 0.5, it.y - 0.5, it.z - 0.5) }
         stairVertices = Array(orientations.size) { i ->
             Array(vertices.size) {
                 val p = vertices[it]
