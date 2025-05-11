@@ -402,7 +402,7 @@ export function lineWidth(lw) {
   _lineWidth.call(GlState, lw);
 }
 
-const _lineSmooth = GlState['lineSmooth(float)'] ?? throwExp('bad');
+const _lineSmooth = GlState['lineSmooth(boolean)'] ?? throwExp('bad');
 /**
  * @param {boolean} enabled
  */
@@ -496,7 +496,7 @@ export function getRenderZ() {
 
 export const DefaultVertexFormats = JavaTypeOrNull('net.minecraft.client.renderer.vertex.DefaultVertexFormats') ?? throwExp('bad');
 const worldRen = Geometry.worldRen;
-const _func_181668_a = worldRen['func_181668_a(int,net.minecraft.client.renderer.vertex.DefaultVertexFormats)'] ?? throwExp('bad');
+const _func_181668_a = worldRen['func_181668_a(int,net.minecraft.client.renderer.vertex.VertexFormat)'] ?? throwExp('bad');
 /**
  * @param {number} mode
  */
