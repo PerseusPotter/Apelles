@@ -23,7 +23,7 @@ class OutlineState(entity: Entity) {
         update()
     }
     fun doOutline(): Boolean = active != null
-    fun getColor(): Color = active!!.color
+    fun getColor(): Color = active!!.col
     // shhh dont tell anyone
     fun getWidth(): Int = (active!!.width + 1) * (if (isAbsoluteSize()) -1 else 1)
     fun getPhase(): Boolean = active!!.phase

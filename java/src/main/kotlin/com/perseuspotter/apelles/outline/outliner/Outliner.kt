@@ -10,8 +10,17 @@ abstract class Outliner(
     val blackOutline: Boolean,
     val absoluteSize: Boolean
 ) : Comparable<Outliner> {
+    lateinit var col: Color
+    init {
+        setColor(color)
+    }
+    fun setColor(col: Long) = setColor(Color(col))
+    fun setColor(col: List<Double>) = setColor(Color(col))
+    fun setColor(col: Color) {
+        this.col = Color(col.r, col.g, negateIf(col.b, blackOutline), negateIf(col.a, chroma))
+    }
+
     private fun negateIf(f: Float, b: Boolean) = if (b) -f - 0.001f else f
-    val color = Color(color.r, color.g, negateIf(color.b, blackOutline), negateIf(color.a, chroma))
     override fun compareTo(other: Outliner): Int {
         if (phase != other.phase) return if (phase) -1 else 1
         if (absoluteSize != other.absoluteSize) return if (absoluteSize) -1 else 1
