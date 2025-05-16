@@ -17,10 +17,10 @@ class ManualOutliner(
     val hits = Collections.newSetFromMap(WeakHashMap<Entity, Boolean>())
 
     fun add(e: Entity) {
-        if (hits.add(e)) EntityOutlineRenderer.getOutlineState(e).add(this)
+        if (hits.add(e) && registered) EntityOutlineRenderer.getOutlineState(e).add(this)
     }
     fun remove(e: Entity) {
-        if (hits.remove(e)) EntityOutlineRenderer.getOutlineState(e).remove(this)
+        if (hits.remove(e) && registered) EntityOutlineRenderer.getOutlineState(e).remove(this)
     }
     fun clear() {
         hits.forEach { EntityOutlineRenderer.getOutlineState(it).remove(this) }
