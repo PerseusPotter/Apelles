@@ -24,7 +24,7 @@ class PerEntityOutliner(
             EntityOutlineRenderer.getOutlineState(e).add(this)
         }
     }
-    override fun clear() {}
+    override fun _internalClear() {}
 
     override fun register() {
         hits.forEach { EntityOutlineRenderer.getOutlineState(it).add(this) }
@@ -33,5 +33,11 @@ class PerEntityOutliner(
     override fun unregister() {
         hits.forEach { EntityOutlineRenderer.getOutlineState(it).remove(this) }
         super.unregister()
+    }
+
+    fun clear() {
+        hits.forEach { EntityOutlineRenderer.getOutlineState(it).remove(this) }
+        hits.clear()
+        seen.clear()
     }
 }

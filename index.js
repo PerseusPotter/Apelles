@@ -613,7 +613,7 @@ const PerEntityOutliner = JavaTypeOrNull('com.perseuspotter.apelles.outline.outl
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} width int in pixels
  * @param {OutlineRenderOptions} options
- * @returns {{ setColor(color: number): void, setColor(color: [number, number, number] | [number, number, number, number]): void, register(): void, unregister(): void }}
+ * @returns {{ setColor(color: number): void, setColor(color: [number, number, number] | [number, number, number, number]): void, register(): void, unregister(): void, clear(): void }}
  */
 export function createPerEntityOutliner(tester, color, width, { phase = false, chroma = false, blackOutline = true, absoluteSize = true } = {}) {
   const o = new PerEntityOutliner(tester, coerceColor(color), width, phase, chroma, blackOutline, absoluteSize);

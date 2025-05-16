@@ -21,7 +21,7 @@ class PerFrameOutliner(
             EntityOutlineRenderer.getOutlineState(e).add(this)
         }
     }
-    override fun clear() {
+    override fun _internalClear() {
         hits.forEach { EntityOutlineRenderer.getOutlineState(it).remove(this) }
         hits.clear()
     }
