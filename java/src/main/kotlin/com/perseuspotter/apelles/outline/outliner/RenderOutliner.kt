@@ -15,7 +15,7 @@ abstract class RenderOutliner(
     absoluteSize: Boolean
 ) : Outliner(color, width, phase, chroma, blackOutline, absoluteSize) {
     abstract fun test(e: Entity)
-    abstract fun clear()
+    abstract fun _internalClear()
 
     override fun register() {
         EntityOutlineRenderer.outliners.add(this)

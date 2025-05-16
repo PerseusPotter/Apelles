@@ -128,7 +128,7 @@ object EntityOutlineRenderer {
         GlState.bindShader(0)
         Minecraft.getMinecraft().renderManager.setRenderOutlines(false)
         Minecraft.getMinecraft().framebuffer.bindFramebuffer(false)
-        outliners.forEach { it.clear() }
+        outliners.forEach { it._internalClear() }
         dump = false
         prof.endSection()
     }
