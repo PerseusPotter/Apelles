@@ -9,8 +9,10 @@ import com.perseuspotter.apelles.outline.EntityOutlineRenderer
 import com.perseuspotter.apelles.state.Color
 import com.perseuspotter.apelles.state.GlState
 import com.perseuspotter.apelles.state.Thingamabob
+import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.OpenGlHelper
+import net.minecraft.util.BlockPos
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL15
@@ -721,7 +723,7 @@ object Renderer {
         )
     }
 
-    fun addStairO(
+    fun addStraightStairO(
         color: Long,
         x: Int,
         y: Int,
@@ -733,8 +735,8 @@ object Renderer {
         smooth: Boolean,
         cull: Boolean,
         chroma: Int
-    ) = addStairO(Color(color), x, y, z, type, lw, lighting, phase, smooth, cull, chroma)
-    fun addStairO(
+    ) = addStraightStairO(Color(color), x, y, z, type, lw, lighting, phase, smooth, cull, chroma)
+    fun addStraightStairO(
         color: List<Double>,
         x: Int,
         y: Int,
@@ -746,8 +748,8 @@ object Renderer {
         smooth: Boolean,
         cull: Boolean,
         chroma: Int
-    ) = addStairO(Color(color), x, y, z, type, lw, lighting, phase, smooth, cull, chroma)
-    fun addStairO(
+    ) = addStraightStairO(Color(color), x, y, z, type, lw, lighting, phase, smooth, cull, chroma)
+    fun addStraightStairO(
         color: Color,
         x: Int,
         y: Int,
@@ -762,7 +764,7 @@ object Renderer {
     ) {
         addThing(
             Thingamabob(
-                Thingamabob.Type.StairO,
+                Thingamabob.Type.StairStraightO,
                 listOf(x + 0.5, y + 0.5, z + 0.5, type.toDouble()),
                 color,
                 lw.toFloat(),
@@ -775,6 +777,509 @@ object Renderer {
         )
     }
 
+    fun addStraightStairF(
+        color: Long,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStraightStairF(Color(color), x, y, z, type, lighting, phase, cull, chroma)
+    fun addStraightStairF(
+        color: List<Double>,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStraightStairF(Color(color), x, y, z, type, lighting, phase, cull, chroma)
+    fun addStraightStairF(
+        color: Color,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) {
+        addThing(
+            Thingamabob(
+                Thingamabob.Type.StairStraightF,
+                listOf(x + 0.5, y + 0.5, z + 0.5, type.toDouble()),
+                color,
+                1f,
+                lighting,
+                phase,
+                false,
+                cull,
+                chroma
+            )
+        )
+    }
+
+    // alternatively: if (left) type xor 2 xor ((type and 2 xor ((type.inv() and 4) shr 1)) shr 1) else type
+    val stairTypeTransform = intArrayOf(3, 2, 0, 1, 6, 7, 5, 4)
+    fun addInnerStairO(
+        color: Long,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        left: Boolean,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addInnerStairO(Color(color), x, y, z, type, left, lw, lighting, phase, smooth, cull, chroma)
+    fun addInnerStairO(
+        color: List<Double>,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        left: Boolean,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addInnerStairO(Color(color), x, y, z, type, left, lw, lighting, phase, smooth, cull, chroma)
+    fun addInnerStairO(
+        color: Color,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        left: Boolean,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) {
+        addThing(
+            Thingamabob(
+                Thingamabob.Type.StairInnerO,
+                listOf(x + 0.5, y + 0.5, z + 0.5, (if (left) stairTypeTransform[type] else type).toDouble()),
+                color,
+                lw.toFloat(),
+                lighting,
+                phase,
+                smooth,
+                cull,
+                chroma
+            )
+        )
+    }
+
+    fun addInnerStairF(
+        color: Long,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        left: Boolean,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addInnerStairF(Color(color), x, y, z, type, left, lighting, phase, cull, chroma)
+    fun addInnerStairF(
+        color: List<Double>,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        left: Boolean,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addInnerStairF(Color(color), x, y, z, type, left, lighting, phase, cull, chroma)
+    fun addInnerStairF(
+        color: Color,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        left: Boolean,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) {
+        addThing(
+            Thingamabob(
+                Thingamabob.Type.StairInnerF,
+                listOf(x + 0.5, y + 0.5, z + 0.5, (if (left) stairTypeTransform[type] else type).toDouble()),
+                color,
+                1f,
+                lighting,
+                phase,
+                false,
+                cull,
+                chroma
+            )
+        )
+    }
+
+    fun addOuterStairO(
+        color: Long,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        left: Boolean,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addOuterStairO(Color(color), x, y, z, type, left, lw, lighting, phase, smooth, cull, chroma)
+    fun addOuterStairO(
+        color: List<Double>,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        left: Boolean,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addOuterStairO(Color(color), x, y, z, type, left, lw, lighting, phase, smooth, cull, chroma)
+    fun addOuterStairO(
+        color: Color,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        left: Boolean,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) {
+        addThing(
+            Thingamabob(
+                Thingamabob.Type.StairOuterO,
+                listOf(x + 0.5, y + 0.5, z + 0.5, (if (left) stairTypeTransform[type] else type).toDouble()),
+                color,
+                lw.toFloat(),
+                lighting,
+                phase,
+                smooth,
+                cull,
+                chroma
+            )
+        )
+    }
+
+    fun addOuterStairF(
+        color: Long,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        left: Boolean,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addOuterStairF(Color(color), x, y, z, type, left, lighting, phase, cull, chroma)
+    fun addOuterStairF(
+        color: List<Double>,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        left: Boolean,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addOuterStairF(Color(color), x, y, z, type, left, lighting, phase, cull, chroma)
+    fun addOuterStairF(
+        color: Color,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        left: Boolean,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) {
+        addThing(
+            Thingamabob(
+                Thingamabob.Type.StairOuterF,
+                listOf(x + 0.5, y + 0.5, z + 0.5, (if (left) stairTypeTransform[type] else type).toDouble()),
+                color,
+                1f,
+                lighting,
+                phase,
+                false,
+                cull,
+                chroma
+            )
+        )
+    }
+
+    fun addStairO(
+        color: Long,
+        x: Int,
+        y: Int,
+        z: Int,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairO(color, BlockPos(x, y, z), lw, lighting, phase, smooth, cull, chroma)
+    fun addStairO(
+        color: List<Double>,
+        x: Int,
+        y: Int,
+        z: Int,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairO(color, BlockPos(x, y, z), lw, lighting, phase, smooth, cull, chroma)
+    fun addStairO(
+        color: Color,
+        x: Int,
+        y: Int,
+        z: Int,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairO(color, BlockPos(x, y, z), lw, lighting, phase, smooth, cull, chroma)
+    fun addStairO(
+        color: Long,
+        bp: BlockPos,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairO(color, bp.x, bp.y, bp.z, Minecraft.getMinecraft().theWorld.getBlockState(bp), lw, lighting, phase, smooth, cull, chroma)
+    fun addStairO(
+        color: List<Double>,
+        bp: BlockPos,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairO(color, bp.x, bp.y, bp.z, Minecraft.getMinecraft().theWorld.getBlockState(bp), lw, lighting, phase, smooth, cull, chroma)
+    fun addStairO(
+        color: Color,
+        bp: BlockPos,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairO(color, bp.x, bp.y, bp.z, Minecraft.getMinecraft().theWorld.getBlockState(bp), lw, lighting, phase, smooth, cull, chroma)
+    fun addStairO(
+        color: Long,
+        x: Int,
+        y: Int,
+        z: Int,
+        bs: IBlockState,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairO(Color(color), x, y, z, RandomShit.comprehensiveStairMetadata(bs, BlockPos(x, y, z)), lw, lighting, phase, smooth, cull, chroma)
+    fun addStairO(
+        color: List<Double>,
+        x: Int,
+        y: Int,
+        z: Int,
+        bs: IBlockState,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairO(Color(color), x, y, z, RandomShit.comprehensiveStairMetadata(bs, BlockPos(x, y, z)), lw, lighting, phase, smooth, cull, chroma)
+    fun addStairO(
+        color: Color,
+        x: Int,
+        y: Int,
+        z: Int,
+        bs: IBlockState,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairO(color, x, y, z, RandomShit.comprehensiveStairMetadata(bs, BlockPos(x, y, z)), lw, lighting, phase, smooth, cull, chroma)
+    fun addStairO(
+        color: Long,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairO(Color(color), x, y, z, type, lw, lighting, phase, smooth, cull, chroma)
+    fun addStairO(
+        color: List<Double>,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairO(Color(color), x, y, z, type, lw, lighting, phase, smooth, cull, chroma)
+    fun addStairO(
+        color: Color,
+        x: Int,
+        y: Int,
+        z: Int,
+        type: Int,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) {
+        if (type < 0) return
+        if (type and 32 == 0) addStraightStairO(color, x, y, z, type and 7, lw, lighting, phase, smooth, cull, chroma)
+        else if (type and 16 == 0) addInnerStairO(color, x, y, z, type and 7, type and 8 > 0, lw, lighting, phase, smooth, cull, chroma)
+        else addOuterStairO(color, x, y, z, type and 7, type and 8 > 0, lw, lighting, phase, smooth, cull, chroma)
+    }
+
+    fun addStairF(
+        color: Long,
+        x: Int,
+        y: Int,
+        z: Int,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairF(color, BlockPos(x, y, z), lighting, phase, cull, chroma)
+    fun addStairF(
+        color: List<Double>,
+        x: Int,
+        y: Int,
+        z: Int,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairF(color, BlockPos(x, y, z), lighting, phase, cull, chroma)
+    fun addStairF(
+        color: Color,
+        x: Int,
+        y: Int,
+        z: Int,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairF(color, BlockPos(x, y, z), lighting, phase, cull, chroma)
+    fun addStairF(
+        color: Long,
+        bp: BlockPos,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairF(color, bp.x, bp.y, bp.z, Minecraft.getMinecraft().theWorld.getBlockState(bp), lighting, phase, cull, chroma)
+    fun addStairF(
+        color: List<Double>,
+        bp: BlockPos,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairF(color, bp.x, bp.y, bp.z, Minecraft.getMinecraft().theWorld.getBlockState(bp), lighting, phase, cull, chroma)
+    fun addStairF(
+        color: Color,
+        bp: BlockPos,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairF(color, bp.x, bp.y, bp.z, Minecraft.getMinecraft().theWorld.getBlockState(bp), lighting, phase, cull, chroma)
+    fun addStairF(
+        color: Long,
+        x: Int,
+        y: Int,
+        z: Int,
+        bs: IBlockState,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairF(Color(color), x, y, z, RandomShit.comprehensiveStairMetadata(bs, BlockPos(x, y, z)), lighting, phase, cull, chroma)
+    fun addStairF(
+        color: List<Double>,
+        x: Int,
+        y: Int,
+        z: Int,
+        bs: IBlockState,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairF(Color(color), x, y, z, RandomShit.comprehensiveStairMetadata(bs, BlockPos(x, y, z)), lighting, phase, cull, chroma)
+    fun addStairF(
+        color: Color,
+        x: Int,
+        y: Int,
+        z: Int,
+        bs: IBlockState,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addStairF(color, x, y, z, RandomShit.comprehensiveStairMetadata(bs, BlockPos(x, y, z)), lighting, phase, cull, chroma)
     fun addStairF(
         color: Long,
         x: Int,
@@ -808,19 +1313,9 @@ object Renderer {
         cull: Boolean,
         chroma: Int
     ) {
-        addThing(
-            Thingamabob(
-                Thingamabob.Type.StairF,
-                listOf(x + 0.5, y + 0.5, z + 0.5, type.toDouble()),
-                color,
-                1f,
-                lighting,
-                phase,
-                false,
-                cull,
-                chroma
-            )
-        )
+        if (type and 32 == 0) addStraightStairF(color, x, y, z, type and 7, lighting, phase, cull, chroma)
+        else if (type and 16 == 0) addInnerStairF(color, x, y, z, type and 7, type and 8 > 0, lighting, phase, cull, chroma)
+        else addOuterStairF(color, x, y, z, type and 7, type and 8 > 0, lighting, phase, cull, chroma)
     }
 
     @JvmField

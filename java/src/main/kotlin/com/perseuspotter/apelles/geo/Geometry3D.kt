@@ -1107,10 +1107,12 @@ object Geometry3D {
         object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(+z, -y, +x) },
         object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(-z, -y, -x) }
     )
-    val stairVertices: Array<Array<Point>>
+    val stairStraightVertices: Array<Array<Point>>
+    val stairInnerVertices: Array<Array<Point>>
+    val stairOuterVertices: Array<Array<Point>>
     init {
         val ep = 0.01
-        val vertices = arrayOf(
+        val straightVertices = arrayOf(
             Point(0.75, 0.25, 0.5),
             // 0
             Point(0.0 - ep, 0.0 - ep, 0.0 - ep),
@@ -1130,20 +1132,72 @@ object Geometry3D {
             Point(1.0 + ep, 1.0 + ep, 0.0 - ep),
             Point(1.0 + ep, 1.0 + ep, 1.0 + ep)
         ).map { Point(it.x - 0.5, it.y - 0.5, it.z - 0.5) }
-        stairVertices = Array(orientations.size) { i ->
-            Array(vertices.size) {
-                val p = vertices[it]
+        val innerVertices = arrayOf(
+            Point(0.75, 0.25, 0.75),
+            // 0
+            Point(0.0 - ep, 0.0 - ep, 0.0 - ep),
+            Point(0.0 - ep, 0.0 - ep, 1.0 + ep),
+            Point(1.0 + ep, 0.0 - ep, 0.0 - ep),
+            Point(1.0 + ep, 0.0 - ep, 1.0 + ep),
+            // 4
+            Point(0.0 - ep, 0.5 + ep, 0.0 - ep),
+            Point(0.0 - ep, 0.5 + ep, 0.5 - ep),
+            Point(0.5 - ep, 0.5 + ep, 0.0 - ep),
+            Point(0.5 - ep, 0.5 + ep, 0.5 - ep),
+            // 8
+            Point(0.0 - ep, 1.0 + ep, 0.5 - ep),
+            Point(0.0 - ep, 1.0 + ep, 1.0 + ep),
+            Point(0.5 - ep, 1.0 + ep, 0.0 - ep),
+            Point(0.5 - ep, 1.0 + ep, 0.5 - ep),
+            Point(1.0 + ep, 1.0 + ep, 0.0 - ep),
+            Point(1.0 + ep, 1.0 + ep, 1.0 + ep)
+        ).map { Point(it.x - 0.5, it.y - 0.5, it.z - 0.5) }
+        val outerVertices = arrayOf(
+            Point(0.25, 0.25, 0.25),
+            // 0
+            Point(0.0 - ep, 0.0 - ep, 0.0 - ep),
+            Point(0.0 - ep, 0.0 - ep, 1.0 + ep),
+            Point(1.0 + ep, 0.0 - ep, 0.0 - ep),
+            Point(1.0 + ep, 0.0 - ep, 1.0 + ep),
+            // 4
+            Point(0.0 - ep, 0.5 + ep, 0.0 - ep),
+            Point(0.0 - ep, 0.5 + ep, 1.0 + ep),
+            Point(0.5 - ep, 0.5 + ep, 0.5 - ep),
+            Point(0.5 - ep, 0.5 + ep, 1.0 + ep),
+            Point(1.0 + ep, 0.5 + ep, 0.0 - ep),
+            Point(1.0 + ep, 0.5 + ep, 0.5 - ep),
+            // 10
+            Point(0.5 - ep, 1.0 + ep, 0.5 - ep),
+            Point(0.5 - ep, 1.0 + ep, 1.0 + ep),
+            Point(1.0 + ep, 1.0 + ep, 0.5 - ep),
+            Point(1.0 + ep, 1.0 + ep, 1.0 + ep)
+        ).map { Point(it.x - 0.5, it.y - 0.5, it.z - 0.5) }
+        stairStraightVertices = Array(orientations.size) { i ->
+            Array(straightVertices.size) {
+                val p = straightVertices[it]
+                orientations[i].transform(p.x, p.y, p.z)
+            }
+        }
+        stairInnerVertices = Array(orientations.size) { i ->
+            Array(innerVertices.size) {
+                val p = innerVertices[it]
+                orientations[i].transform(p.x, p.y, p.z)
+            }
+        }
+        stairOuterVertices = Array(orientations.size) { i ->
+            Array(outerVertices.size) {
+                val p = outerVertices[it]
                 orientations[i].transform(p.x, p.y, p.z)
             }
         }
     }
 
-    val stairO = object : Geometry() {
-        override val name: String = "stairO"
+    val stairStraightO = object : Geometry() {
+        override val name: String = "stairStraightO"
         override fun render(pt: Double, params: List<Double>) {
-            var (_x, _y, _z, _c) = params
+            val (_x, _y, _z, _c) = params
             val (x, y, z, s) = rescale(_x, _y , _z)
-            val verts = stairVertices[_c.toInt()]
+            val verts = stairStraightVertices[_c.toInt()]
 
             if (Renderer.USE_NEW_SHIT) {
                 begin(GL11.GL_LINE_STRIP, false, x + verts[0].x * s, y + verts[0].y * s, z + verts[0].z * s)
@@ -1182,6 +1236,7 @@ object Geometry3D {
             } else {
                 begin(GL11.GL_LINES, false, x + verts[0].x * s, y + verts[0].y * s, z + verts[0].z * s)
                 fun emit(i: Int) = pos(x + verts[i + 1].x * s, y + verts[i + 1].y * s, z + verts[i + 1].z * s)
+
                 emit(0); emit(1)
                 emit(1); emit(5)
                 emit(5); emit(4)
@@ -1225,16 +1280,17 @@ object Geometry3D {
         override fun getDrawMode(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) GL11.GL_LINE_STRIP else GL11.GL_LINES
     }
 
-    val stairF = object : Geometry() {
-        override val name: String = "stairF"
+    val stairStraightF = object : Geometry() {
+        override val name: String = "stairStraightF"
         override fun render(pt: Double, params: List<Double>) {
-            var (_x, _y, _z, _c) = params
+            val (_x, _y, _z, _c) = params
             val (x, y, z, s) = rescale(_x, _y , _z)
-            val verts = stairVertices[_c.toInt()]
+            val verts = stairStraightVertices[_c.toInt()]
 
             begin(GL11.GL_TRIANGLE_STRIP, false, x + verts[0].x * s, y + verts[0].y * s, z + verts[0].z * s)
             if (Renderer.USE_NEW_SHIT) {
                 verts.forEachIndexed { i, v -> if (i > 0) addVert(x + v.x * s, y + v.y * s, z + v.z * s) }
+
                 index(0)
                 index(1)
                 index(4)
@@ -1251,29 +1307,24 @@ object Geometry3D {
                 index(1)
 
                 reset()
-                index(8)
                 index(10)
-                index(6)
+                index(10)
+                index(8)
                 index(2)
-                index(0)
-                reset()
+                index(6)
                 index(0)
                 index(4)
-                index(6)
 
                 reset()
-                index(9)
-                index(9)
                 index(11)
-                index(7)
+                index(9)
                 index(3)
-                index(1)
-                reset()
-                index(1)
                 index(7)
+                index(1)
                 index(5)
             } else {
                 fun emit(i: Int) = pos(x + verts[i + 1].x * s, y + verts[i + 1].y * s, z + verts[i + 1].z * s)
+
                 emit(0)
                 emit(1)
                 emit(4)
@@ -1290,26 +1341,23 @@ object Geometry3D {
                 emit(1)
 
                 emit(1)
-                emit(8)
-                emit(8)
                 emit(10)
-                emit(6)
+                emit(10)
+                emit(10)
+                emit(8)
                 emit(2)
-                emit(0)
-                emit(0)
                 emit(6)
+                emit(0)
                 emit(4)
 
                 emit(4)
-                emit(9)
-                emit(9)
-                emit(9)
                 emit(11)
-                emit(7)
+                emit(11)
+                emit(11)
+                emit(9)
                 emit(3)
-                emit(1)
-                emit(1)
                 emit(7)
+                emit(1)
                 emit(5)
             }
             draw()
@@ -1330,7 +1378,431 @@ object Geometry3D {
         }
 
         override fun getVertexCount(params: List<Double>): Int = 12
-        override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 35 else 35
+        override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 29 else 32
+        override fun getDrawMode(params: List<Double>): Int = GL11.GL_TRIANGLE_STRIP
+    }
+
+    val stairInnerO = object : Geometry() {
+        override val name: String = "stairInnerO"
+        override fun render(pt: Double, params: List<Double>) {
+            val (_x, _y, _z, _c) = params
+            val (x, y, z, s) = rescale(_x, _y , _z)
+            val verts = stairInnerVertices[_c.toInt()]
+
+            if (Renderer.USE_NEW_SHIT) {
+                begin(GL11.GL_LINE_STRIP, false, x + verts[0].x * s, y + verts[0].y * s, z + verts[0].z * s)
+                verts.forEachIndexed { i, v -> if (i > 0) addVert(x + v.x * s, y + v.y * s, z + v.z * s) }
+
+                index(0)
+                index(1)
+                index(3)
+                index(2)
+                index(0)
+                index(4)
+                index(5)
+                index(8)
+                index(9)
+                index(1)
+                reset()
+                index(4)
+                index(6)
+                index(7)
+                index(5)
+                reset()
+                index(6)
+                index(10)
+                index(11)
+                index(7)
+                reset()
+                index(11)
+                index(8)
+                reset()
+                index(9)
+                index(13)
+                index(12)
+                index(2)
+                reset()
+                index(3)
+                index(13)
+                reset()
+                index(10)
+                index(12)
+            } else {
+                begin(GL11.GL_LINES, false, x + verts[0].x * s, y + verts[0].y * s, z + verts[0].z * s)
+                fun emit(i: Int) = pos(x + verts[i + 1].x * s, y + verts[i + 1].y * s, z + verts[i + 1].z * s)
+
+                emit(0); emit(1)
+                emit(1); emit(3)
+                emit(3); emit(2)
+                emit(2); emit(0)
+                emit(0); emit(4)
+                emit(4); emit(5)
+                emit(5); emit(8)
+                emit(8); emit(9)
+                emit(9); emit(1)
+
+                emit(4); emit(6)
+                emit(6); emit(7)
+                emit(7); emit(5)
+
+                emit(6); emit(10)
+                emit(10); emit(11)
+                emit(11); emit(7)
+
+                emit(11); emit(8)
+
+                emit(9); emit(13)
+                emit(13); emit(12)
+                emit(12); emit(2)
+
+                emit(3); emit(13)
+
+                emit(10); emit(12)
+            }
+            draw()
+        }
+
+        override fun testPoints(params: List<Double>): Array<Point> {
+            val (x, y, z) = params
+            return arrayOf(
+                Point(x + 0.5, y + 0.5, z + 0.5),
+                Point(x + 0.5, y + 0.5, z - 0.5),
+                Point(x + 0.5, y - 0.5, z + 0.5),
+                Point(x + 0.5, y - 0.5, z - 0.5),
+                Point(x - 0.5, y + 0.5, z + 0.5),
+                Point(x - 0.5, y + 0.5, z - 0.5),
+                Point(x - 0.5, y - 0.5, z + 0.5),
+                Point(x - 0.5, y - 0.5, z - 0.5)
+            )
+        }
+
+        override fun getVertexCount(params: List<Double>): Int = 14
+        override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 34 else 42
+        override fun getDrawMode(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) GL11.GL_LINE_STRIP else GL11.GL_LINES
+    }
+
+    val stairInnerF = object : Geometry() {
+        override val name: String = "stairInnerF"
+        override fun render(pt: Double, params: List<Double>) {
+            val (_x, _y, _z, _c) = params
+            val (x, y, z, s) = rescale(_x, _y , _z)
+            val verts = stairInnerVertices[_c.toInt()]
+
+            begin(GL11.GL_TRIANGLE_STRIP, false, x + verts[0].x * s, y + verts[0].y * s, z + verts[0].z * s)
+            if (Renderer.USE_NEW_SHIT) {
+                verts.forEachIndexed { i, v -> if (i > 0) addVert(x + v.x * s, y + v.y * s, z + v.z * s) }
+
+                index(12)
+                index(12)
+                index(10)
+                index(2)
+                index(6)
+                index(0)
+                index(4)
+                index(1)
+                index(5)
+                index(9)
+                index(8)
+                index(13)
+                index(11)
+                index(12)
+                index(10)
+
+                reset()
+                index(11)
+                index(10)
+                index(7)
+                index(6)
+                index(5)
+                index(4)
+                reset()
+                index(8)
+                index(11)
+                index(5)
+                index(7)
+
+                reset()
+                index(12)
+                index(13)
+                index(2)
+                index(3)
+                index(0)
+                index(1)
+                reset()
+                index(13)
+                index(9)
+                index(3)
+                index(1)
+            } else {
+                fun emit(i: Int) = pos(x + verts[i + 1].x * s, y + verts[i + 1].y * s, z + verts[i + 1].z * s)
+
+                emit(12)
+                emit(12)
+                emit(10)
+                emit(2)
+                emit(6)
+                emit(0)
+                emit(4)
+                emit(1)
+                emit(5)
+                emit(9)
+                emit(8)
+                emit(13)
+                emit(11)
+                emit(12)
+                emit(10)
+
+                emit(10)
+                emit(11)
+                emit(6)
+                emit(7)
+                emit(4)
+                emit(5)
+                emit(5)
+                emit(7)
+                emit(8)
+                emit(11)
+
+                emit(11)
+                emit(9)
+                emit(9)
+                emit(13)
+                emit(1)
+                emit(3)
+                emit(0)
+                emit(2)
+                emit(2)
+                emit(3)
+                emit(12)
+                emit(13)
+            }
+            draw()
+        }
+
+        override fun testPoints(params: List<Double>): Array<Point> {
+            val (x, y, z) = params
+            return arrayOf(
+                Point(x + 0.5, y + 0.5, z + 0.5),
+                Point(x + 0.5, y + 0.5, z - 0.5),
+                Point(x + 0.5, y - 0.5, z + 0.5),
+                Point(x + 0.5, y - 0.5, z - 0.5),
+                Point(x - 0.5, y + 0.5, z + 0.5),
+                Point(x - 0.5, y + 0.5, z - 0.5),
+                Point(x - 0.5, y - 0.5, z + 0.5),
+                Point(x - 0.5, y - 0.5, z - 0.5)
+            )
+        }
+
+        override fun getVertexCount(params: List<Double>): Int = 14
+        override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 39 else 37
+        override fun getDrawMode(params: List<Double>): Int = GL11.GL_TRIANGLE_STRIP
+    }
+
+    val stairOuterO = object : Geometry() {
+        override val name: String = "stairOuterO"
+        override fun render(pt: Double, params: List<Double>) {
+            val (_x, _y, _z, _c) = params
+            val (x, y, z, s) = rescale(_x, _y , _z)
+            val verts = stairOuterVertices[_c.toInt()]
+
+            if (Renderer.USE_NEW_SHIT) {
+                begin(GL11.GL_LINE_STRIP, false, x + verts[0].x * s, y + verts[0].y * s, z + verts[0].z * s)
+                verts.forEachIndexed { i, v -> if (i > 0) addVert(x + v.x * s, y + v.y * s, z + v.z * s) }
+
+                index(0)
+                index(1)
+                index(5)
+                reset()
+                index(1)
+                index(3)
+                index(13)
+                reset()
+                index(3)
+                index(2)
+                index(8)
+                reset()
+                index(2)
+                index(0)
+                index(4)
+
+                index(5)
+                index(7)
+                index(6)
+                index(9)
+                index(8)
+                index(4)
+
+                reset()
+                index(7)
+                index(11)
+                index(10)
+                index(6)
+                reset()
+                index(11)
+                index(13)
+                index(12)
+                index(9)
+
+                reset()
+                index(10)
+                index(12)
+            } else {
+                begin(GL11.GL_LINES, false, x + verts[0].x * s, y + verts[0].y * s, z + verts[0].z * s)
+                fun emit(i: Int) = pos(x + verts[i + 1].x * s, y + verts[i + 1].y * s, z + verts[i + 1].z * s)
+
+                emit(0); emit(1)
+                emit(1); emit(5)
+                emit(1); emit(3)
+                emit(3); emit(13)
+                emit(3); emit(2)
+                emit(2); emit(8)
+                emit(2); emit(0)
+                emit(0); emit(4)
+
+                emit(4); emit(5)
+                emit(5); emit(7)
+                emit(7); emit(6)
+                emit(6); emit(9)
+                emit(9); emit(8)
+                emit(8); emit(4)
+
+                emit(7); emit(11)
+                emit(11); emit(10)
+                emit(10); emit(6)
+                emit(11); emit(13)
+                emit(13); emit(12)
+                emit(12); emit(9)
+
+                emit(10); emit(12)
+            }
+            draw()
+        }
+
+        override fun testPoints(params: List<Double>): Array<Point> {
+            val (x, y, z) = params
+            return arrayOf(
+                Point(x + 0.5, y + 0.5, z + 0.5),
+                Point(x + 0.5, y + 0.5, z - 0.5),
+                Point(x + 0.5, y - 0.5, z + 0.5),
+                Point(x + 0.5, y - 0.5, z - 0.5),
+                Point(x - 0.5, y + 0.5, z + 0.5),
+                Point(x - 0.5, y + 0.5, z - 0.5),
+                Point(x - 0.5, y - 0.5, z + 0.5),
+                Point(x - 0.5, y - 0.5, z - 0.5)
+            )
+        }
+
+        override fun getVertexCount(params: List<Double>): Int = 14
+        override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 34 else 42
+        override fun getDrawMode(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) GL11.GL_LINE_STRIP else GL11.GL_LINES
+    }
+
+    val stairOuterF = object : Geometry() {
+        override val name: String = "stairOuterF"
+        override fun render(pt: Double, params: List<Double>) {
+            val (_x, _y, _z, _c) = params
+            val (x, y, z, s) = rescale(_x, _y , _z)
+            val verts = stairOuterVertices[_c.toInt()]
+
+            begin(GL11.GL_TRIANGLE_STRIP, false, x + verts[0].x * s, y + verts[0].y * s, z + verts[0].z * s)
+            if (Renderer.USE_NEW_SHIT) {
+                verts.forEachIndexed { i, v -> if (i > 0) addVert(x + v.x * s, y + v.y * s, z + v.z * s) }
+
+                index(13)
+                index(11)
+                index(3)
+                index(7)
+                index(1)
+                index(5)
+                index(0)
+                index(4)
+                index(2)
+                index(8)
+                index(3)
+                index(9)
+                index(13)
+                index(12)
+                index(11)
+                index(10)
+                index(7)
+                index(6)
+                index(5)
+                index(4)
+
+                reset()
+                index(10)
+                index(12)
+                index(6)
+                index(9)
+                reset()
+                index(9)
+                index(8)
+                index(6)
+                index(4)
+
+                reset()
+                index(1)
+                index(0)
+                index(3)
+                index(2)
+            } else {
+                fun emit(i: Int) = pos(x + verts[i + 1].x * s, y + verts[i + 1].y * s, z + verts[i + 1].z * s)
+
+                emit(13)
+                emit(11)
+                emit(3)
+                emit(7)
+                emit(1)
+                emit(5)
+                emit(0)
+                emit(4)
+                emit(2)
+                emit(8)
+                emit(3)
+                emit(9)
+                emit(13)
+                emit(12)
+                emit(11)
+                emit(10)
+                emit(7)
+                emit(6)
+                emit(5)
+                emit(4)
+                emit(4)
+                emit(6)
+                emit(8)
+                emit(9)
+                emit(9)
+                emit(6)
+                emit(12)
+                emit(10)
+
+                emit(10)
+                emit(1)
+                emit(1)
+                emit(0)
+                emit(3)
+                emit(2)
+            }
+            draw()
+        }
+
+        override fun testPoints(params: List<Double>): Array<Point> {
+            val (x, y, z) = params
+            return arrayOf(
+                Point(x + 0.5, y + 0.5, z + 0.5),
+                Point(x + 0.5, y + 0.5, z - 0.5),
+                Point(x + 0.5, y - 0.5, z + 0.5),
+                Point(x + 0.5, y - 0.5, z - 0.5),
+                Point(x - 0.5, y + 0.5, z + 0.5),
+                Point(x - 0.5, y + 0.5, z - 0.5),
+                Point(x - 0.5, y - 0.5, z + 0.5),
+                Point(x - 0.5, y - 0.5, z - 0.5)
+            )
+        }
+
+        override fun getVertexCount(params: List<Double>): Int = 14
+        override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 35 else 34
         override fun getDrawMode(params: List<Double>): Int = GL11.GL_TRIANGLE_STRIP
     }
 }

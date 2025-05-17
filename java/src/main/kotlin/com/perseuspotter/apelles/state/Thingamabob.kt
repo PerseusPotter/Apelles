@@ -56,8 +56,12 @@ open class Thingamabob(
         Type.VertCylinderC -> Geometry3D.vertCylinderC
         Type.OctahedronO -> Geometry3D.octahedronO
         Type.OctahedronF -> Geometry3D.octahedronF
-        Type.StairO -> Geometry3D.stairO
-        Type.StairF -> Geometry3D.stairF
+        Type.StairStraightO -> Geometry3D.stairStraightO
+        Type.StairStraightF -> Geometry3D.stairStraightF
+        Type.StairInnerO -> Geometry3D.stairInnerO
+        Type.StairInnerF -> Geometry3D.stairInnerF
+        Type.StairOuterO -> Geometry3D.stairOuterO
+        Type.StairOuterF -> Geometry3D.stairOuterF
     }
 
     open fun render(pt: Double) {
@@ -125,8 +129,12 @@ open class Thingamabob(
         VertCylinderC,
         OctahedronO,
         OctahedronF,
-        StairO,
-        StairF,
+        StairStraightO,
+        StairStraightF,
+        StairInnerO,
+        StairInnerF,
+        StairOuterO,
+        StairOuterF,
 
         BeaconI,
         BeaconO
