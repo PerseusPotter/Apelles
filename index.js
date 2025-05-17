@@ -345,8 +345,8 @@ export function renderOctahedronFilled(color, x, y, z, w, h, { lighting = 0, pha
   (typeof color === 'number' ? addOctahedronFN : addOctahedronFA).call(APRendererI, color, x, y, z, w / 2, h / 2, lighting, phase, cull, chroma);
 }
 
-const addStairON = APRendererI['addStairO(long,int,int,int,int,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
-const addStairOF = APRendererI['addStairO(java.util.List,int,int,int,int,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+const addStraightStairON = APRendererI['addStraightStairO(long,int,int,int,int,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+const addStraightStairOF = APRendererI['addStraightStairO(java.util.List,int,int,int,int,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x int (BlockPos)
@@ -355,12 +355,12 @@ const addStairOF = APRendererI['addStairO(java.util.List,int,int,int,int,double,
  * @param {number} type int (metadata)
  * @param {LineRenderOptions} options
  */
-export function renderStairOutline(color, x, y, z, type, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  (typeof color === 'number' ? addStairON : addStairOF).call(APRendererI, color, x, y, z, type, lw, lighting, phase, smooth, cull, chroma);
+export function renderStraightStairOutline(color, x, y, z, type, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addStraightStairON : addStraightStairOF).call(APRendererI, color, x, y, z, type, lw, lighting, phase, smooth, cull, chroma);
 }
 
-const addStairFN = APRendererI['addStairF(long,int,int,int,int,int,boolean,boolean,int)'] ?? throwExp('bad');
-const addStairFA = APRendererI['addStairF(java.util.List,int,int,int,int,int,boolean,boolean,int)'] ?? throwExp('bad');
+const addStraightStairFN = APRendererI['addStraightStairF(long,int,int,int,int,int,boolean,boolean,int)'] ?? throwExp('bad');
+const addStraightStairFA = APRendererI['addStraightStairF(java.util.List,int,int,int,int,int,boolean,boolean,int)'] ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x int (BlockPos)
@@ -369,8 +369,172 @@ const addStairFA = APRendererI['addStairF(java.util.List,int,int,int,int,int,boo
  * @param {number} type int (metadata)
  * @param {RenderOptions} options
  */
-export function renderStairFilled(color, x, y, z, type, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  (typeof color === 'number' ? addStairFN : addStairFA).call(APRendererI, color, x, y, z, type, lighting, phase, cull, chroma);
+export function renderStraightStairFilled(color, x, y, z, type, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addStraightStairFN : addStraightStairFA).call(APRendererI, color, x, y, z, type, lighting, phase, cull, chroma);
+}
+
+const addInnerStairON = APRendererI['addInnerStairO(long,int,int,int,int,boolean,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+const addInnerStairOF = APRendererI['addInnerStairO(java.util.List,int,int,int,int,boolean,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x int (BlockPos)
+ * @param {number} y int (BlockPos)
+ * @param {number} z int (BlockPos)
+ * @param {number} type int (metadata)
+ * @param {boolean} left is the stair shape `INNER_LEFT`
+ * @param {LineRenderOptions} options
+ */
+export function renderInnerStairOutline(color, x, y, z, type, left, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addInnerStairON : addInnerStairOF).call(APRendererI, color, x, y, z, type, left, lw, lighting, phase, smooth, cull, chroma);
+}
+
+const addInnerStairFN = APRendererI['addInnerStairF(long,int,int,int,int,boolean,int,boolean,boolean,int)'] ?? throwExp('bad');
+const addInnerStairFA = APRendererI['addInnerStairF(java.util.List,int,int,int,int,boolean,int,boolean,boolean,int)'] ?? throwExp('bad');
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x int (BlockPos)
+ * @param {number} y int (BlockPos)
+ * @param {number} z int (BlockPos)
+ * @param {number} type int (metadata)
+ * @param {boolean} left is the stair shape `INNER_LEFT`
+ * @param {RenderOptions} options
+ */
+export function renderInnerStairFilled(color, x, y, z, type, left, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addInnerStairFN : addInnerStairFA).call(APRendererI, color, x, y, z, type, left, lighting, phase, cull, chroma);
+}
+
+const addOuterStairON = APRendererI['addOuterStairO(long,int,int,int,int,boolean,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+const addOuterStairOF = APRendererI['addOuterStairO(java.util.List,int,int,int,int,boolean,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x int (BlockPos)
+ * @param {number} y int (BlockPos)
+ * @param {number} z int (BlockPos)
+ * @param {number} type int (metadata)
+ * @param {boolean} left is the stair shape `OUTER_LEFT`
+ * @param {LineRenderOptions} options
+ */
+export function renderOuterStairOutline(color, x, y, z, type, left, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addOuterStairON : addOuterStairOF).call(APRendererI, color, x, y, z, type, left, lw, lighting, phase, smooth, cull, chroma);
+}
+
+const addOuterStairFN = APRendererI['addOuterStairF(long,int,int,int,int,boolean,int,boolean,boolean,int)'] ?? throwExp('bad');
+const addOuterStairFA = APRendererI['addOuterStairF(java.util.List,int,int,int,int,boolean,int,boolean,boolean,int)'] ?? throwExp('bad');
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x int (BlockPos)
+ * @param {number} y int (BlockPos)
+ * @param {number} z int (BlockPos)
+ * @param {number} type int (metadata)
+ * @param {boolean} left is the stair shape `OUTER_LEFT`
+ * @param {RenderOptions} options
+ */
+export function renderOuterStairFilled(color, x, y, z, type, left, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addOuterStairFN : addOuterStairFA).call(APRendererI, color, x, y, z, type, left, lighting, phase, cull, chroma);
+}
+
+const addStairON = APRendererI['addStairO(long,int,int,int,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+const addStairOF = APRendererI['addStairO(java.util.List,int,int,int,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x int (BlockPos)
+ * @param {number} y int (BlockPos)
+ * @param {number} z int (BlockPos)
+ * @param {LineRenderOptions} options
+ */
+export function renderStairOutline(color, x, y, z, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addStairON : addStairOF).call(APRendererI, color, x, y, z, lw, lighting, phase, smooth, cull, chroma);
+}
+
+const addStairFN = APRendererI['addStairF(long,int,int,int,int,boolean,boolean,int)'] ?? throwExp('bad');
+const addStairFA = APRendererI['addStairF(java.util.List,int,int,int,int,boolean,boolean,int)'] ?? throwExp('bad');
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x int (BlockPos)
+ * @param {number} y int (BlockPos)
+ * @param {number} z int (BlockPos)
+ * @param {RenderOptions} options
+ */
+export function renderStairFilled(color, x, y, z, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addStairFN : addStairFA).call(APRendererI, color, x, y, z, lighting, phase, cull, chroma);
+}
+
+const addStairOPN = APRendererI['addStairO(long,net.minecraft.util.BlockPos,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+const addStairOPF = APRendererI['addStairO(java.util.List,net.minecraft.util.BlockPos,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param bp net.minecraft.util.BlockPos
+ * @param {LineRenderOptions} options
+ */
+export function renderStairOutlineBP(color, bp, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addStairOPN : addStairOPF).call(APRendererI, color, bp, lw, lighting, phase, smooth, cull, chroma);
+}
+
+const addStairFPN = APRendererI['addStairF(long,net.minecraft.util.BlockPos,int,boolean,boolean,int)'] ?? throwExp('bad');
+const addStairFPA = APRendererI['addStairF(java.util.List,net.minecraft.util.BlockPos,int,boolean,boolean,int)'] ?? throwExp('bad');
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param bp net.minecraft.util.BlockPos
+ * @param {RenderOptions} options
+ */
+export function renderStairFilledBP(color, bp, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addStairFPN : addStairFPA).call(APRendererI, color, bp, lighting, phase, cull, chroma);
+}
+
+const addStairOSN = APRendererI['addStairO(long,int,int,int,net.minecraft.block.state.IBlockState,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+const addStairOSF = APRendererI['addStairO(java.util.List,int,int,int,net.minecraft.block.state.IBlockState,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x int (BlockPos)
+ * @param {number} y int (BlockPos)
+ * @param {number} z int (BlockPos)
+ * @param bs net.minecraft.block.state.IBlockState
+ * @param {LineRenderOptions} options
+ */
+export function renderStairOutlineBS(color, x, y, z, bs, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addStairOSN : addStairOSF).call(APRendererI, color, x, y, z, bs, lw, lighting, phase, smooth, cull, chroma);
+}
+
+const addStairFSN = APRendererI['addStairF(long,int,int,int,net.minecraft.block.state.IBlockState,int,boolean,boolean,int)'] ?? throwExp('bad');
+const addStairFSA = APRendererI['addStairF(java.util.List,int,int,int,net.minecraft.block.state.IBlockState,int,boolean,boolean,int)'] ?? throwExp('bad');
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x int (BlockPos)
+ * @param {number} y int (BlockPos)
+ * @param {number} z int (BlockPos)
+ * @param bs net.minecraft.block.state.IBlockState
+ * @param {RenderOptions} options
+ */
+export function renderStairFilledBS(color, x, y, z, bs, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addStairFSN : addStairFSA).call(APRendererI, color, x, y, z, bs, lighting, phase, cull, chroma);
+}
+
+const addStairOMN = APRendererI['addStairO(long,int,int,int,int,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+const addStairOMF = APRendererI['addStairO(java.util.List,int,int,int,int,double,int,boolean,boolean,boolean,int)'] ?? throwExp('bad');
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x int (BlockPos)
+ * @param {number} y int (BlockPos)
+ * @param {number} z int (BlockPos)
+ * @param {number} type MSB [set if not straight] | [set if outer] | [set if left] | [rest of metadata (length 3)] LSB
+ * @param {LineRenderOptions} options
+ */
+export function renderStairOutlineManual(color, x, y, z, type, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addStairOMN : addStairOMF).call(APRendererI, color, x, y, z, type, lw, lighting, phase, smooth, cull, chroma);
+}
+
+const addStairFMN = APRendererI['addStairF(long,int,int,int,int,int,boolean,boolean,int)'] ?? throwExp('bad');
+const addStairFMA = APRendererI['addStairF(java.util.List,int,int,int,int,int,boolean,boolean,int)'] ?? throwExp('bad');
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x int (BlockPos)
+ * @param {number} y int (BlockPos)
+ * @param {number} z int (BlockPos)
+ * @param {number} type MSB [set if not straight] | [set if outer] | [set if left] | [rest of metadata (length 3)] LSB
+ * @param {RenderOptions} options
+ */
+export function renderStairFilledManual(color, x, y, z, type, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
+  (typeof color === 'number' ? addStairFMN : addStairFMA).call(APRendererI, color, x, y, z, type, lighting, phase, cull, chroma);
 }
 
 /**

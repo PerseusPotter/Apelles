@@ -40,9 +40,11 @@ register('renderWorld', () => {
   renderOctahedronOutline(0xDADD1EFF, 30, 10, 10, 2, 3);
   renderOctahedronFilled(0xDADD1EFF, 30, 15, 10, 3, 4, { lighting: 2 });
 
-  for (let i = 0; i < 8; i++) {
-    renderStairOutline(0xBADB01FF, i * 2, 10, -10, i, { lw: 2 });
-    renderStairFilled(0xD1AB1080, i * 2, 10, -10, i);
+  for (let d = 0; d < 5; d++) {
+    for (let i = 0; i < 8; i++) {
+      renderStairOutline(0xBADB01FF, i * 4, 10, -10 - d * 4, { lw: 2 });
+      renderStairFilled(0xD1AB1080, i * 4, 10, -10 - d * 4);
+    }
   }
 
   const eggCenter = [-10, 10, -10];
