@@ -1374,7 +1374,10 @@ object Renderer {
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.toFloat())
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT.toFloat())
 
-        prof.startSection("texturedOpaque")
+        prof.startSection("outlines")
+        EntityOutlineRenderer.checkEntities(pt)
+
+        prof.endStartSection("texturedOpaque")
         if (USE_NEW_SHIT) {
             Geometry.bindBufGroup(0)
             texturedOpaque.forEach {
