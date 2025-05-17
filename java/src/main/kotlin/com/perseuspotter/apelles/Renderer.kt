@@ -1380,6 +1380,7 @@ object Renderer {
 
         prof.endStartSection("texturedOpaque")
         if (USE_NEW_SHIT) {
+            prof.startSection("prepare")
             Geometry.bindBufGroup(0)
             texturedOpaque.forEach {
                 Geometry.allocate(
@@ -1394,13 +1395,17 @@ object Renderer {
                 )
             }
             Geometry.prepare()
+            prof.endSection()
         }
+        prof.startSection("render")
         texturedOpaque.forEach {
             if (USE_NEW_SHIT) Geometry.bind(it)
             it.render(pt)
         }
+        prof.endStartSection("postRender")
         texturedOpaque.clear()
         if (USE_NEW_SHIT) Geometry.render(pt)
+        prof.endSection()
 
         glEnable(GL_BLEND)
         OpenGlHelper.glBlendFunc(770, 771, 1, 771)
@@ -1408,6 +1413,7 @@ object Renderer {
 
         prof.endStartSection("texturedTranslucent")
         if (USE_NEW_SHIT) {
+            prof.startSection("prepare")
             Geometry.bindBufGroup(1)
             texturedTranslucent.forEach {
                 Geometry.allocate(
@@ -1422,13 +1428,17 @@ object Renderer {
                 )
             }
             Geometry.prepare()
+            prof.endSection()
         }
+        prof.startSection("render")
         texturedTranslucent.forEach {
             if (USE_NEW_SHIT) Geometry.bind(it)
             it.render(pt)
         }
+        prof.endStartSection("postRender")
         texturedTranslucent.clear()
         if (USE_NEW_SHIT) Geometry.render(pt)
+        prof.endSection()
         glDisable(GL_TEXTURE_2D)
 
         glDisable(GL_BLEND)
@@ -1436,6 +1446,7 @@ object Renderer {
 
         prof.endStartSection("opaque")
         if (USE_NEW_SHIT) {
+            prof.startSection("prepare")
             Geometry.bindBufGroup(2)
             opaque.forEach {
                 Geometry.allocate(
@@ -1450,13 +1461,17 @@ object Renderer {
                 )
             }
             Geometry.prepare()
+            prof.endSection()
         }
+        prof.startSection("render")
         opaque.forEach {
             if (USE_NEW_SHIT) Geometry.bind(it)
             it.render(pt)
         }
+        prof.endStartSection("postRender")
         opaque.clear()
         if (USE_NEW_SHIT) Geometry.render(pt)
+        prof.endSection()
 
         glEnable(GL_BLEND)
         // OpenGlHelper.glBlendFunc(770, 771, 1, 771)
@@ -1464,6 +1479,7 @@ object Renderer {
 
         prof.endStartSection("translucent")
         if (USE_NEW_SHIT) {
+            prof.startSection("prepare")
             Geometry.bindBufGroup(3)
             translucent.forEach {
                 Geometry.allocate(
@@ -1478,11 +1494,14 @@ object Renderer {
                 )
             }
             Geometry.prepare()
+            prof.endSection()
         }
+        prof.startSection("render")
         translucent.forEach {
             if (USE_NEW_SHIT) Geometry.bind(it)
             it.render(pt)
         }
+        prof.endStartSection("postRender")
         translucent.clear()
         if (USE_NEW_SHIT) {
             Geometry.render(pt)
@@ -1495,6 +1514,7 @@ object Renderer {
             GlState.setNormalArray(false)
             GlState.setTexArray(false)
         }
+        prof.endSection()
         if (CAN_USE_CHROMA) GlState.bindShader(0)
 
         glPopMatrix()
