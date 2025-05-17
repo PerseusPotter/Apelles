@@ -641,3 +641,4 @@ export function createPerFrameOutliner(tester, color, width, { phase = false, ch
 // require('./test');
 
 register('command', () => Client.scheduleTask(20, () => Java.type('com.perseuspotter.apelles.outline.EntityOutlineRenderer').dump = true)).setName('apellesdumpfbo', true);
+register('command', t => Client.scheduleTask(() => APRenderer.USE_NEW_SHIT = !!t)).setName('apellesusecompat', true);
