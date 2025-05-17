@@ -34,10 +34,14 @@ object EntityOutlineRenderer {
         return fb
     }
 
+    private val phase = mutableListOf<OutlineState>()
+    private val occluded = mutableListOf<OutlineState>()
+    private var isThereShit = false
+
     @JvmField
     var CAN_OUTLINE = false
     private var checked = false
-    fun renderOutlines(pt: Double, t: Int) {
+    fun checkEntities(pt: Double) {
         if (!checked) {
             val cap = GLContext.getCapabilities()
             CAN_OUTLINE = cap.OpenGL31
@@ -49,9 +53,6 @@ object EntityOutlineRenderer {
             //     println("source: $source type: $type id: $id severity $severity message: $message")
             // })
         }
-        val phase = mutableListOf<OutlineState>()
-        val occluded = mutableListOf<OutlineState>()
-        var isThereShit = false
         val prof = Minecraft.getMinecraft().mcProfiler
         prof.startSection("testEntities")
         if (outliners.isNotEmpty()) {
@@ -64,6 +65,9 @@ object EntityOutlineRenderer {
                 outliners.forEach { if (it.registered) it.test(e) }
             }
         }
+        phase.clear()
+        occluded.clear()
+        isThereShit = false
         outlined.forEach { (e, s) ->
             if (e.isDead) return@forEach
             if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 0 && e is EntityPlayerSP) return@forEach
@@ -93,9 +97,13 @@ object EntityOutlineRenderer {
                 val h = ent.height
                 Renderer.addAABBO(it.getColor(), x - w / 2.0, y, z - w / 2.0, x + w / 2.0, y + h, z + w / 2.0, it.getWidth().toDouble(), 0, false, false, true, if (it.isChroma()) 1 else 0)
             }
-            return
         }
+    }
 
+    fun renderOutlines(pt: Double, t: Int) {
+        if (!isThereShit || !CAN_OUTLINE) return
+
+        val prof = Minecraft.getMinecraft().mcProfiler
         prof.startSection("setup")
         if (fb1 == null) {
             fb1 = createFB()
@@ -142,6 +150,7 @@ object EntityOutlineRenderer {
     private fun doOutline(pt: Double, t: Int, ents: List<OutlineState>, pass: Int) {
         if (ents.isEmpty()) return
 
+        val prof = Minecraft.getMinecraft().mcProfiler
         val rm = Minecraft.getMinecraft().renderManager
         val mainFb = Minecraft.getMinecraft().framebuffer
 
@@ -159,6 +168,8 @@ object EntityOutlineRenderer {
             ImageIO.write(depthImage, "png", File("./depthBufferPre$pass.png"))
             println("outlining entities pass $pass: ${ents.joinToString(" ") { it.entity.get()!!.entityId.toString() }}")
         }
+
+        prof.startSection("seeding")
         ents.groupBy { it.getWidth() }.forEach { (w, e) ->
             InitPass.setWidth(w)
             // "fixed"
@@ -189,6 +200,7 @@ object EntityOutlineRenderer {
         }
         GlState.setDepthTest(false)
 
+        prof.endStartSection("iters")
         JFAPass.bind()
         JFAPass.setSize(fb1!!.textureWidth, fb1!!.textureHeight)
         GL13.glActiveTexture(GL13.GL_TEXTURE0)
@@ -217,6 +229,7 @@ object EntityOutlineRenderer {
         doIter(1)
         fb1!!.unbindTexture()
 
+        prof.endStartSection("render")
         GL11.glEnable(GL11.GL_BLEND)
         OpenGlHelper.glBlendFunc(770, 771, 1, 771)
         JFARender.bind()
@@ -233,5 +246,6 @@ object EntityOutlineRenderer {
         GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, mainFb.framebufferObject)
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3)
         JFARender.unbindUbo()
+        prof.endSection()
     }
 }
