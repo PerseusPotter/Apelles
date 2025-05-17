@@ -57,7 +57,10 @@ object EntityOutlineRenderer {
         if (outliners.isNotEmpty()) {
             Minecraft.getMinecraft().theWorld.loadedEntityList.forEach { e ->
                 // good enough
-                if (!Frustum.test(e.posX, e.posY, e.posZ)) return@forEach
+                val x = e.lastTickPosX + (e.posX - e.lastTickPosX) * pt
+                val y = e.lastTickPosY + (e.posY - e.lastTickPosY) * pt
+                val z = e.lastTickPosZ + (e.posZ - e.lastTickPosZ) * pt
+                if (!Frustum.test(x, y, z)) return@forEach
                 outliners.forEach { if (it.registered) it.test(e) }
             }
         }
@@ -168,7 +171,11 @@ object EntityOutlineRenderer {
                     InitPass.setColorId(id)
                     prevCol = id
                 }
-                rm.renderEntityStatic(it.entity.get(), pt.toFloat(), false)
+                val ent = it.entity.get()!!
+                val invis = ent.isInvisible
+                if (invis) ent.isInvisible = false
+                rm.renderEntityStatic(ent, pt.toFloat(), false)
+                if (invis) ent.isInvisible = true
             }
         }
         GlState.reset()
