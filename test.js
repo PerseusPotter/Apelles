@@ -68,5 +68,3 @@ const tester2 = createPassthroughOutlineTester();
 // tester.addWhitelist(net.minecraft.entity.passive.EntityPig);
 const outliner2 = createPerEntityOutliner(tester2, 0xFF0000FF, 2, { phase: false, chroma: false, absoluteSize: true });
 // outliner2.register();
-
-register('command', () => Client.scheduleTask(20, () => Java.type('com.perseuspotter.apelles.outline.EntityOutlineRenderer').dump = true)).setName('dumpfbo', true);
