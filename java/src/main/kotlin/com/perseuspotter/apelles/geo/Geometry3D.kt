@@ -438,12 +438,13 @@ object Geometry3D {
                 intArrayOf(11, 9, 10),
                 intArrayOf(11, 10, 6)
             )
-            val strip = toTriangleStrip(12, tris, Renderer.USE_NEW_SHIT)
+            var strip = toTriangleStrip(12, tris, true)
 
             val stripI = IntArray(strip.remaining())
             strip.get(stripI)
             icoStripsI.add(stripI)
 
+            strip = toTriangleStrip(verts.size, tris, false)
             val stripD = DoubleArray(strip.remaining() * 3)
             for (i in 0 until strip.remaining()) {
                 val v = strip.get()
@@ -493,12 +494,13 @@ object Geometry3D {
             icoVertices.add(verts as Array<Point>)
             icoTriangles.add(tris)
 
-            val strip = toTriangleStrip(verts.size, tris, Renderer.USE_NEW_SHIT)
+            var strip = toTriangleStrip(verts.size, tris, true)
 
             val stripI = IntArray(strip.remaining())
             strip.get(stripI)
             icoStripsI.add(stripI)
 
+            strip = toTriangleStrip(verts.size, tris, false)
             val stripD = DoubleArray(strip.remaining() * 3)
             for (i in 0 until strip.remaining()) {
                 val v = strip.get()
