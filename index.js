@@ -802,6 +802,23 @@ export function createPerFrameOutliner(tester, color, width, { phase = false, ch
   return o;
 }
 
+const SemiAutomaticOutliner = JavaTypeOrNull('com.perseuspotter.apelles.outline.outliner.SemiAutomaticOutliner') ?? throwExp('jar not loaded correctly');
+/**
+ * INITIALLY UNREGISTERED
+ *
+ * will outline entities that pass the `tester`, only tested once per entity (the first attempt at outlining it), except can manually modify the internal state. unless you know what you are doing you should not be using this.
+ * @param {OutlineTester} tester
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} width int in pixels
+ * @param {OutlineRenderOptions} options
+ * @returns {{ setColor(color: number): void, setColor(color: [number, number, number] | [number, number, number, number]): void, register(): void, unregister(): void, clear(): void, add(ent: MCEntity): void, remove(ent: MCEntity): void, retest(ent: MCEntity): void }}
+ */
+export function createSemiAutomaticOutliner(tester, color, width, { phase = false, chroma = false, blackOutline = true, absoluteSize = true } = {}) {
+  const o = new SemiAutomaticOutliner(tester, coerceColor(color), width, phase, chroma, blackOutline, absoluteSize);
+  outliners.push(o);
+  return o;
+}
+
 // require('./test');
 
 register('command', () => Client.scheduleTask(20, () => Java.type('com.perseuspotter.apelles.outline.EntityOutlineRenderer').dump = true)).setName('apellesdumpfbo', true);
