@@ -1313,6 +1313,7 @@ object Renderer {
         cull: Boolean,
         chroma: Int
     ) {
+        if (type < 0) return
         if (type and 32 == 0) addStraightStairF(color, x, y, z, type and 7, lighting, phase, cull, chroma)
         else if (type and 16 == 0) addInnerStairF(color, x, y, z, type and 7, type and 8 > 0, lighting, phase, cull, chroma)
         else addOuterStairF(color, x, y, z, type and 7, type and 8 > 0, lighting, phase, cull, chroma)
