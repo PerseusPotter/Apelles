@@ -86,6 +86,54 @@ object Renderer {
         )
     }
 
+    fun addBoxO(
+        color: Long,
+        x: Double,
+        y: Double,
+        z: Double,
+        wx: Double,
+        h: Double,
+        wz: Double,
+        centered: Boolean,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBO(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, smooth, cull, chroma)
+    fun addBoxO(
+        color: List<Double>,
+        x: Double,
+        y: Double,
+        z: Double,
+        wx: Double,
+        h: Double,
+        wz: Double,
+        centered: Boolean,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBO(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, smooth, cull, chroma)
+    fun addBoxO(
+        color: Color,
+        x: Double,
+        y: Double,
+        z: Double,
+        wx: Double,
+        h: Double,
+        wz: Double,
+        centered: Boolean,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBO(color, if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, smooth, cull, chroma)
     fun addAABBO(
         color: Long,
         x1: Double,
@@ -146,6 +194,48 @@ object Renderer {
         )
     }
 
+    fun addBoxF(
+        color: Long,
+        x: Double,
+        y: Double,
+        z: Double,
+        wx: Double,
+        h: Double,
+        wz: Double,
+        centered: Boolean,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBF(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lighting, phase, cull, chroma)
+    fun addBoxF(
+        color: List<Double>,
+        x: Double,
+        y: Double,
+        z: Double,
+        wx: Double,
+        h: Double,
+        wz: Double,
+        centered: Boolean,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBF(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lighting, phase, cull, chroma)
+    fun addBoxF(
+        color: Color,
+        x: Double,
+        y: Double,
+        z: Double,
+        wx: Double,
+        h: Double,
+        wz: Double,
+        centered: Boolean,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBF(color, if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lighting, phase, cull, chroma)
     fun addAABBF(
         color: Long,
         x1: Double,
