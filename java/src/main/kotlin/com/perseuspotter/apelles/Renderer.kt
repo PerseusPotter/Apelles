@@ -21,10 +21,10 @@ import org.lwjgl.opengl.GLContext
 import kotlin.math.*
 
 object Renderer {
-    private val texturedOpaque = TreeMultiset.create<Thingamabob>()
-    private val texturedTranslucent = TreeMultiset.create<Thingamabob>()
-    private val opaque = TreeMultiset.create<Thingamabob>()
-    private val translucent = TreeMultiset.create<Thingamabob>()
+    private var texturedOpaque = TreeMultiset.create<Thingamabob>()
+    private var texturedTranslucent = TreeMultiset.create<Thingamabob>()
+    private var opaque = TreeMultiset.create<Thingamabob>()
+    private var translucent = TreeMultiset.create<Thingamabob>()
 
     fun addTexturedThing(thing: Thingamabob) {
         if (thing.color.a == 1f) texturedOpaque.add(thing)
@@ -1493,7 +1493,7 @@ object Renderer {
             it.render(pt)
         }
         prof.endStartSection("postRender")
-        texturedOpaque.clear()
+        texturedOpaque = TreeMultiset.create()
         if (USE_NEW_SHIT) Geometry.render(pt)
         prof.endSection()
 
@@ -1526,7 +1526,7 @@ object Renderer {
             it.render(pt)
         }
         prof.endStartSection("postRender")
-        texturedTranslucent.clear()
+        texturedTranslucent = TreeMultiset.create()
         if (USE_NEW_SHIT) Geometry.render(pt)
         prof.endSection()
         glDisable(GL_TEXTURE_2D)
@@ -1559,7 +1559,7 @@ object Renderer {
             it.render(pt)
         }
         prof.endStartSection("postRender")
-        opaque.clear()
+        opaque = TreeMultiset.create()
         if (USE_NEW_SHIT) Geometry.render(pt)
         prof.endSection()
 
@@ -1592,7 +1592,7 @@ object Renderer {
             it.render(pt)
         }
         prof.endStartSection("postRender")
-        translucent.clear()
+        translucent = TreeMultiset.create()
         if (USE_NEW_SHIT) {
             Geometry.render(pt)
 
