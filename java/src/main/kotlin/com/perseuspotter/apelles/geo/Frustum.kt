@@ -3,11 +3,13 @@ package com.perseuspotter.apelles.geo
 import net.minecraft.client.renderer.culling.ClippingHelperImpl
 
 object Frustum {
-    private val implInstF = ClippingHelperImpl::class.java.getDeclaredField("field_78563_e")
+    private val implInst: ClippingHelperImpl
     init {
+        val implInstF = ClippingHelperImpl::class.java.getDeclaredField("field_78563_e")
         implInstF.isAccessible = true
+        implInst = (implInstF.get(null) as ClippingHelperImpl)
     }
-    private fun getFrustum() = (implInstF.get(null) as ClippingHelperImpl).frustum
+    private fun getFrustum() = implInst.frustum
 
     // this never tests the far plane ([4]) because we always rescale to be within
 
