@@ -16,7 +16,7 @@ register('renderWorld', () => {
   ], { lw: 5 });
   for (let x = -5; x <= 5; x += 2) {
     for (let z = -5; z <= 5; z += 2) {
-      renderBoxFilled(packChromaParams(0.1, 0.3, 0.8, 0.35, 0.25), x, 10, z, 1, 1, { chroma: 1 });
+      renderBoxFilled(packChromaParams(0.1, 0.3, 0.8, 0.35, 0.5), x, 10, z, 1, 1, { chroma: 1 });
       renderBoxOutline(packChromaParams(1, 0.3, 0.8, 0.35, 1), x, 10, z, 1, 1, { chroma: 2, lw: 4 });
       renderBeacon(0xFFFFFFFF, x, 11, z, { h: 10 });
     }
@@ -54,7 +54,7 @@ register('renderWorld', () => {
     for (let z = -eggScale; z <= eggScale; z += beaconDensity) {
       let [y1, y2] = egg(Math.hypot(x, z) / eggScale);
       if (Number.isNaN(y1) || Number.isNaN(y2)) continue;
-      renderBeacon(packChromaParams(1, 0.3, 0.7, 0.35, 1), x + eggCenter[0], y1 + eggCenter[1], z + eggCenter[2], { h: (y2 - y1) * eggScale, chroma: 2 });
+      renderBeacon(packChromaParams(1, 0.3, 1.0, 0.1, 1), x + eggCenter[0], y1 + eggCenter[1], z + eggCenter[2], { h: (y2 - y1) * eggScale, chroma: 2 });
     }
   }
 });
