@@ -1,4 +1,4 @@
-import { begin, clipLine, createPassthroughOutlineTester, createPerEntityOutliner, draw, isInView, pos, renderAABBOutline, renderBeacon, renderBoxFilled, renderBoxOutline, renderCircle, renderLine, renderOctahedronFilled, renderOctahedronOutline, renderPyramidFilled, renderPyramidOutline, renderSphere, renderStairFilled, renderStairOutline, renderTracer, renderVerticalCylinder } from './index';
+import { begin, clipLine, createPassthroughOutlineTester, createPerEntityOutliner, draw, isInView, packChromaParams, pos, renderAABBOutline, renderBeacon, renderBoxFilled, renderBoxOutline, renderCircle, renderLine, renderOctahedronFilled, renderOctahedronOutline, renderPyramidFilled, renderPyramidOutline, renderSphere, renderStairFilled, renderStairOutline, renderTracer, renderVerticalCylinder } from './index';
 
 const egg = r => {
   let guess = Math.sqrt(1 - 2 * r * r);
@@ -16,8 +16,8 @@ register('renderWorld', () => {
   ], { lw: 5 });
   for (let x = -5; x <= 5; x += 2) {
     for (let z = -5; z <= 5; z += 2) {
-      renderBoxFilled([1.0, 0.3, 0.3, 0.8], x, 10, z, 1, 1, { chroma: 1 });
-      renderBoxOutline(0x00FFFFFF, x, 10, z, 1, 1);
+      renderBoxFilled(packChromaParams(0.1, 0.3, 0.8, 0.35, 0.25), x, 10, z, 1, 1, { chroma: 1 });
+      renderBoxOutline(packChromaParams(1, 0.3, 0.8, 0.35, 1), x, 10, z, 1, 1, { chroma: 2, lw: 4 });
       renderBeacon(0xFFFFFFFF, x, 11, z, { h: 10 });
     }
   }
@@ -30,7 +30,7 @@ register('renderWorld', () => {
 
   renderPyramidOutline(0xD11D05FF, 10, 10, 30, 2, 4, 3);
   renderPyramidOutline(0xD11D05FF, 10, 15, 30, 2, 4, 4);
-  renderPyramidOutline([1, 0.3, 1.0, 1.0], 10, 25, 30, 2, -4, 8, { chroma: 2, lw: 5 });
+  renderPyramidOutline(0xD11D05FF, 10, 25, 30, 2, -4, 8, { lw: 5 });
   renderPyramidFilled(0xD11D05FF, 20, 10, 30, 2, 4, 3, { lighting: 2 });
   renderPyramidFilled(0xD11D05FF, 20, 15, 30, 2, 4, 4, { lighting: 2 });
   renderPyramidFilled(0xD11D05FF, 20, 25, 30, 2, -4, 8, { lighting: 2 });
@@ -54,7 +54,7 @@ register('renderWorld', () => {
     for (let z = -eggScale; z <= eggScale; z += beaconDensity) {
       let [y1, y2] = egg(Math.hypot(x, z) / eggScale);
       if (Number.isNaN(y1) || Number.isNaN(y2)) continue;
-      renderBeacon([0.3, 0.3, 1.0, 1.0], x + eggCenter[0], y1 + eggCenter[1], z + eggCenter[2], { h: (y2 - y1) * eggScale, chroma: 1 });
+      renderBeacon(packChromaParams(1, 0.3, 0.7, 0.35, 1), x + eggCenter[0], y1 + eggCenter[1], z + eggCenter[2], { h: (y2 - y1) * eggScale, chroma: 2 });
     }
   }
 });
@@ -62,7 +62,7 @@ register('renderWorld', () => {
 const tester = createPassthroughOutlineTester();
 tester.addBlacklist(net.minecraft.entity.item.EntityArmorStand);
 // tester.addWhitelist(net.minecraft.entity.passive.EntityPig);
-const outliner = createPerEntityOutliner(tester, [0.3, 0.3, 1, 0.5], 5, { phase: true, chroma: true, absoluteSize: false });
+const outliner = createPerEntityOutliner(tester, packChromaParams(0.2, 0.4, 1, 0.3, 1), 5, { phase: true, chroma: true, absoluteSize: false });
 // outliner.register();
 
 const tester2 = createPassthroughOutlineTester();

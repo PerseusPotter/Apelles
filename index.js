@@ -29,7 +29,7 @@ const GeometryC = Geometry.Companion;
  * @property {number} [lighting=0] `0` - 0 = none | 1 = smooth | 2 = flat
  * @property {boolean} [phase=false] `false`
  * @property {boolean} [cull=true] `true` - whether to frustum cull the object. you should only disable this if you know what you are doing. though i doubt there will be any false positives, the option is here
- * @property {number} [chroma=0] `0` - use chroma, the color will be interpreted as [chromaSize, speed, saturation, alpha] all with values ranging from [0, 1] (except you can go outside and it should work). 0-no chroma | 1-2d chroma | 2-3d chroma
+ * @property {number} [chroma=0] `0` - use chroma, the color will be interpreted as [chromaSize, speed, lightness & chroma, alpha] (hint, use `packChromaParams`). 0-no chroma | 1-2d chroma | 2-3d chroma
  */
 
 // why was jsdoc being a bitch idk idc
@@ -64,6 +64,18 @@ const ResourceLocation = JavaTypeOrNull('net.minecraft.util.ResourceLocation') ?
 function coerceResourceLocation(rl) {
   if (typeof rl === 'string') return new ResourceLocation(rl);
   return rl;
+}
+
+/**
+ * @param {number} size [0, ∞)
+ * @param {number} speed (-∞, ∞)
+ * @param {number} lightness [0, 1]
+ * @param {number} chroma [0, 0.4]
+ * @param {number} [alpha=1] `1` [0, 1]
+ * @returns {[number, number, number, number]}
+ */
+export function packChromaParams(size, speed, lightness, chroma, alpha = 1) {
+  return [1 / size, speed, Math.floor(256 * lightness) + chroma / 256, alpha];
 }
 
 const addPrimitive = APRendererI.addPrimitive ?? throwExp('bad');
