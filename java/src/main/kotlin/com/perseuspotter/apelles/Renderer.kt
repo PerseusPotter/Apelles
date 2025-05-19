@@ -1,6 +1,5 @@
 package com.perseuspotter.apelles
 
-import com.google.common.collect.TreeMultiset
 import com.perseuspotter.apelles.depression.ChromaShader
 import com.perseuspotter.apelles.geo.Frustum
 import com.perseuspotter.apelles.geo.Geometry
