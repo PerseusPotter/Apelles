@@ -3,6 +3,7 @@ package com.perseuspotter.apelles.outline
 import com.perseuspotter.apelles.Renderer
 import com.perseuspotter.apelles.depression.Framebuffer
 import com.perseuspotter.apelles.geo.Frustum
+import com.perseuspotter.apelles.geo.Geometry
 import com.perseuspotter.apelles.outline.outliner.RenderOutliner
 import com.perseuspotter.apelles.outline.shader.InitPass
 import com.perseuspotter.apelles.outline.shader.JFAPass
@@ -170,6 +171,8 @@ object EntityOutlineRenderer {
         }
 
         prof.startSection("seeding")
+        val frust = net.minecraft.client.renderer.culling.Frustum()
+        frust.setPosition(Geometry.getRenderX(), Geometry.getRenderY(), Geometry.getRenderZ())
         ents.groupBy { it.getWidth() }.forEach { (w, e) ->
             InitPass.setWidth(w)
             // "fixed"
@@ -183,6 +186,7 @@ object EntityOutlineRenderer {
                     prevCol = id
                 }
                 val ent = it.entity.get()!!
+                if (!frust.isBoundingBoxInFrustum(ent.entityBoundingBox)) return@forEach
                 val invis = it.renderInvis() && ent.isInvisible
                 if (invis) ent.isInvisible = false
                 rm.renderEntityStatic(ent, pt.toFloat(), false)
