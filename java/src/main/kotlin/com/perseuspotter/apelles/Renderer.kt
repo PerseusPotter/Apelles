@@ -1468,6 +1468,7 @@ object Renderer {
         EntityOutlineRenderer.checkEntities(pt)
 
         prof.endStartSection("texturedOpaque")
+        texturedOpaque.sort()
         if (USE_NEW_SHIT) {
             prof.startSection("prepare")
             Geometry.bindBufGroup(0)
@@ -1487,7 +1488,6 @@ object Renderer {
             prof.endSection()
         }
         prof.startSection("render")
-        texturedOpaque.sort()
         texturedOpaque.forEach {
             if (USE_NEW_SHIT) Geometry.bind(it)
             it.render(pt)
@@ -1502,6 +1502,7 @@ object Renderer {
         glDepthMask(false)
 
         prof.endStartSection("texturedTranslucent")
+        texturedTranslucent.sort()
         if (USE_NEW_SHIT) {
             prof.startSection("prepare")
             Geometry.bindBufGroup(1)
@@ -1521,7 +1522,6 @@ object Renderer {
             prof.endSection()
         }
         prof.startSection("render")
-        texturedTranslucent.sort()
         texturedTranslucent.forEach {
             if (USE_NEW_SHIT) Geometry.bind(it)
             it.render(pt)
@@ -1536,6 +1536,7 @@ object Renderer {
         glDepthMask(true)
 
         prof.endStartSection("opaque")
+        opaque.sort()
         if (USE_NEW_SHIT) {
             prof.startSection("prepare")
             Geometry.bindBufGroup(2)
@@ -1555,7 +1556,6 @@ object Renderer {
             prof.endSection()
         }
         prof.startSection("render")
-        opaque.sort()
         opaque.forEach {
             if (USE_NEW_SHIT) Geometry.bind(it)
             it.render(pt)
@@ -1570,6 +1570,7 @@ object Renderer {
         glDepthMask(false)
 
         prof.endStartSection("translucent")
+        translucent.sort()
         if (USE_NEW_SHIT) {
             prof.startSection("prepare")
             Geometry.bindBufGroup(3)
@@ -1589,7 +1590,6 @@ object Renderer {
             prof.endSection()
         }
         prof.startSection("render")
-        translucent.sort()
         translucent.forEach {
             if (USE_NEW_SHIT) Geometry.bind(it)
             it.render(pt)
