@@ -232,7 +232,7 @@ const addBeacon = APRendererI.addBeacon ?? throwExp('bad');
  * @param {number} z
  * @param {RenderOptions & BeaconOptions} options
  */
-export function renderBeacon(color, x, y, z, { centered = true, h = 300 - y, lighting = 0, phase = false, cull = true, chroma = 0 }) {
+export function renderBeacon(color, x, y, z, { centered = true, h = 300 - y, lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
   if (!centered) {
     x += 0.5;
     z += 0.5;
