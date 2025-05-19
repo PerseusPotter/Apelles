@@ -8,7 +8,8 @@ abstract class Outliner(
     val phase: Boolean,
     val chroma: Boolean,
     val blackOutline: Boolean,
-    val absoluteSize: Boolean
+    val absoluteSize: Boolean,
+    val renderInvis: Boolean
 ) : Comparable<Outliner> {
     lateinit var col: Color
     init {

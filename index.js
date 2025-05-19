@@ -698,6 +698,7 @@ register('gameUnload', () => outliners.forEach(v => v.unregister()));
  * @property {boolean} [chroma=false] `false` - use chroma, the color will be interpreted as [chromaSize, speed, saturation, alpha] all with values ranging from [0, 1] (except you can go outside and it should work). only 2d chroma :(
  * @property {boolean} [blackOutline=true] `true` - outermost pixel is a black outline
  * @property {boolean} [absoluteSize=true] `true` - if true pixel scales with size in world (distance)
+ * @property {boolean} [renderInvis=false] `false` - if true will still render outline invisible entities
  */
 
 const ManualOutliner = JavaTypeOrNull('com.perseuspotter.apelles.outline.outliner.ManualOutliner') ?? throwExp('jar not loaded correctly');
@@ -710,8 +711,8 @@ const ManualOutliner = JavaTypeOrNull('com.perseuspotter.apelles.outline.outline
  * @param {OutlineRenderOptions} options
  * @returns {{ setColor(color: number): void, setColor(color: [number, number, number] | [number, number, number, number]): void, add(ent: MCEntity): void, remove(ent: MCEntity): void, clear(): void, register(): void, unregister(): void }}
  */
-export function createManualOutliner(color, width, { phase = false, chroma = false, blackOutline = true, absoluteSize = true } = {}) {
-  const o = new ManualOutliner(coerceColor(color), width, phase, chroma, blackOutline, absoluteSize);
+export function createManualOutliner(color, width, { phase = false, chroma = false, blackOutline = true, absoluteSize = true, renderInvis = false } = {}) {
+  const o = new ManualOutliner(coerceColor(color), width, phase, chroma, blackOutline, absoluteSize, renderInvis);
   outliners.push(o);
   return o;
 }
@@ -755,8 +756,8 @@ const PerEntityOutliner = JavaTypeOrNull('com.perseuspotter.apelles.outline.outl
  * @param {OutlineRenderOptions} options
  * @returns {{ setColor(color: number): void, setColor(color: [number, number, number] | [number, number, number, number]): void, register(): void, unregister(): void, clear(): void }}
  */
-export function createPerEntityOutliner(tester, color, width, { phase = false, chroma = false, blackOutline = true, absoluteSize = true } = {}) {
-  const o = new PerEntityOutliner(tester, coerceColor(color), width, phase, chroma, blackOutline, absoluteSize);
+export function createPerEntityOutliner(tester, color, width, { phase = false, chroma = false, blackOutline = true, absoluteSize = true, renderInvis = false } = {}) {
+  const o = new PerEntityOutliner(tester, coerceColor(color), width, phase, chroma, blackOutline, absoluteSize, renderInvis);
   outliners.push(o);
   return o;
 }
@@ -772,8 +773,8 @@ const PerFrameOutliner = JavaTypeOrNull('com.perseuspotter.apelles.outline.outli
  * @param {OutlineRenderOptions} options
  * @returns {{ setColor(color: number): void, setColor(color: [number, number, number] | [number, number, number, number]): void, register(): void, unregister(): void }}
  */
-export function createPerFrameOutliner(tester, color, width, { phase = false, chroma = false, blackOutline = true, absoluteSize = true } = {}) {
-  const o = new PerFrameOutliner(tester, coerceColor(color), width, phase, chroma, blackOutline, absoluteSize);
+export function createPerFrameOutliner(tester, color, width, { phase = false, chroma = false, blackOutline = true, absoluteSize = true, renderInvis = false } = {}) {
+  const o = new PerFrameOutliner(tester, coerceColor(color), width, phase, chroma, blackOutline, absoluteSize, renderInvis);
   outliners.push(o);
   return o;
 }
@@ -789,8 +790,8 @@ const SemiAutomaticOutliner = JavaTypeOrNull('com.perseuspotter.apelles.outline.
  * @param {OutlineRenderOptions} options
  * @returns {{ setColor(color: number): void, setColor(color: [number, number, number] | [number, number, number, number]): void, register(): void, unregister(): void, clear(): void, add(ent: MCEntity): void, remove(ent: MCEntity): void, retest(ent: MCEntity): void }}
  */
-export function createSemiAutomaticOutliner(tester, color, width, { phase = false, chroma = false, blackOutline = true, absoluteSize = true } = {}) {
-  const o = new SemiAutomaticOutliner(tester, coerceColor(color), width, phase, chroma, blackOutline, absoluteSize);
+export function createSemiAutomaticOutliner(tester, color, width, { phase = false, chroma = false, blackOutline = true, absoluteSize = true, renderInvis = false } = {}) {
+  const o = new SemiAutomaticOutliner(tester, coerceColor(color), width, phase, chroma, blackOutline, absoluteSize, renderInvis);
   outliners.push(o);
   return o;
 }

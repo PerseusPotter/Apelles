@@ -12,8 +12,9 @@ abstract class RenderOutliner(
     phase: Boolean,
     chroma: Boolean,
     blackOutline: Boolean,
-    absoluteSize: Boolean
-) : Outliner(color, width, phase, chroma, blackOutline, absoluteSize) {
+    absoluteSize: Boolean,
+    renderInvis: Boolean
+) : Outliner(color, width, phase, chroma, blackOutline, absoluteSize, renderInvis) {
     abstract fun test(e: Entity)
     abstract fun _internalClear()
 

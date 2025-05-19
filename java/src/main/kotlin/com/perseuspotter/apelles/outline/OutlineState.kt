@@ -29,4 +29,5 @@ class OutlineState(entity: Entity) {
     fun getPhase(): Boolean = active!!.phase
     fun isChroma(): Boolean = active!!.chroma
     fun isAbsoluteSize(): Boolean = active!!.absoluteSize
+    fun renderInvis(): Boolean = active!!.renderInvis
 }
