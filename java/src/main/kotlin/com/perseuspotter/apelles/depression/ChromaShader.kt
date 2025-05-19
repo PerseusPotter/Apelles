@@ -13,7 +13,7 @@ open class ChromaShader(fragSrc: String?, vertSrc: String?, private val twoD: Bo
     }
 
     open fun updateUniforms(pt: Double, t: Int) {
-        GL20.glUniform1f(getUniformLoc("timeOffset"), (t + pt).toFloat() / (if (twoD) 20f else 5f))
+        GL20.glUniform1f(getUniformLoc("timeOffset"), (t + pt).toFloat() / 5f)
         if (twoD) GL20.glUniform1f(getUniformLoc("oneOverDisplayWidth"), 1f / Minecraft.getMinecraft().displayWidth)
     }
 }
