@@ -19,7 +19,7 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> = emptyArray()
+        override fun inView(params: List<Double>): Boolean = true
 
         override fun getVertexCount(params: List<Double>): Int = params.size / 3
         override fun getIndicesCount(params: List<Double>): Int = params.size / 3
@@ -84,18 +84,17 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> {
+        override fun inView(params: List<Double>): Boolean {
             val (x1, y1, z1, x2, y2, z2) = params
-            return arrayOf(
-                Point(x1, y1, z1),
-                Point(x1, y1, z2),
-                Point(x1, y2, z1),
-                Point(x1, y2, z2),
-                Point(x2, y1, z1),
-                Point(x2, y1, z2),
-                Point(x2, y2, z1),
-                Point(x2, y2, z2)
-            )
+            return false ||
+                Frustum.test(x1, y1, z1) ||
+                Frustum.test(x1, y1, z2) ||
+                Frustum.test(x1, y2, z1) ||
+                Frustum.test(x1, y2, z2) ||
+                Frustum.test(x2, y1, z1) ||
+                Frustum.test(x2, y1, z2) ||
+                Frustum.test(x2, y2, z1) ||
+                Frustum.test(x2, y2, z2)
         }
 
         override fun getVertexCount(params: List<Double>): Int = 8
@@ -181,18 +180,17 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> {
+        override fun inView(params: List<Double>): Boolean {
             val (x1, y1, z1, x2, y2, z2) = params
-            return arrayOf(
-                Point(x1, y1, z1),
-                Point(x1, y1, z2),
-                Point(x1, y2, z1),
-                Point(x1, y2, z2),
-                Point(x2, y1, z1),
-                Point(x2, y1, z2),
-                Point(x2, y2, z1),
-                Point(x2, y2, z2)
-            )
+            return false ||
+                Frustum.test(x1, y1, z1) ||
+                Frustum.test(x1, y1, z2) ||
+                Frustum.test(x1, y2, z1) ||
+                Frustum.test(x1, y2, z2) ||
+                Frustum.test(x2, y1, z1) ||
+                Frustum.test(x2, y1, z2) ||
+                Frustum.test(x2, y2, z1) ||
+                Frustum.test(x2, y2, z2)
         }
 
         override fun getVertexCount(params: List<Double>): Int = 8
@@ -241,7 +239,7 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> = emptyArray()
+        override fun inView(params: List<Double>): Boolean = true
 
         override fun getVertexCount(params: List<Double>): Int = 10
         override fun getIndicesCount(params: List<Double>): Int = 10
@@ -280,7 +278,7 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> = emptyArray()
+        override fun inView(params: List<Double>): Boolean = true
 
         override fun getVertexCount(params: List<Double>): Int = 10
         override fun getIndicesCount(params: List<Double>): Int = 10
@@ -336,7 +334,7 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> = emptyArray()
+        override fun inView(params: List<Double>): Boolean = true
 
         override fun getVertexCount(params: List<Double>): Int = 8
         override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 9 else 8
@@ -382,7 +380,7 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> = emptyArray()
+        override fun inView(params: List<Double>): Boolean = true
 
         override fun getVertexCount(params: List<Double>): Int = 8
         override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 9 else 8
@@ -560,19 +558,18 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> {
+        override fun inView(params: List<Double>): Boolean {
             val (x, y, z, r) = params
-            return arrayOf(
-                Point(x, y, z),
-                Point(x - r, y - r, z - r),
-                Point(x - r, y - r, z + r),
-                Point(x - r, y + r, z - r),
-                Point(x - r, y + r, z + r),
-                Point(x + r, y - r, z - r),
-                Point(x + r, y - r, z + r),
-                Point(x + r, y + r, z - r),
-                Point(x + r, y + r, z + r)
-            )
+            return false ||
+                Frustum.test(x, y, z) ||
+                Frustum.test(x - r, y - r, z - r) ||
+                Frustum.test(x - r, y - r, z + r) ||
+                Frustum.test(x - r, y + r, z - r) ||
+                Frustum.test(x - r, y + r, z + r) ||
+                Frustum.test(x + r, y - r, z - r) ||
+                Frustum.test(x + r, y - r, z + r) ||
+                Frustum.test(x + r, y + r, z - r) ||
+                Frustum.test(x + r, y + r, z + r)
         }
 
         override fun getVertexCount(params: List<Double>): Int {
@@ -655,15 +652,14 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> {
+        override fun inView(params: List<Double>): Boolean {
             val (x, y, z, r, h) = params
-            return arrayOf(
-                Point(x, y + h, z),
-                Point(x + r, y, z + r),
-                Point(x + r, y, z - r),
-                Point(x - r, y, z + r),
-                Point(x - r, y, z - r)
-            )
+            return false ||
+                Frustum.test(x, y + h, z) ||
+                Frustum.test(x + r, y, z + r) ||
+                Frustum.test(x + r, y, z - r) ||
+                Frustum.test(x - r, y, z + r) ||
+                Frustum.test(x - r, y, z - r)
         }
 
         override fun getVertexCount(params: List<Double>): Int = 1 + params[5].toInt()
@@ -746,15 +742,14 @@ object Geometry3D {
             }
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> {
+        override fun inView(params: List<Double>): Boolean {
             val (x, y, z, r, h) = params
-            return arrayOf(
-                Point(x, y + h, z),
-                Point(x + r, y, z + r),
-                Point(x + r, y, z - r),
-                Point(x - r, y, z + r),
-                Point(x - r, y, z - r)
-            )
+            return false ||
+                Frustum.test(x, y + h, z) ||
+                Frustum.test(x + r, y, z + r) ||
+                Frustum.test(x + r, y, z - r) ||
+                Frustum.test(x - r, y, z + r) ||
+                Frustum.test(x - r, y, z - r)
         }
 
         override fun getVertexCount(params: List<Double>): Int = 2 + params[5].toInt()
@@ -831,15 +826,14 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> {
+        override fun inView(params: List<Double>): Boolean {
             val (x, y, z, r, h) = params
-            return arrayOf(
-                Point(x, y + h, z),
-                Point(x + r, y, z + r),
-                Point(x + r, y, z - r),
-                Point(x - r, y, z + r),
-                Point(x - r, y, z - r)
-            )
+            return false ||
+                Frustum.test(x, y + h, z) ||
+                Frustum.test(x + r, y, z + r) ||
+                Frustum.test(x + r, y, z - r) ||
+                Frustum.test(x - r, y, z + r) ||
+                Frustum.test(x - r, y, z - r)
         }
 
         override fun getVertexCount(params: List<Double>): Int = 2 * params[5].toInt()
@@ -937,15 +931,14 @@ object Geometry3D {
             }
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> {
+        override fun inView(params: List<Double>): Boolean {
             val (x, y, z, r, h) = params
-            return arrayOf(
-                Point(x, y + h, z),
-                Point(x + r, y, z + r),
-                Point(x + r, y, z - r),
-                Point(x - r, y, z + r),
-                Point(x - r, y, z - r)
-            )
+            return false ||
+                Frustum.test(x, y + h, z) ||
+                Frustum.test(x + r, y, z + r) ||
+                Frustum.test(x + r, y, z - r) ||
+                Frustum.test(x - r, y, z + r) ||
+                Frustum.test(x - r, y, z - r)
         }
 
         override fun getVertexCount(params: List<Double>): Int = 2 * (params[5].toInt() + 1)
@@ -1006,16 +999,15 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> {
+        override fun inView(params: List<Double>): Boolean {
             val (x, y, z, w, h) = params
-            return arrayOf(
-                Point(x, y + h, z),
-                Point(x + w, y, z + w),
-                Point(x + w, y, z - w),
-                Point(x - w, y, z + w),
-                Point(x - w, y, z - w),
-                Point(x, y - h, z)
-            )
+            return false ||
+                Frustum.test(x, y + h, z) ||
+                Frustum.test(x + w, y, z + w) ||
+                Frustum.test(x + w, y, z - w) ||
+                Frustum.test(x - w, y, z + w) ||
+                Frustum.test(x - w, y, z - w) ||
+                Frustum.test(x, y - h, z)
         }
 
         override fun getVertexCount(params: List<Double>): Int = 6
@@ -1078,16 +1070,15 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> {
+        override fun inView(params: List<Double>): Boolean {
             val (x, y, z, w, h) = params
-            return arrayOf(
-                Point(x, y + h, z),
-                Point(x + w, y, z + w),
-                Point(x + w, y, z - w),
-                Point(x - w, y, z + w),
-                Point(x - w, y, z - w),
-                Point(x, y - h, z)
-            )
+            return false ||
+                Frustum.test(x, y + h, z) ||
+                Frustum.test(x + w, y, z + w) ||
+                Frustum.test(x + w, y, z - w) ||
+                Frustum.test(x - w, y, z + w) ||
+                Frustum.test(x - w, y, z - w) ||
+                Frustum.test(x, y - h, z)
         }
 
         override fun getVertexCount(params: List<Double>): Int = 6
@@ -1263,18 +1254,17 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> {
+        override fun inView(params: List<Double>): Boolean {
             val (x, y, z) = params
-            return arrayOf(
-                Point(x + 0.5, y + 0.5, z + 0.5),
-                Point(x + 0.5, y + 0.5, z - 0.5),
-                Point(x + 0.5, y - 0.5, z + 0.5),
-                Point(x + 0.5, y - 0.5, z - 0.5),
-                Point(x - 0.5, y + 0.5, z + 0.5),
-                Point(x - 0.5, y + 0.5, z - 0.5),
-                Point(x - 0.5, y - 0.5, z + 0.5),
-                Point(x - 0.5, y - 0.5, z - 0.5)
-            )
+            return false ||
+                Frustum.test(x + 0.5, y + 0.5, z + 0.5) ||
+                Frustum.test(x + 0.5, y + 0.5, z - 0.5) ||
+                Frustum.test(x + 0.5, y - 0.5, z + 0.5) ||
+                Frustum.test(x + 0.5, y - 0.5, z - 0.5) ||
+                Frustum.test(x - 0.5, y + 0.5, z + 0.5) ||
+                Frustum.test(x - 0.5, y + 0.5, z - 0.5) ||
+                Frustum.test(x - 0.5, y - 0.5, z + 0.5) ||
+                Frustum.test(x - 0.5, y - 0.5, z - 0.5)
         }
 
         override fun getVertexCount(params: List<Double>): Int = 12
@@ -1365,18 +1355,17 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> {
+        override fun inView(params: List<Double>): Boolean {
             val (x, y, z) = params
-            return arrayOf(
-                Point(x + 0.5, y + 0.5, z + 0.5),
-                Point(x + 0.5, y + 0.5, z - 0.5),
-                Point(x + 0.5, y - 0.5, z + 0.5),
-                Point(x + 0.5, y - 0.5, z - 0.5),
-                Point(x - 0.5, y + 0.5, z + 0.5),
-                Point(x - 0.5, y + 0.5, z - 0.5),
-                Point(x - 0.5, y - 0.5, z + 0.5),
-                Point(x - 0.5, y - 0.5, z - 0.5)
-            )
+            return false ||
+                Frustum.test(x + 0.5, y + 0.5, z + 0.5) ||
+                Frustum.test(x + 0.5, y + 0.5, z - 0.5) ||
+                Frustum.test(x + 0.5, y - 0.5, z + 0.5) ||
+                Frustum.test(x + 0.5, y - 0.5, z - 0.5) ||
+                Frustum.test(x - 0.5, y + 0.5, z + 0.5) ||
+                Frustum.test(x - 0.5, y + 0.5, z - 0.5) ||
+                Frustum.test(x - 0.5, y - 0.5, z + 0.5) ||
+                Frustum.test(x - 0.5, y - 0.5, z - 0.5)
         }
 
         override fun getVertexCount(params: List<Double>): Int = 12
@@ -1464,18 +1453,17 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> {
+        override fun inView(params: List<Double>): Boolean {
             val (x, y, z) = params
-            return arrayOf(
-                Point(x + 0.5, y + 0.5, z + 0.5),
-                Point(x + 0.5, y + 0.5, z - 0.5),
-                Point(x + 0.5, y - 0.5, z + 0.5),
-                Point(x + 0.5, y - 0.5, z - 0.5),
-                Point(x - 0.5, y + 0.5, z + 0.5),
-                Point(x - 0.5, y + 0.5, z - 0.5),
-                Point(x - 0.5, y - 0.5, z + 0.5),
-                Point(x - 0.5, y - 0.5, z - 0.5)
-            )
+            return false ||
+                Frustum.test(x + 0.5, y + 0.5, z + 0.5) ||
+                Frustum.test(x + 0.5, y + 0.5, z - 0.5) ||
+                Frustum.test(x + 0.5, y - 0.5, z + 0.5) ||
+                Frustum.test(x + 0.5, y - 0.5, z - 0.5) ||
+                Frustum.test(x - 0.5, y + 0.5, z + 0.5) ||
+                Frustum.test(x - 0.5, y + 0.5, z - 0.5) ||
+                Frustum.test(x - 0.5, y - 0.5, z + 0.5) ||
+                Frustum.test(x - 0.5, y - 0.5, z - 0.5)
         }
 
         override fun getVertexCount(params: List<Double>): Int = 14
@@ -1581,18 +1569,17 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> {
+        override fun inView(params: List<Double>): Boolean {
             val (x, y, z) = params
-            return arrayOf(
-                Point(x + 0.5, y + 0.5, z + 0.5),
-                Point(x + 0.5, y + 0.5, z - 0.5),
-                Point(x + 0.5, y - 0.5, z + 0.5),
-                Point(x + 0.5, y - 0.5, z - 0.5),
-                Point(x - 0.5, y + 0.5, z + 0.5),
-                Point(x - 0.5, y + 0.5, z - 0.5),
-                Point(x - 0.5, y - 0.5, z + 0.5),
-                Point(x - 0.5, y - 0.5, z - 0.5)
-            )
+            return false ||
+                Frustum.test(x + 0.5, y + 0.5, z + 0.5) ||
+                Frustum.test(x + 0.5, y + 0.5, z - 0.5) ||
+                Frustum.test(x + 0.5, y - 0.5, z + 0.5) ||
+                Frustum.test(x + 0.5, y - 0.5, z - 0.5) ||
+                Frustum.test(x - 0.5, y + 0.5, z + 0.5) ||
+                Frustum.test(x - 0.5, y + 0.5, z - 0.5) ||
+                Frustum.test(x - 0.5, y - 0.5, z + 0.5) ||
+                Frustum.test(x - 0.5, y - 0.5, z - 0.5)
         }
 
         override fun getVertexCount(params: List<Double>): Int = 14
@@ -1680,18 +1667,17 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> {
+        override fun inView(params: List<Double>): Boolean {
             val (x, y, z) = params
-            return arrayOf(
-                Point(x + 0.5, y + 0.5, z + 0.5),
-                Point(x + 0.5, y + 0.5, z - 0.5),
-                Point(x + 0.5, y - 0.5, z + 0.5),
-                Point(x + 0.5, y - 0.5, z - 0.5),
-                Point(x - 0.5, y + 0.5, z + 0.5),
-                Point(x - 0.5, y + 0.5, z - 0.5),
-                Point(x - 0.5, y - 0.5, z + 0.5),
-                Point(x - 0.5, y - 0.5, z - 0.5)
-            )
+            return false ||
+                Frustum.test(x + 0.5, y + 0.5, z + 0.5) ||
+                Frustum.test(x + 0.5, y + 0.5, z - 0.5) ||
+                Frustum.test(x + 0.5, y - 0.5, z + 0.5) ||
+                Frustum.test(x + 0.5, y - 0.5, z - 0.5) ||
+                Frustum.test(x - 0.5, y + 0.5, z + 0.5) ||
+                Frustum.test(x - 0.5, y + 0.5, z - 0.5) ||
+                Frustum.test(x - 0.5, y - 0.5, z + 0.5) ||
+                Frustum.test(x - 0.5, y - 0.5, z - 0.5)
         }
 
         override fun getVertexCount(params: List<Double>): Int = 14
@@ -1789,18 +1775,17 @@ object Geometry3D {
             draw()
         }
 
-        override fun testPoints(params: List<Double>): Array<Point> {
+        override fun inView(params: List<Double>): Boolean {
             val (x, y, z) = params
-            return arrayOf(
-                Point(x + 0.5, y + 0.5, z + 0.5),
-                Point(x + 0.5, y + 0.5, z - 0.5),
-                Point(x + 0.5, y - 0.5, z + 0.5),
-                Point(x + 0.5, y - 0.5, z - 0.5),
-                Point(x - 0.5, y + 0.5, z + 0.5),
-                Point(x - 0.5, y + 0.5, z - 0.5),
-                Point(x - 0.5, y - 0.5, z + 0.5),
-                Point(x - 0.5, y - 0.5, z - 0.5)
-            )
+            return false ||
+                Frustum.test(x + 0.5, y + 0.5, z + 0.5) ||
+                Frustum.test(x + 0.5, y + 0.5, z - 0.5) ||
+                Frustum.test(x + 0.5, y - 0.5, z + 0.5) ||
+                Frustum.test(x + 0.5, y - 0.5, z - 0.5) ||
+                Frustum.test(x - 0.5, y + 0.5, z + 0.5) ||
+                Frustum.test(x - 0.5, y + 0.5, z - 0.5) ||
+                Frustum.test(x - 0.5, y - 0.5, z + 0.5) ||
+                Frustum.test(x - 0.5, y - 0.5, z - 0.5)
         }
 
         override fun getVertexCount(params: List<Double>): Int = 14

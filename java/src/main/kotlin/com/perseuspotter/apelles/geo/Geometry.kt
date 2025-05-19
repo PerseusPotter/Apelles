@@ -356,7 +356,7 @@ abstract class Geometry {
     }
     abstract val name: String
     abstract fun render(pt: Double, params: List<Double>)
-    abstract fun testPoints(params: List<Double>): Array<Point>
+    abstract fun inView(params: List<Double>): Boolean
     abstract fun getVertexCount(params: List<Double>): Int
     abstract fun getIndicesCount(params: List<Double>): Int
     abstract fun getDrawMode(params: List<Double>): Int

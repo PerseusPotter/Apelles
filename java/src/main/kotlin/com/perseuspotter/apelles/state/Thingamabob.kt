@@ -69,10 +69,7 @@ open class Thingamabob(
 
         val geo = getRenderer()
 
-        if (cull) {
-            val points = geo.testPoints(params)
-            if (points.isNotEmpty() && points.all { !Frustum.test(it) }) return
-        }
+        if (cull && !geo.inView(params)) return
 
         if (!Renderer.USE_NEW_SHIT) prerender(pt)
 
@@ -116,7 +113,7 @@ open class Thingamabob(
         return id - other.id
     }
 
-    enum class Type() {
+    enum class Type {
         Primitive,
         AABBO,
         AABBF,
