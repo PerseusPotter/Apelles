@@ -12,8 +12,9 @@ class PerFrameOutliner(
     phase: Boolean,
     chroma: Boolean,
     blackOutline: Boolean,
-    absoluteSize: Boolean
-) : RenderOutliner(tester, color, width, phase, chroma, blackOutline, absoluteSize)  {
+    absoluteSize: Boolean,
+    renderInvis: Boolean
+) : RenderOutliner(tester, color, width, phase, chroma, blackOutline, absoluteSize, renderInvis)  {
     val hits = linkedSetOf<Entity>()
     override fun test(e: Entity) {
         if (tester.test(e)) {

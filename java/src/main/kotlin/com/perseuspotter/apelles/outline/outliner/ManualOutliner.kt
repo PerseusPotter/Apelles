@@ -12,8 +12,9 @@ class ManualOutliner(
     phase: Boolean,
     chroma: Boolean,
     blackOutline: Boolean,
-    absoluteSize: Boolean
-) : Outliner(color, width, phase, chroma, blackOutline, absoluteSize) {
+    absoluteSize: Boolean,
+    renderInvis: Boolean
+) : Outliner(color, width, phase, chroma, blackOutline, absoluteSize, renderInvis) {
     val hits = Collections.newSetFromMap(WeakHashMap<Entity, Boolean>())
 
     fun add(e: Entity) {

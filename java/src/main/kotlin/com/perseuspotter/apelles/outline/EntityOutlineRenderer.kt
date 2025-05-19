@@ -183,7 +183,7 @@ object EntityOutlineRenderer {
                     prevCol = id
                 }
                 val ent = it.entity.get()!!
-                val invis = ent.isInvisible
+                val invis = it.renderInvis() && ent.isInvisible
                 if (invis) ent.isInvisible = false
                 rm.renderEntityStatic(ent, pt.toFloat(), false)
                 if (invis) ent.isInvisible = true

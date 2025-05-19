@@ -13,8 +13,9 @@ class SemiAutomaticOutliner(
     phase: Boolean,
     chroma: Boolean,
     blackOutline: Boolean,
-    absoluteSize: Boolean
-) : RenderOutliner(tester, color, width, phase, chroma, blackOutline, absoluteSize) {
+    absoluteSize: Boolean,
+    renderInvis: Boolean
+) : RenderOutliner(tester, color, width, phase, chroma, blackOutline, absoluteSize, renderInvis) {
     val hits = Collections.newSetFromMap(WeakHashMap<Entity, Boolean>())
     val seen = Collections.newSetFromMap(WeakHashMap<Entity, Boolean>())
 
