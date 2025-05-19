@@ -21,10 +21,10 @@ import org.lwjgl.opengl.GLContext
 import kotlin.math.*
 
 object Renderer {
-    private var texturedOpaque = TreeMultiset.create<Thingamabob>()
-    private var texturedTranslucent = TreeMultiset.create<Thingamabob>()
-    private var opaque = TreeMultiset.create<Thingamabob>()
-    private var translucent = TreeMultiset.create<Thingamabob>()
+    private val texturedOpaque = mutableListOf<Thingamabob>()
+    private val texturedTranslucent = mutableListOf<Thingamabob>()
+    private val opaque = mutableListOf<Thingamabob>()
+    private val translucent = mutableListOf<Thingamabob>()
 
     fun addTexturedThing(thing: Thingamabob) {
         if (thing.color.a == 1f) texturedOpaque.add(thing)
@@ -1488,12 +1488,13 @@ object Renderer {
             prof.endSection()
         }
         prof.startSection("render")
+        texturedOpaque.sort()
         texturedOpaque.forEach {
             if (USE_NEW_SHIT) Geometry.bind(it)
             it.render(pt)
         }
         prof.endStartSection("postRender")
-        texturedOpaque = TreeMultiset.create()
+        texturedOpaque.clear()
         if (USE_NEW_SHIT) Geometry.render(pt)
         prof.endSection()
 
@@ -1521,12 +1522,13 @@ object Renderer {
             prof.endSection()
         }
         prof.startSection("render")
+        texturedTranslucent.sort()
         texturedTranslucent.forEach {
             if (USE_NEW_SHIT) Geometry.bind(it)
             it.render(pt)
         }
         prof.endStartSection("postRender")
-        texturedTranslucent = TreeMultiset.create()
+        texturedTranslucent.clear()
         if (USE_NEW_SHIT) Geometry.render(pt)
         prof.endSection()
         glDisable(GL_TEXTURE_2D)
@@ -1554,12 +1556,13 @@ object Renderer {
             prof.endSection()
         }
         prof.startSection("render")
+        opaque.sort()
         opaque.forEach {
             if (USE_NEW_SHIT) Geometry.bind(it)
             it.render(pt)
         }
         prof.endStartSection("postRender")
-        opaque = TreeMultiset.create()
+        opaque.clear()
         if (USE_NEW_SHIT) Geometry.render(pt)
         prof.endSection()
 
@@ -1587,12 +1590,13 @@ object Renderer {
             prof.endSection()
         }
         prof.startSection("render")
+        translucent.sort()
         translucent.forEach {
             if (USE_NEW_SHIT) Geometry.bind(it)
             it.render(pt)
         }
         prof.endStartSection("postRender")
-        translucent = TreeMultiset.create()
+        translucent.clear()
         if (USE_NEW_SHIT) {
             Geometry.render(pt)
 
