@@ -6,13 +6,8 @@ export function ___________________________________shhh() {
   let t = 0;
   register('tick', () => t++);
   register('renderWorld', pt => {
-    try {
-      uploadBatched();
-      APRendererI.render(pt, t);
-    } catch (e) {
-      console.log('[Apelles] looks like you errored, probably incorrect parameters. hint: use `disableBatching` to help debug');
-      console.error(e);
-    }
+    uploadBatched();
+    APRendererI.render(pt, t);
   }).setPriority(Priority.LOWEST);
 }
 const GlState = JavaTypeOrNull('com.perseuspotter.apelles.state.GlState')?.INSTANCE ?? throwExp('jar not loaded correctly');
@@ -28,7 +23,8 @@ function uploadBatched() {
   try {
     BatchUploader.upload(batched);
   } catch (e) {
-    throw e;
+    console.log('[Apelles] looks like you errored, probably incorrect parameters. hint: use `disableBatching` to help debug');
+    console.error(e);
   } finally {
     batched = [];
   }
