@@ -799,7 +799,7 @@ register('gameUnload', () => outliners.forEach(v => v.unregister()));
 /**
  * @typedef OutlineRenderOptions
  * @property {boolean} [phase=false] `false`
- * @property {boolean} [chroma=false] `false` - use chroma, the color will be interpreted as [chromaSize, speed, saturation, alpha] all with values ranging from [0, 1] (except you can go outside and it should work). only 2d chroma :(
+ * @property {boolean} [chroma=false] `false` - use chroma, the color will be interpreted as [chromaSize, speed, lightness & chroma, alpha] (hint, use `packChromaParams`). only 2d chroma :(
  * @property {boolean} [blackOutline=true] `true` - outermost pixel is a black outline
  * @property {boolean} [absoluteSize=true] `true` - if true pixel scales with size in world (distance)
  * @property {boolean} [renderInvis=false] `false` - if true will still render outline invisible entities
