@@ -262,6 +262,7 @@ abstract class Geometry {
         var currBuf: VAO? = null
         var currBufI: VAOInfo? = null
         var currCol: Color? = null
+        var prevK: Int? = null
         val unusedBufs = mutableSetOf<Int>()
         val bufInfo = mutableMapOf<Int, VAOInfo>()
         var PRIMITIVE_RESTART_INDEX = 0xFFFF
@@ -277,11 +278,21 @@ abstract class Geometry {
             unusedBufs.clear()
             unusedBufs.addAll(currBufM.keys)
             bufInfo.clear()
+            currBufI = null
+            prevK = null
         }
         fun allocate(k: Int, v: Int, i: Int, c: Boolean, n: Boolean, t: Boolean, m: Int, th: Thingamabob) {
-            bufInfo.getOrPut(k) { VAOInfo(0, 0, c, n, t, m, th) }.add(v, i)
+            (
+                if (k == prevK) currBufI!!
+                else bufInfo.getOrPut(k) { VAOInfo(0, 0, c, n, t, m, th) }.also {
+                    currBufI = it
+                    prevK = k
+                }
+            ).add(v, i)
         }
         fun prepare() {
+            currBufI = null
+            prevK = null
             bufInfo.forEach{ (k, s) ->
                 if (s.vert == 0 || s.index == 0) return
                 unusedBufs.remove(k)
@@ -310,8 +321,11 @@ abstract class Geometry {
 
         fun bind(thing: Thingamabob) {
             val k = thing.getVBOGroupingId()
-            currBuf = currBufM[k]
-            currBufI = bufInfo[k]
+            if (k != prevK) {
+                prevK = k
+                currBuf = currBufM[k]
+                currBufI = bufInfo[k]
+            }
             currCol = thing.color
             vertOffset = currBuf!!.vertCount
             reset()
