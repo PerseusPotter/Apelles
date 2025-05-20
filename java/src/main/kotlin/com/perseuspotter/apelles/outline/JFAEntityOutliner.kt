@@ -5,18 +5,16 @@ import com.perseuspotter.apelles.geo.Geometry
 import com.perseuspotter.apelles.outline.shader.InitPass
 import com.perseuspotter.apelles.outline.shader.JFAPass
 import com.perseuspotter.apelles.outline.shader.JFARender
-import com.perseuspotter.apelles.state.Color
+import com.perseuspotter.apelles.outline.shader.UBOColorRender
 import com.perseuspotter.apelles.state.GlState
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.OpenGlHelper
-import net.minecraft.util.ChatComponentText
 import org.lwjgl.opengl.ContextCapabilities
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL30
 import java.io.File
 import javax.imageio.ImageIO
-import kotlin.math.min
 
 object JFAEntityOutliner : EntityOutliner(1, "JFA") {
     override fun checkCapabilities(cap: ContextCapabilities) = cap.OpenGL31
@@ -58,7 +56,7 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         InitPass.bind()
         InitPass.setSize(fb1!!.textureWidth, fb1!!.textureHeight)
         var maxW = 0
-        val colors = linkedMapOf<Color, Int>()
+        val colors = UBOColorRender.ColorBuilder()
         var prevCol = -1
         if (dump) {
             val depthImage = fb1!!.dumpDepth()
@@ -75,8 +73,7 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
             val w2 = if (w < 0) -32 * w else w
             if (w2 > maxW) maxW = w2
             e.forEach Inner@ {
-                val col = it.getColor()
-                val id = min(255, colors.getOrPut(col) { colors.size })
+                val id = colors.getId(it.getColor())
                 if (id != prevCol) {
                     InitPass.setColorId(id)
                     prevCol = id
@@ -96,7 +93,6 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
             val depthImage = fb1!!.dumpDepth()
             ImageIO.write(colorImage, "png", File("./colorBufferInit$pass.png"))
             ImageIO.write(depthImage, "png", File("./depthBufferInit$pass.png"))
-            println("colors: ${colors.toList().joinToString(" ") { it.first.toString() }}")
         }
         GlState.setDepthTest(false)
 
@@ -135,12 +131,7 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         JFARender.bind()
         JFARender.updateUniforms(pt, t)
         JFARender.bindUbo()
-        var colList = colors.toList().sortedBy { it.second }.map { it.first }
-        if (colList.size > 256) {
-            Minecraft.getMinecraft().thePlayer.addChatMessage(ChatComponentText("Only up to 256 unique colors are supported per frame for each phase and occluded entity outlines."))
-            colList = colList.subList(0, 256)
-        }
-        JFARender.setColors(colList)
+        JFARender.setColors(colors.toList())
         (if (f) fb1 else fb2)!!.bindTexture()
         GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, (if (f) fb1 else fb2)!!.framebufferObject)
         GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, mainFb.framebufferObject)
