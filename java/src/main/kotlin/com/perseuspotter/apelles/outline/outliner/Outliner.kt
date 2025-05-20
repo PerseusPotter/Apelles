@@ -4,6 +4,7 @@ import com.perseuspotter.apelles.state.Color
 
 abstract class Outliner(
     color: Color,
+    val type: Int,
     val width: Int,
     val phase: Boolean,
     val chroma: Boolean,
@@ -14,6 +15,10 @@ abstract class Outliner(
     lateinit var col: Color
     init {
         setColor(color)
+        when (type) {
+            1 -> {}
+            else -> throw IllegalArgumentException("not a valid outliner type, found $type")
+        }
     }
     fun setColor(col: Long) = setColor(Color(col))
     fun setColor(col: List<Double>) = setColor(Color(col))

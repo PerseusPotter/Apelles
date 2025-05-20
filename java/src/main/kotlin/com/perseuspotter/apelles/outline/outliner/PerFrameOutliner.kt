@@ -8,13 +8,14 @@ import net.minecraft.entity.Entity
 class PerFrameOutliner(
     tester: OutlineTester,
     color: Color,
+    type: Int,
     width: Int,
     phase: Boolean,
     chroma: Boolean,
     blackOutline: Boolean,
     absoluteSize: Boolean,
     renderInvis: Boolean
-) : RenderOutliner(tester, color, width, phase, chroma, blackOutline, absoluteSize, renderInvis)  {
+) : RenderOutliner(tester, color, type, width, phase, chroma, blackOutline, absoluteSize, renderInvis)  {
     val hits = linkedSetOf<Entity>()
     override fun test(e: Entity) {
         if (tester.test(e)) {

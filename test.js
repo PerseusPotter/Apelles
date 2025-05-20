@@ -62,11 +62,11 @@ register('renderWorld', () => {
 const tester = createPassthroughOutlineTester();
 tester.addBlacklist(net.minecraft.entity.item.EntityArmorStand);
 // tester.addWhitelist(net.minecraft.entity.passive.EntityPig);
-const outliner = createPerEntityOutliner(tester, packChromaParams(0.2, 0.4, 1, 0.3, 1), 5, { phase: true, chroma: true, absoluteSize: false });
+const outliner = createPerEntityOutliner(tester, packChromaParams(0.2, 0.4, 1, 0.3, 1), 1, { width: 5, phase: true, chroma: true, absoluteSize: false });
 // outliner.register();
 
 const tester2 = createPassthroughOutlineTester();
 // tester2.addWhitelist(net.minecraft.entity.item.EntityArmorStand);
 // tester2.addWhitelist(net.minecraft.entity.passive.EntityPig);
-const outliner2 = createPerEntityOutliner(tester2, 0xFF0000FF, 2, { phase: false, chroma: false, absoluteSize: true });
+const outliner2 = createPerEntityOutliner(tester2, 0xFF0000FF, 1, { width: 2, phase: false, chroma: false, absoluteSize: true });
 // outliner2.register();
