@@ -7,8 +7,10 @@ export function ___________________________________shhh() {
   register('tick', () => t++);
   register('renderWorld', pt => {
     try {
+      uploadBatched();
       APRendererI.render(pt, t);
     } catch (e) {
+      console.log('[Apelles] looks like you errored, probably incorrect parameters. hint: use `disableBatching` to help debug');
       console.error(e);
     }
   }).setPriority(Priority.LOWEST);
@@ -18,6 +20,26 @@ const Frustum = JavaTypeOrNull('com.perseuspotter.apelles.geo.Frustum')?.INSTANC
 const Point = JavaTypeOrNull('com.perseuspotter.apelles.geo.Point') ?? throwExp('jar not loaded correctly');
 const Geometry = JavaTypeOrNull('com.perseuspotter.apelles.geo.Geometry') ?? throwExp('jar not loaded correctly');
 const GeometryC = Geometry.Companion;
+const BatchUploader = JavaTypeOrNull('com.perseuspotter.apelles.BatchUploader')?.INSTANCE ?? throwExp('jar not loaded correctly');
+let batched = [];
+let batchCalls = true;
+function uploadBatched() {
+  if (batched.length === 0) return;
+  try {
+    BatchUploader.upload(batched);
+  } catch (e) {
+    throw e;
+  } finally {
+    batched = [];
+  }
+}
+register('renderWorld', uploadBatched).setPriority(Priority.LOWEST);
+/**
+ * use if you need a more detailed error message (sc. you are passing the wrong parameters and getting a class cast exception and need to find the exact method call)
+ */
+export function disableBatching() {
+  batchCalls = false;
+}
 
 /**
  * packed int is RGBA
@@ -85,7 +107,8 @@ const addPrimitive = APRendererI.addPrimitive ?? throwExp('bad');
  * @param {LineRenderOptions} options
  */
 export function renderLine(color, points, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  addPrimitive.call(APRendererI, color, 3, points, lw, lighting, phase, smooth, cull, chroma);
+  if (batchCalls) batched.push([1, color, 3, points, lw, lighting, phase, smooth, cull, chroma]);
+  else addPrimitive.call(APRendererI, color, 3, points, lw, lighting, phase, smooth, cull, chroma);
 }
 
 /**
@@ -95,7 +118,8 @@ export function renderLine(color, points, { lw = 1, lighting = 0, phase = false,
  * @param {LineRenderOptions} options
  */
 export function renderPrimitive(color, mode, points, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  addPrimitive.call(APRendererI, color, mode, points, lw, lighting, phase, smooth, cull, chroma);
+  if (batchCalls) batched.push([1, color, mode, points, lw, lighting, phase, smooth, cull, chroma]);
+  else addPrimitive.call(APRendererI, color, mode, points, lw, lighting, phase, smooth, cull, chroma);
 }
 
 const addBoxO = APRendererI.addBoxO ?? throwExp('bad');
@@ -109,7 +133,8 @@ const addBoxO = APRendererI.addBoxO ?? throwExp('bad');
  * @param {LineRenderOptions & AABBOptions} options
  */
 export function renderBoxOutline(color, x, y, z, w, h, { centered = true, wz = w, lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  addBoxO.call(APRendererI, color, x, y, z, w, h, wz, centered, lw, lighting, phase, smooth, cull, chroma);
+  if (batchCalls) batched.push([2, color, x, y, z, w, h, wz, centered, lw, lighting, phase, smooth, cull, chroma]);
+  else addBoxO.call(APRendererI, color, x, y, z, w, h, wz, centered, lw, lighting, phase, smooth, cull, chroma);
 }
 
 const addAABBO = APRendererI.addAABBO ?? throwExp('bad');
@@ -124,7 +149,23 @@ const addAABBO = APRendererI.addAABBO ?? throwExp('bad');
  * @param {LineRenderOptions} options
  */
 export function renderAABBOutline(color, x1, y1, z1, x2, y2, z2, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  addAABBO.call(APRendererI,
+  if (batchCalls) batched.push([
+    3,
+    color,
+    Math.min(x1, x2),
+    Math.min(y1, y2),
+    Math.min(z1, z2),
+    Math.max(x1, x2),
+    Math.max(y1, y2),
+    Math.max(z1, z2),
+    lw,
+    lighting,
+    phase,
+    smooth,
+    cull,
+    chroma
+  ]);
+  else addAABBO.call(APRendererI,
     color,
     Math.min(x1, x2),
     Math.min(y1, y2),
@@ -146,7 +187,23 @@ export function renderAABBOutline(color, x1, y1, z1, x2, y2, z2, { lw = 1, light
  * @param {RenderOptions} options
  */
 export function renderMCAABBOutline(color, aabb, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  addAABBO.call(APRendererI,
+  if (batchCalls) batched.push([
+    3,
+    color,
+    aabb.field_72340_a,
+    aabb.field_72338_b,
+    aabb.field_72339_c,
+    aabb.field_72336_d,
+    aabb.field_72337_e,
+    aabb.field_72334_f,
+    lw,
+    lighting,
+    phase,
+    smooth,
+    cull,
+    chroma
+  ]);
+  else addAABBO.call(APRendererI,
     color,
     aabb.field_72340_a,
     aabb.field_72338_b,
@@ -174,7 +231,8 @@ const addBoxF = APRendererI.addBoxF ?? throwExp('bad');
  * @param {RenderOptions & AABBOptions} options
  */
 export function renderBoxFilled(color, x, y, z, w, h, { centered = true, wz = w, lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  addBoxF.call(APRendererI, color, x, y, z, w, h, wz, centered, lighting, phase, cull, chroma);
+  if (batchCalls) batched.push([4, color, x, y, z, w, h, wz, centered, lighting, phase, cull, chroma]);
+  else addBoxF.call(APRendererI, color, x, y, z, w, h, wz, centered, lighting, phase, cull, chroma);
 }
 
 const addAABBF = APRendererI.addAABBF ?? throwExp('bad');
@@ -189,7 +247,21 @@ const addAABBF = APRendererI.addAABBF ?? throwExp('bad');
  * @param {RenderOptions} options
  */
 export function renderAABBFilled(color, x1, y1, z1, x2, y2, z2, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  addAABBF.call(APRendererI,
+  if (batchCalls) batched.push([
+    5,
+    color,
+    Math.min(x1, x2),
+    Math.min(y1, y2),
+    Math.min(z1, z2),
+    Math.max(x1, x2),
+    Math.max(y1, y2),
+    Math.max(z1, z2),
+    lighting,
+    phase,
+    cull,
+    chroma
+  ]);
+  else addAABBF.call(APRendererI,
     color,
     Math.min(x1, x2),
     Math.min(y1, y2),
@@ -209,7 +281,21 @@ export function renderAABBFilled(color, x1, y1, z1, x2, y2, z2, { lighting = 0, 
  * @param {RenderOptions} options
  */
 export function renderMCAABBFilled(color, aabb, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  addAABBF.call(APRendererI,
+  if (batchCalls) batched.push([
+    5,
+    color,
+    aabb.field_72340_a,
+    aabb.field_72338_b,
+    aabb.field_72339_c,
+    aabb.field_72336_d,
+    aabb.field_72337_e,
+    aabb.field_72334_f,
+    lighting,
+    phase,
+    cull,
+    chroma
+  ]);
+  else addAABBF.call(APRendererI,
     color,
     aabb.field_72340_a,
     aabb.field_72338_b,
@@ -237,7 +323,8 @@ export function renderBeacon(color, x, y, z, { centered = true, h = 300 - y, lig
     x += 0.5;
     z += 0.5;
   }
-  addBeacon.call(APRendererI, color, x, y, z, h, lighting, phase, cull, chroma);
+  if (batchCalls) batched.push([6, color, x, y, z, h, lighting, phase, cull, chroma]);
+  else addBeacon.call(APRendererI, color, x, y, z, h, lighting, phase, cull, chroma);
 }
 
 const addCircle = APRendererI.addCircle ?? throwExp('bad');
@@ -251,7 +338,8 @@ const addCircle = APRendererI.addCircle ?? throwExp('bad');
  * @param {LineRenderOptions} options
  */
 export function renderCircle(color, x, y, z, r, segments, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  addCircle.call(APRendererI, color, x, y, z, r, segments, lw, lighting, phase, smooth, cull, chroma);
+  if (batchCalls) batched.push([7, color, x, y, z, r, segments, lw, lighting, phase, smooth, cull, chroma]);
+  else addCircle.call(APRendererI, color, x, y, z, r, segments, lw, lighting, phase, smooth, cull, chroma);
 }
 
 const addIcosphere = APRendererI.addIcosphere ?? throwExp('bad');
@@ -265,7 +353,8 @@ const addIcosphere = APRendererI.addIcosphere ?? throwExp('bad');
  * @param {RenderOptions} options
  */
 export function renderSphere(color, x, y, z, r, divisions, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  addIcosphere.call(APRendererI, color, x, y, z, r, divisions, lighting, phase, cull, chroma);
+  if (batchCalls) batched.push([8, color, x, y, z, r, divisions, lighting, phase, cull, chroma]);
+  else addIcosphere.call(APRendererI, color, x, y, z, r, divisions, lighting, phase, cull, chroma);
 }
 
 const addPyramidO = APRendererI.addPyramidO ?? throwExp('bad');
@@ -280,7 +369,8 @@ const addPyramidO = APRendererI.addPyramidO ?? throwExp('bad');
  * @param {LineRenderOptions} options
  */
 export function renderPyramidOutline(color, x, y, z, r, h, n, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  addPyramidO.call(APRendererI, color, x, y, z, r, h, n, lw, lighting, phase, smooth, cull, chroma);
+  if (batchCalls) batched.push([9, color, x, y, z, r, h, n, lw, lighting, phase, smooth, cull, chroma]);
+  else addPyramidO.call(APRendererI, color, x, y, z, r, h, n, lw, lighting, phase, smooth, cull, chroma);
 }
 
 const addPyramidF = APRendererI.addPyramidF ?? throwExp('bad');
@@ -295,7 +385,8 @@ const addPyramidF = APRendererI.addPyramidF ?? throwExp('bad');
  * @param {RenderOptions} options
  */
 export function renderPyramidFilled(color, x, y, z, r, h, n, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  addPyramidF.call(APRendererI, color, x, y, z, r, h, n, lighting, phase, cull, chroma);
+  if (batchCalls) batched.push([10, color, x, y, z, r, h, n, lighting, phase, cull, chroma]);
+  else addPyramidF.call(APRendererI, color, x, y, z, r, h, n, lighting, phase, cull, chroma);
 }
 
 const addVertCylinder = APRendererI.addVertCylinder ?? throwExp('bad');
@@ -310,7 +401,8 @@ const addVertCylinder = APRendererI.addVertCylinder ?? throwExp('bad');
  * @param {RenderOptions} options
  */
 export function renderVerticalCylinder(color, x, y, z, r, h, segments, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  addVertCylinder.call(APRendererI, color, x, y, z, r, h, segments, lighting, phase, cull, chroma);
+  if (batchCalls) batched.push([11, color, x, y, z, r, h, segments, lighting, phase, cull, chroma]);
+  else addVertCylinder.call(APRendererI, color, x, y, z, r, h, segments, lighting, phase, cull, chroma);
 }
 
 const addOctahedronO = APRendererI.addOctahedronO ?? throwExp('bad');
@@ -324,7 +416,8 @@ const addOctahedronO = APRendererI.addOctahedronO ?? throwExp('bad');
  * @param {LineRenderOptions} options
  */
 export function renderOctahedronOutline(color, x, y, z, w, h, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  addOctahedronO.call(APRendererI, color, x, y, z, w / 2, h / 2, lw, lighting, phase, smooth, cull, chroma);
+  if (batchCalls) batched.push([12, color, x, y, z, w / 2, h / 2, lw, lighting, phase, smooth, cull, chroma]);
+  else addOctahedronO.call(APRendererI, color, x, y, z, w / 2, h / 2, lw, lighting, phase, smooth, cull, chroma);
 }
 
 const addOctahedronF = APRendererI.addOctahedronF ?? throwExp('bad');
@@ -338,7 +431,8 @@ const addOctahedronF = APRendererI.addOctahedronF ?? throwExp('bad');
  * @param {RenderOptions} options
  */
 export function renderOctahedronFilled(color, x, y, z, w, h, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  addOctahedronF.call(APRendererI, color, x, y, z, w / 2, h / 2, lighting, phase, cull, chroma);
+  if (batchCalls) batched.push([13, color, x, y, z, w / 2, h / 2, lighting, phase, cull, chroma]);
+  else addOctahedronF.call(APRendererI, color, x, y, z, w / 2, h / 2, lighting, phase, cull, chroma);
 }
 
 const addStraightStairO = APRendererI.addStraightStairO ?? throwExp('bad');
@@ -351,7 +445,8 @@ const addStraightStairO = APRendererI.addStraightStairO ?? throwExp('bad');
  * @param {LineRenderOptions} options
  */
 export function renderStraightStairOutline(color, x, y, z, type, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  addStraightStairO.call(APRendererI, color, x, y, z, type, lw, lighting, phase, smooth, cull, chroma);
+  if (batchCalls) batched.push([14, color, x, y, z, type, lighting, phase, cull, chroma]);
+  else addStraightStairO.call(APRendererI, color, x, y, z, type, lw, lighting, phase, smooth, cull, chroma);
 }
 
 const addStraightStairF = APRendererI.addStraightStairF ?? throwExp('bad');
@@ -364,7 +459,8 @@ const addStraightStairF = APRendererI.addStraightStairF ?? throwExp('bad');
  * @param {RenderOptions} options
  */
 export function renderStraightStairFilled(color, x, y, z, type, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  addStraightStairF.call(APRendererI, color, x, y, z, type, lighting, phase, cull, chroma);
+  if (batchCalls) batched.push([15, color, x, y, z, type, lighting, phase, cull, chroma]);
+  else addStraightStairF.call(APRendererI, color, x, y, z, type, lighting, phase, cull, chroma);
 }
 
 const addInnerStairO = APRendererI.addInnerStairO ?? throwExp('bad');
@@ -378,7 +474,8 @@ const addInnerStairO = APRendererI.addInnerStairO ?? throwExp('bad');
  * @param {LineRenderOptions} options
  */
 export function renderInnerStairOutline(color, x, y, z, type, left, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  addInnerStairO.call(APRendererI, color, x, y, z, type, left, lw, lighting, phase, smooth, cull, chroma);
+  if (batchCalls) batched.push([16, color, x, y, z, type, left, lw, lighting, phase, smooth, cull, chroma]);
+  else addInnerStairO.call(APRendererI, color, x, y, z, type, left, lw, lighting, phase, smooth, cull, chroma);
 }
 
 const addInnerStairF = APRendererI.addInnerStairF ?? throwExp('bad');
@@ -392,7 +489,8 @@ const addInnerStairF = APRendererI.addInnerStairF ?? throwExp('bad');
  * @param {RenderOptions} options
  */
 export function renderInnerStairFilled(color, x, y, z, type, left, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  (typeof color === 'number' ? addInnerStairFN : addInnerStairFA).call(APRendererI, color, x, y, z, type, left, lighting, phase, cull, chroma);
+  if (batchCalls) batched.push([17, color, x, y, z, type, left, lighting, phase, cull, chroma]);
+  else addInnerStairF.call(APRendererI, color, x, y, z, type, left, lighting, phase, cull, chroma);
 }
 
 const addOuterStairO = APRendererI.addOuterStairO ?? throwExp('bad');
@@ -406,7 +504,8 @@ const addOuterStairO = APRendererI.addOuterStairO ?? throwExp('bad');
  * @param {LineRenderOptions} options
  */
 export function renderOuterStairOutline(color, x, y, z, type, left, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  addOuterStairO.call(APRendererI, color, x, y, z, type, left, lw, lighting, phase, smooth, cull, chroma);
+  if (batchCalls) batched.push([18, color, x, y, z, type, left, lw, lighting, phase, smooth, cull, chroma]);
+  else addOuterStairO.call(APRendererI, color, x, y, z, type, left, lw, lighting, phase, smooth, cull, chroma);
 }
 
 const addOuterStairF = APRendererI.addOuterStairF ?? throwExp('bad');
@@ -420,7 +519,8 @@ const addOuterStairF = APRendererI.addOuterStairF ?? throwExp('bad');
  * @param {RenderOptions} options
  */
 export function renderOuterStairFilled(color, x, y, z, type, left, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  addOuterStairF.call(APRendererI, color, x, y, z, type, left, lighting, phase, cull, chroma);
+  if (batchCalls) batched.push([19, color, x, y, z, type, left, lighting, phase, cull, chroma]);
+  else addOuterStairF.call(APRendererI, color, x, y, z, type, left, lighting, phase, cull, chroma);
 }
 
 const addStairO = APRendererI.addStairO ?? throwExp('bad');
@@ -432,7 +532,8 @@ const addStairO = APRendererI.addStairO ?? throwExp('bad');
  * @param {LineRenderOptions} options
  */
 export function renderStairOutline(color, x, y, z, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  addStairO.call(APRendererI, color, x, y, z, lw, lighting, phase, smooth, cull, chroma);
+  if (batchCalls) batched.push([20, color, x, y, z, lw, lighting, phase, smooth, cull, chroma]);
+  else addStairO.call(APRendererI, color, x, y, z, lw, lighting, phase, smooth, cull, chroma);
 }
 
 const addStairF = APRendererI.addStairF ?? throwExp('bad');
@@ -444,7 +545,8 @@ const addStairF = APRendererI.addStairF ?? throwExp('bad');
  * @param {RenderOptions} options
  */
 export function renderStairFilled(color, x, y, z, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  addStairF.call(APRendererI, color, x, y, z, lighting, phase, cull, chroma);
+  if (batchCalls) batched.push([24, color, x, y, z, lighting, phase, cull, chroma]);
+  else addStairF.call(APRendererI, color, x, y, z, lighting, phase, cull, chroma);
 }
 
 /**
@@ -453,7 +555,8 @@ export function renderStairFilled(color, x, y, z, { lighting = 0, phase = false,
  * @param {LineRenderOptions} options
  */
 export function renderStairOutlineBP(color, bp, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  addStairO.call(APRendererI, color, bp, lw, lighting, phase, smooth, cull, chroma);
+  if (batchCalls) batched.push([21, color, bp, lw, lighting, phase, smooth, cull, chroma]);
+  else addStairO.call(APRendererI, color, bp, lw, lighting, phase, smooth, cull, chroma);
 }
 
 /**
@@ -462,7 +565,8 @@ export function renderStairOutlineBP(color, bp, { lw = 1, lighting = 0, phase = 
  * @param {RenderOptions} options
  */
 export function renderStairFilledBP(color, bp, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  addStairF.call(APRendererI, color, bp, lighting, phase, cull, chroma);
+  if (batchCalls) batched.push([25, color, bp, lighting, phase, cull, chroma]);
+  else addStairF.call(APRendererI, color, bp, lighting, phase, cull, chroma);
 }
 
 /**
@@ -474,7 +578,8 @@ export function renderStairFilledBP(color, bp, { lighting = 0, phase = false, cu
  * @param {LineRenderOptions} options
  */
 export function renderStairOutlineBS(color, x, y, z, bs, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  addStairO.call(APRendererI, color, x, y, z, bs, lw, lighting, phase, smooth, cull, chroma);
+  if (batchCalls) batched.push([22, color, x, y, z, bs, lw, lighting, phase, smooth, cull, chroma]);
+  else addStairO.call(APRendererI, color, x, y, z, bs, lw, lighting, phase, smooth, cull, chroma);
 }
 
 /**
@@ -486,7 +591,8 @@ export function renderStairOutlineBS(color, x, y, z, bs, { lw = 1, lighting = 0,
  * @param {RenderOptions} options
  */
 export function renderStairFilledBS(color, x, y, z, bs, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  addStairF.call(APRendererI, color, x, y, z, bs, lighting, phase, cull, chroma);
+  if (batchCalls) batched.push([26, color, x, y, z, bs, lighting, phase, cull, chroma]);
+  else addStairF.call(APRendererI, color, x, y, z, bs, lighting, phase, cull, chroma);
 }
 
 /**
@@ -498,7 +604,8 @@ export function renderStairFilledBS(color, x, y, z, bs, { lighting = 0, phase = 
  * @param {LineRenderOptions} options
  */
 export function renderStairOutlineManual(color, x, y, z, type, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  addStairO.call(APRendererI, color, x, y, z, type, lw, lighting, phase, smooth, cull, chroma);
+  if (batchCalls) batched.push([23, color, x, y, z, type, lw, lighting, phase, smooth, cull, chroma]);
+  else addStairO.call(APRendererI, color, x, y, z, type, lw, lighting, phase, smooth, cull, chroma);
 }
 
 /**
@@ -510,7 +617,8 @@ export function renderStairOutlineManual(color, x, y, z, type, { lw = 1, lightin
  * @param {RenderOptions} options
  */
 export function renderStairFilledManual(color, x, y, z, type, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  addStairF.call(APRendererI, color, x, y, z, type, lighting, phase, cull, chroma);
+  if (batchCalls) batched.push([27, color, x, y, z, type, lighting, phase, cull, chroma]);
+  else addStairF.call(APRendererI, color, x, y, z, type, lighting, phase, cull, chroma);
 }
 
 /**
