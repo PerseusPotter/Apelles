@@ -178,7 +178,7 @@ object EntityOutlineRenderer {
             // "fixed"
             val w2 = if (w < 0) -32 * w else w
             if (w2 > maxW) maxW = w2
-            e.forEach {
+            e.forEach Inner@ {
                 val col = it.getColor()
                 val id = min(255, colors.getOrPut(col) { colors.size })
                 if (id != prevCol) {
@@ -186,7 +186,7 @@ object EntityOutlineRenderer {
                     prevCol = id
                 }
                 val ent = it.entity.get()!!
-                if (!frust.isBoundingBoxInFrustum(ent.entityBoundingBox)) return@forEach
+                if (!frust.isBoundingBoxInFrustum(ent.entityBoundingBox)) return@Inner
                 val invis = it.renderInvis() && ent.isInvisible
                 if (invis) ent.isInvisible = false
                 rm.renderEntityStatic(ent, pt.toFloat(), false)
