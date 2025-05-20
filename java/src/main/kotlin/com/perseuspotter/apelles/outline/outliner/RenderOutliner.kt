@@ -8,13 +8,14 @@ import net.minecraft.entity.Entity
 abstract class RenderOutliner(
     val tester: OutlineTester,
     color: Color,
+    type: Int,
     width: Int,
     phase: Boolean,
     chroma: Boolean,
     blackOutline: Boolean,
     absoluteSize: Boolean,
     renderInvis: Boolean
-) : Outliner(color, width, phase, chroma, blackOutline, absoluteSize, renderInvis) {
+) : Outliner(color, type, width, phase, chroma, blackOutline, absoluteSize, renderInvis) {
     abstract fun test(e: Entity)
     abstract fun _internalClear()
 

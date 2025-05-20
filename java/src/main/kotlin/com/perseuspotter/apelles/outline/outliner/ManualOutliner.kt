@@ -8,13 +8,14 @@ import java.util.WeakHashMap
 
 class ManualOutliner(
     color: Color,
+    type: Int,
     width: Int,
     phase: Boolean,
     chroma: Boolean,
     blackOutline: Boolean,
     absoluteSize: Boolean,
     renderInvis: Boolean
-) : Outliner(color, width, phase, chroma, blackOutline, absoluteSize, renderInvis) {
+) : Outliner(color, type, width, phase, chroma, blackOutline, absoluteSize, renderInvis) {
     val hits = Collections.newSetFromMap(WeakHashMap<Entity, Boolean>())
 
     fun add(e: Entity) {

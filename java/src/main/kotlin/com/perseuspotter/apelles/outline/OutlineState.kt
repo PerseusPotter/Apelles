@@ -22,7 +22,7 @@ class OutlineState(entity: Entity) {
         outliners.remove(o)
         update()
     }
-    fun doOutline(): Boolean = active != null
+    fun getOutlineType(): Int = active?.type ?: 0
     fun getColor(): Color = active!!.col
     // shhh dont tell anyone
     fun getWidth(): Int = (active!!.width + 1) * (if (isAbsoluteSize()) -1 else 1)
