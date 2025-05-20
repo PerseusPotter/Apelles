@@ -1,10 +1,10 @@
-package com.perseuspotter.apelles.outline.shader
+package com.perseuspotter.apelles.outline
 
 import com.perseuspotter.apelles.depression.Framebuffer
 import com.perseuspotter.apelles.geo.Geometry
-import com.perseuspotter.apelles.outline.EntityOutlineRenderer
-import com.perseuspotter.apelles.outline.EntityOutliner
-import com.perseuspotter.apelles.outline.OutlineState
+import com.perseuspotter.apelles.outline.shader.InitPass
+import com.perseuspotter.apelles.outline.shader.JFAPass
+import com.perseuspotter.apelles.outline.shader.JFARender
 import com.perseuspotter.apelles.state.Color
 import com.perseuspotter.apelles.state.GlState
 import net.minecraft.client.Minecraft

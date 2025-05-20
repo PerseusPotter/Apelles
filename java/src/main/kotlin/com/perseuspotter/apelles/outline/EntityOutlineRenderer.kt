@@ -2,7 +2,6 @@ package com.perseuspotter.apelles.outline
 
 import com.perseuspotter.apelles.geo.Frustum
 import com.perseuspotter.apelles.outline.outliner.RenderOutliner
-import com.perseuspotter.apelles.outline.shader.JFAEntityOutliner
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.entity.Entity
