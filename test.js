@@ -66,7 +66,7 @@ const outliner = createPerEntityOutliner(tester, packChromaParams(0.2, 0.4, 1, 0
 // outliner.register();
 
 const tester2 = createPassthroughOutlineTester();
-// tester.addWhitelist(net.minecraft.entity.item.EntityArmorStand);
-// tester.addWhitelist(net.minecraft.entity.passive.EntityPig);
+// tester2.addWhitelist(net.minecraft.entity.item.EntityArmorStand);
+// tester2.addWhitelist(net.minecraft.entity.passive.EntityPig);
 const outliner2 = createPerEntityOutliner(tester2, 0xFF0000FF, 2, { phase: false, chroma: false, absoluteSize: true });
 // outliner2.register();
