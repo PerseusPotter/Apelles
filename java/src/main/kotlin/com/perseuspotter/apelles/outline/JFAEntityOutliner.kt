@@ -24,13 +24,6 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
     var fb1: Framebuffer? = null
     var fb2: Framebuffer? = null
 
-    private fun createFB(): Framebuffer {
-        val main = Minecraft.getMinecraft().framebuffer
-        val fb = Framebuffer(main.framebufferTextureWidth, main.framebufferTextureHeight, true)
-        fb.setColor(0.0f, 0.0f, 0.0f, 0.0f)
-        return fb
-    }
-
     override fun renderSetup() {
         if (fb1 == null) {
             fb1 = createFB()
@@ -46,11 +39,8 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         GlState.setLighting(0)
         GL11.glEnable(GL11.GL_TEXTURE_2D)
 
-        fb1!!.clear()
-        val mainFb = Minecraft.getMinecraft().framebuffer
-        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, mainFb.framebufferObject)
-        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, fb1!!.framebufferObject)
-        GL30.glBlitFramebuffer(0, 0, mainFb.framebufferWidth, mainFb.framebufferHeight, 0, 0, fb1!!.width, fb1!!.height, GL11.GL_DEPTH_BUFFER_BIT, GL11.GL_NEAREST)
+        fb1!!.clear(GL11.GL_COLOR_BUFFER_BIT)
+        copyDepth(fb1!!)
     }
 
     @JvmField
@@ -163,7 +153,7 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         fb1!!.clear(GL11.GL_COLOR_BUFFER_BIT)
     }
 
-    override fun renderCleanup3() {
+    override fun renderCleanup2() {
         GlState.bindShader(0)
         Minecraft.getMinecraft().framebuffer.bindFramebuffer(false)
         dump = false
