@@ -13,12 +13,20 @@ open class Shader(val fragSrc: String?, val vertSrc: String?) {
         init = true
 
         progId = GL20.glCreateProgram()
-        if (progId == 0) return println("Error: Failed to create shader program.")
+        if (progId == 0) {
+            println("Error: Failed to create shader program.")
+            Throwable().printStackTrace()
+            return
+        }
 
         var fragId = 0
         if (fragSrc != null) {
             fragId = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER)
-            if (fragId == 0) return println("Error: Failed to create fragment shader.")
+            if (fragId == 0) {
+                println("Error: Failed to create fragment shader.")
+                Throwable().printStackTrace()
+                return
+            }
 
             GL20.glShaderSource(fragId, fragSrc)
             GL20.glCompileShader(fragId)
@@ -27,6 +35,7 @@ open class Shader(val fragSrc: String?, val vertSrc: String?) {
             if (fragStatus == GL11.GL_FALSE) {
                 val log = GL20.glGetShaderInfoLog(fragId, 1024)
                 println("Fragment Shader Compilation Error:\n$log")
+                Throwable().printStackTrace()
                 return
             }
 
@@ -36,7 +45,11 @@ open class Shader(val fragSrc: String?, val vertSrc: String?) {
         var vertId = 0
         if (vertSrc != null) {
             vertId = GL20.glCreateShader(GL20.GL_VERTEX_SHADER)
-            if (vertId == 0) return println("Error: Failed to create vertex shader.")
+            if (vertId == 0) {
+                println("Error: Failed to create vertex shader.")
+                Throwable().printStackTrace()
+                return
+            }
 
             GL20.glShaderSource(vertId, vertSrc)
             GL20.glCompileShader(vertId)
@@ -45,6 +58,7 @@ open class Shader(val fragSrc: String?, val vertSrc: String?) {
             if (vertStatus == GL11.GL_FALSE) {
                 val log = GL20.glGetShaderInfoLog(vertId, 1024)
                 println("Vertex Shader Compilation Error:\n$log")
+                Throwable().printStackTrace()
                 return
             }
 
@@ -57,6 +71,7 @@ open class Shader(val fragSrc: String?, val vertSrc: String?) {
         if (linkStatus == GL11.GL_FALSE) {
             val log = GL20.glGetProgramInfoLog(progId, 1024)
             println("Shader Program Linking Error:\n$log")
+            Throwable().printStackTrace()
             return
         }
 
@@ -66,6 +81,7 @@ open class Shader(val fragSrc: String?, val vertSrc: String?) {
         if (validateStatus == GL11.GL_FALSE) {
             val log = GL20.glGetProgramInfoLog(progId, 1024)
             println("Shader Program Validation Error:\n$log")
+            Throwable().printStackTrace()
             return
         }
 
