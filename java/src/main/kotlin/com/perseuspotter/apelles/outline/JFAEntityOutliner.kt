@@ -98,7 +98,7 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
             ImageIO.write(colorImage, "png", File("./$name-colorBufferInit$pass.png"))
             ImageIO.write(depthImage, "png", File("./$name-depthBufferInit$pass.png"))
         }
-        GlState.setDepthTest(false)
+        GL11.glDisable(GL11.GL_DEPTH_TEST)
 
         prof.endStartSection("iters")
         JFAPass.bind()
@@ -141,6 +141,7 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3)
         JFARender.unbindUbo()
         prof.endSection()
+        GL11.glEnable(GL11.GL_DEPTH_TEST)
     }
 
     override fun renderCleanup1() {
