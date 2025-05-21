@@ -7,8 +7,7 @@ import org.lwjgl.opengl.GL30.*
 import java.awt.image.BufferedImage
 import java.nio.ByteBuffer
 
-
-class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val useStencil: Boolean) {
+class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val useStencil: Boolean, val useDepthTexture: Boolean = false) {
     var textureWidth: Int = width
     var textureHeight: Int = height
     var framebufferObject: Int
@@ -42,7 +41,8 @@ class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val us
         unbindFramebuffer()
 
         if (depthBuffer > -1) {
-            glDeleteRenderbuffers(depthBuffer)
+            if (useDepthTexture) glDeleteTextures(depthBuffer)
+            else glDeleteRenderbuffers(depthBuffer)
             depthBuffer = -1
         }
 
@@ -67,7 +67,7 @@ class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val us
         framebufferObject = glGenFramebuffers()
         framebufferTexture = glGenTextures()
 
-        if (useDepth || useStencil) depthBuffer = glGenRenderbuffers()
+        if (useDepth || useStencil) depthBuffer = if (useDepthTexture) glGenTextures() else glGenRenderbuffers()
 
         setTexFilter(GL_NEAREST)
         bindTexture()
@@ -89,16 +89,41 @@ class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val us
         )
 
         if (useDepth || useStencil) {
-            glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer)
-            glRenderbufferStorage(
-                GL_RENDERBUFFER, if (useStencil) GL_DEPTH24_STENCIL8 else GL14.GL_DEPTH_COMPONENT24,
-                textureWidth,
-                textureHeight
-            )
-            glFramebufferRenderbuffer(
-                GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER,
-                depthBuffer
-            )
+            if (useDepthTexture) {
+                glBindTexture(GL_TEXTURE_2D, depthBuffer)
+                glTexImage2D(
+                    GL_TEXTURE_2D,
+                    0,
+                    if (useStencil) GL_DEPTH24_STENCIL8 else GL14.GL_DEPTH_COMPONENT24,
+                    textureWidth,
+                    textureHeight,
+                    0,
+                    if (useStencil) GL_DEPTH_STENCIL else GL_DEPTH_COMPONENT,
+                    GL_UNSIGNED_INT,
+                    null as ByteBuffer?
+                )
+                glFramebufferTexture2D(
+                    GL_FRAMEBUFFER,
+                    if (useStencil) GL_DEPTH_STENCIL_ATTACHMENT else GL_DEPTH_ATTACHMENT,
+                    GL_TEXTURE_2D,
+                    depthBuffer,
+                    0
+                )
+            } else {
+                glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer)
+                glRenderbufferStorage(
+                    GL_RENDERBUFFER,
+                    if (useStencil) GL_DEPTH24_STENCIL8 else GL14.GL_DEPTH_COMPONENT24,
+                    textureWidth,
+                    textureHeight
+                )
+                glFramebufferRenderbuffer(
+                    GL_FRAMEBUFFER,
+                    if (useStencil) GL_DEPTH_STENCIL_ATTACHMENT else GL_DEPTH_ATTACHMENT,
+                    GL_RENDERBUFFER,
+                    depthBuffer
+                )
+            }
         }
 
         clear()
