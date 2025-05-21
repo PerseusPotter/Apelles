@@ -53,21 +53,22 @@ abstract class EntityOutliner(val type: Int, val name: String) {
         prof.startSection("setup")
         GlState.setLighting(0)
         GL11.glEnable(GL11.GL_TEXTURE_2D)
+        GL11.glDepthMask(false)
         renderSetup()
 
         prof.endStartSection("phase")
         if (phase.size > 0) {
-            GL11.glDisable(GL11.GL_DEPTH_TEST)
+            GlState.setDepthTest(false)
             renderPass(pt, t, phase, 0)
             if (occluded.size > 0) renderCleanup1()
         }
 
         prof.endStartSection("occluded")
         if (occluded.size > 0) {
-            GL11.glEnable(GL11.GL_DEPTH_TEST)
             GlState.setDepthTest(true)
             renderPass(pt, t, occluded, 1)
         }
+        GL11.glDepthMask(true)
         renderCleanup2()
         prof.endSection()
 
