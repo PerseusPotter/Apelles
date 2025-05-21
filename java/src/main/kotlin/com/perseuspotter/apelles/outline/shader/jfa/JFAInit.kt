@@ -1,9 +1,9 @@
-package com.perseuspotter.apelles.outline.shader
+package com.perseuspotter.apelles.outline.shader.jfa
 
 import com.perseuspotter.apelles.depression.Shader
 import org.lwjgl.opengl.GL20
 
-object InitPass : Shader(getResource("/shaders/jfaInit.frag"), getResource("/shaders/jfaInit.vert")) {
+object JFAInit : Shader(getResource("/shaders/jfaInit.frag"), getResource("/shaders/jfaInit.vert")) {
     fun setWidth(width: Int) {
         GL20.glUniform1i(getUniformLoc("outlineWidth"), width)
     }

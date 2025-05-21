@@ -1,4 +1,4 @@
-package com.perseuspotter.apelles.outline.shader
+package com.perseuspotter.apelles.outline.shader.jfa
 
 import com.perseuspotter.apelles.depression.Shader
 import org.lwjgl.opengl.GL20

@@ -2,9 +2,9 @@ package com.perseuspotter.apelles.outline
 
 import com.perseuspotter.apelles.depression.Framebuffer
 import com.perseuspotter.apelles.geo.Geometry
-import com.perseuspotter.apelles.outline.shader.InitPass
-import com.perseuspotter.apelles.outline.shader.JFAPass
-import com.perseuspotter.apelles.outline.shader.JFARender
+import com.perseuspotter.apelles.outline.shader.jfa.JFAInit
+import com.perseuspotter.apelles.outline.shader.jfa.JFAPass
+import com.perseuspotter.apelles.outline.shader.jfa.JFARender
 import com.perseuspotter.apelles.outline.shader.UBOColorRender
 import com.perseuspotter.apelles.state.GlState
 import net.minecraft.client.Minecraft
@@ -53,8 +53,8 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         GL11.glDisable(GL11.GL_BLEND)
 
         fb1!!.bindFramebuffer()
-        InitPass.bind()
-        InitPass.setSize(fb1!!.textureWidth, fb1!!.textureHeight)
+        JFAInit.bind()
+        JFAInit.setSize(fb1!!.textureWidth, fb1!!.textureHeight)
         var maxW = 0
         val colors = UBOColorRender.ColorBuilder()
         var prevCol = -1
@@ -68,14 +68,14 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         val frust = net.minecraft.client.renderer.culling.Frustum()
         frust.setPosition(Geometry.getRenderX(), Geometry.getRenderY(), Geometry.getRenderZ())
         ents.groupBy { it.getWidth() }.forEach { (w, e) ->
-            InitPass.setWidth(w)
+            JFAInit.setWidth(w)
             // "fixed"
             val w2 = if (w < 0) -32 * w else w
             if (w2 > maxW) maxW = w2
             e.forEach Inner@ {
                 val id = colors.getId(it.getColor())
                 if (id != prevCol) {
-                    InitPass.setColorId(id)
+                    JFAInit.setColorId(id)
                     prevCol = id
                 }
                 val ent = it.entity.get()!!
