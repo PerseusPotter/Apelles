@@ -798,11 +798,11 @@ register('gameUnload', () => outliners.forEach(v => v.unregister()));
 
 /**
  * @typedef OutlineRenderOptions
- * @property {number} [width=1] `1` - int in pixels
+ * @property {number} [width=1] `1` - int in pixels (can only be used with JFA)
  * @property {boolean} [phase=false] `false`
  * @property {boolean} [chroma=false] `false` - use chroma, the color will be interpreted as [chromaSize, speed, lightness & chroma, alpha] (hint, use `packChromaParams`). only 2d chroma :(
- * @property {boolean} [blackOutline=true] `true` - outermost pixel is a black outline
- * @property {boolean} [absoluteSize=true] `true` - if true pixel scales with size in world (distance)
+ * @property {boolean} [blackOutline=false] `false` - outermost pixel is a black outline (can only be used with JFA)
+ * @property {boolean} [absoluteSize=false] `false` - if true pixel scales with size in world (distance) (can only be used with JFA)
  * @property {boolean} [renderInvis=false] `false` - if true will still render outline invisible entities
  */
 
@@ -812,11 +812,11 @@ const ManualOutliner = JavaTypeOrNull('com.perseuspotter.apelles.outline.outline
  *
  * must manually add entities to be outlined with `.add()`/`.remove()`
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
- * @param {number} type - type of outlining, 1: JFA (note: `width` and `absoluteSize` can only be used with JFA)
+ * @param {number} type - type of outlining, 1: JFA (note: `width`, `absoluteSize`, and `blackOutline` can only be used with JFA)
  * @param {OutlineRenderOptions} options
  * @returns {{ setColor(color: number): void, setColor(color: [number, number, number] | [number, number, number, number]): void, add(ent: MCEntity): void, remove(ent: MCEntity): void, clear(): void, register(): void, unregister(): void }}
  */
-export function createManualOutliner(color, type, { width = 1, phase = false, chroma = false, blackOutline = true, absoluteSize = true, renderInvis = false } = {}) {
+export function createManualOutliner(color, type, { width = 1, phase = false, chroma = false, blackOutline = false, absoluteSize = false, renderInvis = false } = {}) {
   const o = new ManualOutliner(coerceColor(color), type, width, phase, chroma, blackOutline, absoluteSize, renderInvis);
   outliners.push(o);
   return o;
@@ -857,11 +857,11 @@ const PerEntityOutliner = JavaTypeOrNull('com.perseuspotter.apelles.outline.outl
  * will outline entities that pass the `tester`, only tested once per entity (the first attempt at outlining it)
  * @param {OutlineTester} tester
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
- * @param {number} type - type of outlining, 1: JFA (note: `width` and `absoluteSize` can only be used with JFA)
+ * @param {number} type - type of outlining, 1: JFA (note: `width`, `absoluteSize`, and `blackOutline` can only be used with JFA)
  * @param {OutlineRenderOptions} options
  * @returns {{ setColor(color: number): void, setColor(color: [number, number, number] | [number, number, number, number]): void, register(): void, unregister(): void, clear(): void }}
  */
-export function createPerEntityOutliner(tester, color, type, { width = 1, phase = false, chroma = false, blackOutline = true, absoluteSize = true, renderInvis = false } = {}) {
+export function createPerEntityOutliner(tester, color, type, { width = 1, phase = false, chroma = false, blackOutline = false, absoluteSize = false, renderInvis = false } = {}) {
   const o = new PerEntityOutliner(tester, coerceColor(color), type, width, phase, chroma, blackOutline, absoluteSize, renderInvis);
   outliners.push(o);
   return o;
@@ -874,11 +874,11 @@ const PerFrameOutliner = JavaTypeOrNull('com.perseuspotter.apelles.outline.outli
  * will outline entities that pass the `tester`, retested every frame
  * @param {OutlineTester} tester
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
- * @param {number} type - type of outlining, 1: JFA (note: `width` and `absoluteSize` can only be used with JFA)
+ * @param {number} type - type of outlining, 1: JFA (note: `width`, `absoluteSize`, and `blackOutline` can only be used with JFA)
  * @param {OutlineRenderOptions} options
  * @returns {{ setColor(color: number): void, setColor(color: [number, number, number] | [number, number, number, number]): void, register(): void, unregister(): void }}
  */
-export function createPerFrameOutliner(tester, color, type, { width = 1, phase = false, chroma = false, blackOutline = true, absoluteSize = true, renderInvis = false } = {}) {
+export function createPerFrameOutliner(tester, color, type, { width = 1, phase = false, chroma = false, blackOutline = false, absoluteSize = false, renderInvis = false } = {}) {
   const o = new PerFrameOutliner(tester, coerceColor(color), type, width, phase, chroma, blackOutline, absoluteSize, renderInvis);
   outliners.push(o);
   return o;
@@ -891,11 +891,11 @@ const SemiAutomaticOutliner = JavaTypeOrNull('com.perseuspotter.apelles.outline.
  * will outline entities that pass the `tester`, only tested once per entity (the first attempt at outlining it), except can manually modify the internal state. unless you know what you are doing you should not be using this.
  * @param {OutlineTester} tester
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
- * @param {number} type - type of outlining, 1: JFA (note: `width` and `absoluteSize` can only be used with JFA)
+ * @param {number} type - type of outlining, 1: JFA (note: `width`, `absoluteSize`, and `blackOutline` can only be used with JFA)
  * @param {OutlineRenderOptions} options
  * @returns {{ setColor(color: number): void, setColor(color: [number, number, number] | [number, number, number, number]): void, register(): void, unregister(): void, clear(): void, add(ent: MCEntity): void, remove(ent: MCEntity): void, retest(ent: MCEntity): void }}
  */
-export function createSemiAutomaticOutliner(tester, color, type, { width = 1, phase = false, chroma = false, blackOutline = true, absoluteSize = true, renderInvis = false } = {}) {
+export function createSemiAutomaticOutliner(tester, color, type, { width = 1, phase = false, chroma = false, blackOutline = false, absoluteSize = false, renderInvis = false } = {}) {
   const o = new SemiAutomaticOutliner(tester, coerceColor(color), type, width, phase, chroma, blackOutline, absoluteSize, renderInvis);
   outliners.push(o);
   return o;
