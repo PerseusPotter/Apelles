@@ -1445,17 +1445,7 @@ object Renderer {
             glEnable(GL31.GL_PRIMITIVE_RESTART)
             glEnableClientState(GL_VERTEX_ARRAY)
         }
-        if (CAN_USE_CHROMA) {
-            ChromaShader.CHROMA_3D.bind()
-            ChromaShader.CHROMA_3D.updateUniforms(pt, t)
-            ChromaShader.CHROMA_3D_TEX.bind()
-            ChromaShader.CHROMA_3D_TEX.updateUniforms(pt, t)
-            ChromaShader.CHROMA_2D.bind()
-            ChromaShader.CHROMA_2D.updateUniforms(pt, t)
-            ChromaShader.CHROMA_2D_TEX.bind()
-            ChromaShader.CHROMA_2D_TEX.updateUniforms(pt, t)
-            ChromaShader.CHROMA_2D_TEX.unbind()
-        }
+        if (CAN_USE_CHROMA) ChromaShader.updateUniforms(pt, t)
 
         glDisable(GL_BLEND)
         glDepthMask(true)

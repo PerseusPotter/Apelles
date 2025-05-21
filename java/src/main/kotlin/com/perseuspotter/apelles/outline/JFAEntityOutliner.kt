@@ -129,7 +129,6 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         GL11.glEnable(GL11.GL_BLEND)
         OpenGlHelper.glBlendFunc(770, 771, 1, 771)
         JFARender.bind()
-        JFARender.updateUniforms(pt, t)
         JFARender.bindUbo()
         JFARender.setColors(colors.toList())
         (if (f) fb1 else fb2)!!.bindTexture()
