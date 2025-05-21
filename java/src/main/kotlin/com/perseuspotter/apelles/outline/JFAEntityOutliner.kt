@@ -28,15 +28,13 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
             fb1 = createFB(false)
             fb2 = createFB(false)
         }
+
         val width = Minecraft.getMinecraft().displayWidth
         val height = Minecraft.getMinecraft().displayHeight
         if (fb1!!.width != width || fb1!!.height != height) {
             fb1!!.createAndCheck(width, height)
             fb2!!.createAndCheck(width, height)
         }
-
-        GlState.setLighting(0)
-        GL11.glEnable(GL11.GL_TEXTURE_2D)
 
         fb1!!.clear(GL11.GL_COLOR_BUFFER_BIT)
         copyDepth(fb1!!)

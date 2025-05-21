@@ -51,6 +51,8 @@ abstract class EntityOutliner(val type: Int, val name: String) {
         prof.startSection(name)
 
         prof.startSection("setup")
+        GlState.setLighting(0)
+        GL11.glEnable(GL11.GL_TEXTURE_2D)
         renderSetup()
 
         prof.endStartSection("phase")
