@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL30
 import java.io.File
 import javax.imageio.ImageIO
+import kotlin.math.sqrt
 
 object JFAEntityOutliner : EntityOutliner(1, "JFA") {
     override fun checkCapabilities(cap: ContextCapabilities) = cap.OpenGL31
@@ -64,7 +65,7 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         var prevCol = -1
         if (dump) {
             val depthImage = fb1!!.dumpDepth()
-            ImageIO.write(depthImage, "png", File("./depthBufferPre$pass.png"))
+            ImageIO.write(depthImage, "png", File("./$name-depthBufferPre$pass.png"))
             println("outlining entities pass $pass: ${ents.joinToString(" ") { it.entity.get()!!.entityId.toString() }}")
         }
 
@@ -95,8 +96,8 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
             fb1!!.bindFramebuffer()
             val colorImage = fb1!!.dumpColor(jfaTransformer)
             val depthImage = fb1!!.dumpDepth()
-            ImageIO.write(colorImage, "png", File("./colorBufferInit$pass.png"))
-            ImageIO.write(depthImage, "png", File("./depthBufferInit$pass.png"))
+            ImageIO.write(colorImage, "png", File("./$name-colorBufferInit$pass.png"))
+            ImageIO.write(depthImage, "png", File("./$name-depthBufferInit$pass.png"))
         }
         GlState.setDepthTest(false)
 
@@ -118,7 +119,7 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
             if (dump) {
                 pp.bindFramebuffer()
                 val colorImage = pp.dumpColor(jfaTransformer)
-                ImageIO.write(colorImage, "png", File("./colorBufferPass$pass$iter.png"))
+                ImageIO.write(colorImage, "png", File("./$name-colorBufferPass$pass$iter.png"))
             }
             iter++
         }
@@ -150,6 +151,5 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
     override fun renderCleanup2() {
         GlState.bindShader(0)
         Minecraft.getMinecraft().framebuffer.bindFramebuffer(false)
-        dump = false
     }
 }
