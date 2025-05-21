@@ -24,21 +24,26 @@ const mat3 M0_1 = mat3(
 );
 const mat3 lmsToRgb = M0_1 * M1_1;
 
+vec2 grayscale(vec4 col) {
+  // return vec2(0.2126 * col.r + 0.7152 * col.g + 0.0722 * col.b, col.a);
+  return vec2(0.333333 * col.r + 0.333333 * col.g + 0.333333 * col.b, col.a);
+}
+
 void main(void) {
   ivec2 pos = ivec2(gl_FragCoord.xy);
-  float k00 = texelFetch(sampler, pos + ivec2(-1, -1), 0).a;
-  float k01 = texelFetch(sampler, pos + ivec2(-1, +0), 0).a;
-  float k02 = texelFetch(sampler, pos + ivec2(-1, +1), 0).a;
-  float k10 = texelFetch(sampler, pos + ivec2(+0, -1), 0).a;
+  vec2 k00 = grayscale(texelFetch(sampler, pos + ivec2(-1, -1), 0));
+  vec2 k01 = grayscale(texelFetch(sampler, pos + ivec2(-1, +0), 0));
+  vec2 k02 = grayscale(texelFetch(sampler, pos + ivec2(-1, +1), 0));
+  vec2 k10 = grayscale(texelFetch(sampler, pos + ivec2(+0, -1), 0));
   vec4 k11 = texelFetch(sampler, pos + ivec2(+0, +0), 0);
-  float k12 = texelFetch(sampler, pos + ivec2(+0, +1), 0).a;
-  float k20 = texelFetch(sampler, pos + ivec2(+1, -1), 0).a;
-  float k21 = texelFetch(sampler, pos + ivec2(+1, +0), 0).a;
-  float k22 = texelFetch(sampler, pos + ivec2(+1, +1), 0).a;
+  vec2 k12 = grayscale(texelFetch(sampler, pos + ivec2(+0, +1), 0));
+  vec2 k20 = grayscale(texelFetch(sampler, pos + ivec2(+1, -1), 0));
+  vec2 k21 = grayscale(texelFetch(sampler, pos + ivec2(+1, +0), 0));
+  vec2 k22 = grayscale(texelFetch(sampler, pos + ivec2(+1, +1), 0));
 
-  float edgeH = k00 + 2.0 * k10 + k20 - (k02 + 2.0 * k12 + k22);
-  float edgeV = k00 + 2.0 * k01 + k02 - (k20 + 2.0 * k21 + k22);
-  float grad = sqrt(edgeH * edgeH + edgeV * edgeV);
+  vec2 edgeH = k00 + 2.0 * k10 + k20 - (k02 + 2.0 * k12 + k22);
+  vec2 edgeV = k00 + 2.0 * k01 + k02 - (k20 + 2.0 * k21 + k22);
+  vec2 grad = sqrt(edgeH * edgeH + edgeV * edgeV);
 
   vec4 color = k11;
   if(color.a < 0.0) {
@@ -50,5 +55,5 @@ void main(void) {
     vec3 lms = pow(M2_1 * Lab, vec3(3.0));
     color = vec4(lmsToRgb * lms, -color.a);
   }
-  fragColor = vec4(color.rgb, color.a * grad);
+  fragColor = vec4(color.rgb, color.a * clamp(grad[0] + grad[1], 0.0, 1.0));
 }
