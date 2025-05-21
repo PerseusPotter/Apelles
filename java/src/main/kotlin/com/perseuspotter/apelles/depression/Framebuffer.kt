@@ -187,9 +187,9 @@ class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val us
                 val index = ((height - 1 - y) * width + x) * 4
 
                 val r = transformer.r(buffer[index + 0]).coerceIn(0f, 1f)
-                val g = transformer.g(buffer[index + 0]).coerceIn(0f, 1f)
-                val b = transformer.b(buffer[index + 0]).coerceIn(0f, 1f)
-                val a = transformer.a(buffer[index + 0]).coerceIn(0f, 1f)
+                val g = transformer.g(buffer[index + 1]).coerceIn(0f, 1f)
+                val b = transformer.b(buffer[index + 2]).coerceIn(0f, 1f)
+                val a = transformer.a(buffer[index + 3]).coerceIn(0f, 1f)
 
                 val ir = (r * 255.0f).toInt()
                 val ig = (g * 255.0f).toInt()
