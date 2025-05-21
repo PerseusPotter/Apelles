@@ -101,32 +101,32 @@ class BatchUploaderJ {
                     if (isArrCol) Renderer.INSTANCE.addAABBO(
                             (List<Double>) color,
                             asDouble(arr.get(2)),
-                            asDouble(arr.get(2)),
-                            asDouble(arr.get(2)),
-                            asDouble(arr.get(2)),
-                            asDouble(arr.get(2)),
-                            asDouble(arr.get(2)),
-                            asDouble(arr.get(2)),
-                            asInt(arr.get(3)),
-                            (Boolean) arr.get(4),
-                            (Boolean) arr.get(4),
-                            (Boolean) arr.get(4),
-                            asInt(arr.get(3))
+                            asDouble(arr.get(3)),
+                            asDouble(arr.get(4)),
+                            asDouble(arr.get(5)),
+                            asDouble(arr.get(6)),
+                            asDouble(arr.get(7)),
+                            asDouble(arr.get(8)),
+                            asInt(arr.get(9)),
+                            (Boolean) arr.get(10),
+                            (Boolean) arr.get(11),
+                            (Boolean) arr.get(12),
+                            asInt(arr.get(13))
                     );
                     else Renderer.INSTANCE.addAABBO(
                             asLong(color),
                             asDouble(arr.get(2)),
-                            asDouble(arr.get(2)),
-                            asDouble(arr.get(2)),
-                            asDouble(arr.get(2)),
-                            asDouble(arr.get(2)),
-                            asDouble(arr.get(2)),
-                            asDouble(arr.get(2)),
-                            asInt(arr.get(3)),
-                            (Boolean) arr.get(4),
-                            (Boolean) arr.get(4),
-                            (Boolean) arr.get(4),
-                            asInt(arr.get(3))
+                            asDouble(arr.get(3)),
+                            asDouble(arr.get(4)),
+                            asDouble(arr.get(5)),
+                            asDouble(arr.get(6)),
+                            asDouble(arr.get(7)),
+                            asDouble(arr.get(8)),
+                            asInt(arr.get(9)),
+                            (Boolean) arr.get(10),
+                            (Boolean) arr.get(11),
+                            (Boolean) arr.get(12),
+                            asInt(arr.get(13))
                     );
                     break;
                 }
