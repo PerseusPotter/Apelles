@@ -90,4 +90,9 @@ abstract class EntityOutliner(val type: Int, val name: String) {
     protected abstract fun renderPass(pt: Double, t: Int, ents: List<OutlineState>, pass: Int)
     protected open fun renderCleanup1() {}
     protected open fun renderCleanup2() {}
+
+    companion object {
+        @JvmField
+        var dump = false
+    }
 }

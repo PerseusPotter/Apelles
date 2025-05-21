@@ -57,5 +57,6 @@ object EntityOutlineRenderer {
         Minecraft.getMinecraft().renderManager.setRenderOutlines(false)
 
         outliners.forEach { it._internalClear() }
+        EntityOutliner.dump = false
     }
 }

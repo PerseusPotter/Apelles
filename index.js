@@ -903,5 +903,5 @@ export function createSemiAutomaticOutliner(tester, color, type, { width = 1, ph
 
 // require('./test');
 
-register('command', () => Client.scheduleTask(20, () => Java.type('com.perseuspotter.apelles.outline.JFAEntityOutliner').dump = true)).setName('apellesdumpfbo', true);
+register('command', () => Client.scheduleTask(20, () => Java.type('com.perseuspotter.apelles.outline.EntityOutliner').dump = true)).setName('apellesdumpfbo', true);
 register('command', t => Client.scheduleTask(() => APRenderer.USE_NEW_SHIT = !!t)).setName('apellesusecompat', true);
