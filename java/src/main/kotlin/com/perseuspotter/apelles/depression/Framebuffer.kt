@@ -166,6 +166,10 @@ class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val us
         glBindTexture(GL_TEXTURE_2D, 0)
     }
 
+    fun bindDepthTexture() {
+        glBindTexture(GL_TEXTURE_2D, depthBuffer)
+    }
+
     fun bindFramebuffer() {
         glBindFramebuffer(GL_FRAMEBUFFER, framebufferObject)
     }
