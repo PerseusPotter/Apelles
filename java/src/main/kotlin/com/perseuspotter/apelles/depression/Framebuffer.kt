@@ -3,12 +3,9 @@ package com.perseuspotter.apelles.depression
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL14
-import org.lwjgl.opengl.GL30
 import org.lwjgl.opengl.GL30.*
 import java.awt.image.BufferedImage
-import java.lang.IllegalStateException
 import java.nio.ByteBuffer
-import kotlin.math.sqrt
 
 
 class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val useStencil: Boolean) {
@@ -168,7 +165,16 @@ class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val us
         unbindFramebuffer()
     }
 
-    fun dumpColor(): BufferedImage {
+    companion object {
+        open class ColorTransformer {
+            open fun r(v: Float): Float = v
+            open fun g(v: Float): Float = v
+            open fun b(v: Float): Float = v
+            open fun a(v: Float): Float = v
+        }
+    }
+
+    fun dumpColor(transformer: ColorTransformer = ColorTransformer()): BufferedImage {
         val buffer = BufferUtils.createFloatBuffer(width * height * 4) // RGBA32F
 
         glReadBuffer(GL_COLOR_ATTACHMENT0)
@@ -180,10 +186,10 @@ class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val us
             for (x in 0 until width) {
                 val index = ((height - 1 - y) * width + x) * 4
 
-                val r = (sqrt(buffer[index + 0]) / 255f).coerceIn(0f, 1f)
-                val g = (buffer[index + 1] / 1000f).coerceIn(0f, 1f)
-                val b = (buffer[index + 2] / 1000f).coerceIn(0f, 1f)
-                val a = (buffer[index + 3]).coerceIn(0f, 1f)
+                val r = transformer.r(buffer[index + 0]).coerceIn(0f, 1f)
+                val g = transformer.g(buffer[index + 0]).coerceIn(0f, 1f)
+                val b = transformer.b(buffer[index + 0]).coerceIn(0f, 1f)
+                val a = transformer.a(buffer[index + 0]).coerceIn(0f, 1f)
 
                 val ir = (r * 255.0f).toInt()
                 val ig = (g * 255.0f).toInt()

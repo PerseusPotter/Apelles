@@ -41,8 +41,12 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         copyDepth(fb1!!)
     }
 
-    @JvmField
-    var dump = false
+    private val jfaTransformer = object : Framebuffer.Companion.ColorTransformer() {
+        override fun r(v: Float): Float = sqrt(v) / 255f
+        override fun g(v: Float): Float = v / 1000f
+        override fun b(v: Float): Float = v / 1000f
+    }
+
     private fun ceilLog2(x: Int): Int = 32 - (x - 1).coerceAtLeast(0).countLeadingZeroBits()
     override fun renderPass(pt: Double, t: Int, ents: List<OutlineState>, pass: Int) {
         val prof = Minecraft.getMinecraft().mcProfiler
@@ -89,7 +93,7 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         GlState.reset()
         if (dump) {
             fb1!!.bindFramebuffer()
-            val colorImage = fb1!!.dumpColor()
+            val colorImage = fb1!!.dumpColor(jfaTransformer)
             val depthImage = fb1!!.dumpDepth()
             ImageIO.write(colorImage, "png", File("./colorBufferInit$pass.png"))
             ImageIO.write(depthImage, "png", File("./depthBufferInit$pass.png"))
@@ -113,7 +117,7 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
             GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3)
             if (dump) {
                 pp.bindFramebuffer()
-                val colorImage = pp.dumpColor()
+                val colorImage = pp.dumpColor(jfaTransformer)
                 ImageIO.write(colorImage, "png", File("./colorBufferPass$pass$iter.png"))
             }
             iter++
