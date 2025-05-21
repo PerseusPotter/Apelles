@@ -85,7 +85,7 @@ class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val us
         bindFramebuffer()
         glFramebufferTexture2D(
             GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-            this.framebufferTexture, 0
+            framebufferTexture, 0
         )
 
         if (useDepth || useStencil) {
