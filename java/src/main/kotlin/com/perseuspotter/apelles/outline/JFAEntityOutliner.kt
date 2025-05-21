@@ -9,6 +9,7 @@ import com.perseuspotter.apelles.outline.shader.UBOColorShader
 import com.perseuspotter.apelles.state.GlState
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.OpenGlHelper
+import net.minecraft.client.renderer.culling.Frustum
 import org.lwjgl.opengl.ContextCapabilities
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
@@ -68,7 +69,7 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         }
 
         prof.startSection("seeding")
-        val frust = net.minecraft.client.renderer.culling.Frustum()
+        val frust = Frustum()
         frust.setPosition(Geometry.getRenderX(), Geometry.getRenderY(), Geometry.getRenderZ())
         ents.groupBy { it.getWidth() }.forEach { (w, e) ->
             JFAInit.setWidth(w)
@@ -76,13 +77,13 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
             val w2 = if (w < 0) -32 * w else w
             if (w2 > maxW) maxW = w2
             e.forEach Inner@ {
+                val ent = it.entity.get()!!
+                if (!frust.isBoundingBoxInFrustum(ent.entityBoundingBox)) return@Inner
                 val id = colors.getId(it.getColor())
                 if (id != prevCol) {
                     JFAInit.setColorId(id)
                     prevCol = id
                 }
-                val ent = it.entity.get()!!
-                if (!frust.isBoundingBoxInFrustum(ent.entityBoundingBox)) return@Inner
                 val invis = it.renderInvis() && ent.isInvisible
                 if (invis) ent.isInvisible = false
                 rm.renderEntityStatic(ent, pt.toFloat(), false)
