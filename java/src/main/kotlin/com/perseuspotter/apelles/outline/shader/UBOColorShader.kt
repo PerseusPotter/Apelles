@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL30
 import org.lwjgl.opengl.GL31
 import kotlin.math.min
 
-abstract class UBOColorRender(fragSrc: String?, vertSrc: String?) : ChromaShader(fragSrc, vertSrc, true) {
+abstract class UBOColorShader(fragSrc: String?, vertSrc: String?) : ChromaShader(fragSrc, vertSrc, true) {
     var uboId = -1
     override fun init() {
         this.bind()

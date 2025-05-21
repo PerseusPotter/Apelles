@@ -5,7 +5,7 @@ import com.perseuspotter.apelles.geo.Geometry
 import com.perseuspotter.apelles.outline.shader.jfa.JFAInit
 import com.perseuspotter.apelles.outline.shader.jfa.JFAPass
 import com.perseuspotter.apelles.outline.shader.jfa.JFARender
-import com.perseuspotter.apelles.outline.shader.UBOColorRender
+import com.perseuspotter.apelles.outline.shader.UBOColorShader
 import com.perseuspotter.apelles.state.GlState
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.OpenGlHelper
@@ -61,7 +61,7 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         JFAInit.bind()
         JFAInit.setSize(fb1!!.textureWidth, fb1!!.textureHeight)
         var maxW = 0
-        val colors = UBOColorRender.ColorBuilder()
+        val colors = UBOColorShader.ColorBuilder()
         var prevCol = -1
         if (dump) {
             val depthImage = fb1!!.dumpDepth()
