@@ -24,8 +24,8 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
 
     override fun renderSetup() {
         if (fb1 == null) {
-            fb1 = createFB()
-            fb2 = createFB()
+            fb1 = createFB(false)
+            fb2 = createFB(false)
         }
         val width = Minecraft.getMinecraft().displayWidth
         val height = Minecraft.getMinecraft().displayHeight

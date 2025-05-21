@@ -72,9 +72,9 @@ abstract class EntityOutliner(val type: Int, val name: String) {
         prof.endSection()
     }
 
-    protected fun createFB(): Framebuffer {
+    protected fun createFB(stencil: Boolean): Framebuffer {
         val main = Minecraft.getMinecraft().framebuffer
-        val fb = Framebuffer(main.framebufferTextureWidth, main.framebufferTextureHeight, true)
+        val fb = Framebuffer(main.framebufferTextureWidth, main.framebufferTextureHeight, true, stencil)
         fb.setColor(0.0f, 0.0f, 0.0f, 0.0f)
         return fb
     }

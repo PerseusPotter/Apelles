@@ -3,6 +3,7 @@ package com.perseuspotter.apelles.depression
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL14
+import org.lwjgl.opengl.GL30
 import org.lwjgl.opengl.GL30.*
 import java.awt.image.BufferedImage
 import java.lang.IllegalStateException
@@ -10,7 +11,7 @@ import java.nio.ByteBuffer
 import kotlin.math.sqrt
 
 
-class Framebuffer(var width: Int, var height: Int, var useDepth: Boolean) {
+class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val useStencil: Boolean) {
     var textureWidth: Int = width
     var textureHeight: Int = height
     var framebufferObject: Int
@@ -44,12 +45,12 @@ class Framebuffer(var width: Int, var height: Int, var useDepth: Boolean) {
         unbindFramebuffer()
 
         if (depthBuffer > -1) {
-            glDeleteRenderbuffers(this.depthBuffer)
+            glDeleteRenderbuffers(depthBuffer)
             depthBuffer = -1
         }
 
         if (framebufferTexture > -1) {
-            glDeleteTextures(this.framebufferTexture)
+            glDeleteTextures(framebufferTexture)
             framebufferTexture = -1
         }
 
@@ -69,7 +70,7 @@ class Framebuffer(var width: Int, var height: Int, var useDepth: Boolean) {
         framebufferObject = glGenFramebuffers()
         framebufferTexture = glGenTextures()
 
-        if (useDepth) depthBuffer = glGenRenderbuffers()
+        if (useDepth || useStencil) depthBuffer = glGenRenderbuffers()
 
         setTexFilter(GL_NEAREST)
         bindTexture()
@@ -90,10 +91,10 @@ class Framebuffer(var width: Int, var height: Int, var useDepth: Boolean) {
             this.framebufferTexture, 0
         )
 
-        if (useDepth) {
+        if (useDepth || useStencil) {
             glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer)
             glRenderbufferStorage(
-                GL_RENDERBUFFER, GL14.GL_DEPTH_COMPONENT24,
+                GL_RENDERBUFFER, if (useStencil) GL_DEPTH24_STENCIL8 else GL14.GL_DEPTH_COMPONENT24,
                 textureWidth,
                 textureHeight
             )
@@ -158,12 +159,13 @@ class Framebuffer(var width: Int, var height: Int, var useDepth: Boolean) {
         color[3] = a
     }
 
-    fun clear(bit: Int = GL_COLOR_BUFFER_BIT or (if (useDepth) GL_DEPTH_BUFFER_BIT else 0)) {
+    fun clear(bit: Int = GL_COLOR_BUFFER_BIT or (if (useDepth) GL_DEPTH_BUFFER_BIT else 0) or (if (useStencil) GL_STENCIL_BUFFER_BIT else 0)) {
         bindFramebuffer()
         glClearColor(color[0], color[1], color[2], color[3])
         if (useDepth) glClearDepth(1.0)
+        if (useStencil) glClearStencil(0)
         glClear(bit)
-        this.unbindFramebuffer()
+        unbindFramebuffer()
     }
 
     fun dumpColor(): BufferedImage {
@@ -208,6 +210,26 @@ class Framebuffer(var width: Int, var height: Int, var useDepth: Boolean) {
                 val index = (height - 1 - y) * width + x
                 val depth = buffer[index].coerceIn(0f, 1f)
                 val grayscale = (depth * 255).toInt()
+                val rgb = (grayscale shl 16) or (grayscale shl 8) or grayscale
+                image.setRGB(x, y, rgb)
+            }
+        }
+
+        return image
+    }
+
+    fun dumpStencil(): BufferedImage {
+        if (!useStencil) throw IllegalStateException("dumbass")
+        val buffer = BufferUtils.createByteBuffer(width * height)
+        glReadPixels(0, 0, width, height, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, buffer)
+
+        val image = BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY)
+
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val index = (height - 1 - y) * width + x
+                val depth = 255 and buffer[index].toInt()
+                val grayscale = depth / 255
                 val rgb = (grayscale shl 16) or (grayscale shl 8) or grayscale
                 image.setRGB(x, y, rgb)
             }
