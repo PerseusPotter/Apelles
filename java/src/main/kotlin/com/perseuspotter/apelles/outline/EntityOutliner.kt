@@ -6,6 +6,7 @@ import com.perseuspotter.apelles.state.GlState
 import net.minecraft.client.Minecraft
 import org.lwjgl.opengl.ContextCapabilities
 import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL30
 
 abstract class EntityOutliner(val type: Int, val name: String) {
@@ -79,6 +80,9 @@ abstract class EntityOutliner(val type: Int, val name: String) {
         val main = Minecraft.getMinecraft().framebuffer
         val fb = Framebuffer(main.framebufferTextureWidth, main.framebufferTextureHeight, true, stencil)
         fb.setColor(0.0f, 0.0f, 0.0f, 0.0f)
+        fb.bindFramebuffer()
+        GL13.glActiveTexture(GL13.GL_TEXTURE0)
+        fb.unbindFramebuffer()
         return fb
     }
 

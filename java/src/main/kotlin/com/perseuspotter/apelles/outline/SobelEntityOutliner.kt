@@ -70,7 +70,6 @@ object SobelEntityOutliner : EntityOutliner(3, "Sobel") {
 
         prof.endStartSection("blit")
         SobelRender.bind()
-        GL13.glActiveTexture(GL13.GL_TEXTURE0)
         GL11.glEnable(GL11.GL_BLEND)
         OpenGlHelper.glBlendFunc(770, 771, 1, 771)
         fb!!.bindTexture()
@@ -78,6 +77,7 @@ object SobelEntityOutliner : EntityOutliner(3, "Sobel") {
         GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, mainFb.framebufferObject)
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3)
         prof.endSection()
+        fb!!.unbindTexture()
     }
 
     override fun renderCleanup1() {
