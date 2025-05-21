@@ -98,12 +98,11 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
             ImageIO.write(colorImage, "png", File("./$name-colorBufferInit$pass.png"))
             ImageIO.write(depthImage, "png", File("./$name-depthBufferInit$pass.png"))
         }
-        GL11.glDisable(GL11.GL_DEPTH_TEST)
+        GlState.setDepthTest(false)
 
         prof.endStartSection("iters")
         JFAPass.bind()
         JFAPass.setSize(fb1!!.textureWidth, fb1!!.textureHeight)
-        GL13.glActiveTexture(GL13.GL_TEXTURE0)
         var f = true
         var iter = 0
         fun doIter(gap: Int) {
@@ -127,7 +126,6 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         }
         doIter(2)
         doIter(1)
-        fb1!!.unbindTexture()
 
         prof.endStartSection("render")
         GL11.glEnable(GL11.GL_BLEND)
@@ -141,7 +139,7 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3)
         JFARender.unbindUbo()
         prof.endSection()
-        GL11.glEnable(GL11.GL_DEPTH_TEST)
+        fb1!!.unbindTexture()
     }
 
     override fun renderCleanup1() {
