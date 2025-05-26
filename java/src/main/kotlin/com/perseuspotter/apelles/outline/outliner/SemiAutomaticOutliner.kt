@@ -45,8 +45,7 @@ class SemiAutomaticOutliner(
 
     fun add(e: Entity) {
         seen.add(e)
-        hits.add(e)
-        EntityOutlineRenderer.getOutlineState(e).add(this)
+        if (hits.add(e) && registered) EntityOutlineRenderer.getOutlineState(e).add(this)
     }
 
     fun remove(e: Entity) {
