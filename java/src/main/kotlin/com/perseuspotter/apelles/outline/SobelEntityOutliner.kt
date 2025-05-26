@@ -2,7 +2,7 @@ package com.perseuspotter.apelles.outline
 
 import com.perseuspotter.apelles.depression.Framebuffer
 import com.perseuspotter.apelles.geo.Geometry
-import com.perseuspotter.apelles.outline.shader.sobel.SobelInit
+import com.perseuspotter.apelles.outline.shader.OutlineInit
 import com.perseuspotter.apelles.outline.shader.sobel.SobelRender
 import com.perseuspotter.apelles.state.GlState
 import net.minecraft.client.Minecraft
@@ -46,7 +46,7 @@ object SobelEntityOutliner : EntityOutliner(3, "Sobel") {
         GL11.glDisable(GL11.GL_BLEND)
 
         fb!!.bindFramebuffer()
-        SobelInit.bind()
+        OutlineInit.bind()
         prof.startSection("render")
         val frust = Frustum()
         frust.setPosition(Geometry.getRenderX(), Geometry.getRenderY(), Geometry.getRenderZ())
@@ -61,7 +61,7 @@ object SobelEntityOutliner : EntityOutliner(3, "Sobel") {
         }.forEach {
             val ent = it.entity.get()!!
             if (!frust.isBoundingBoxInFrustum(ent.entityBoundingBox)) return@forEach
-            SobelInit.setColor(it.getColor())
+            OutlineInit.setColor(it.getColor())
             val invis = it.renderInvis() && ent.isInvisible
             if (invis) ent.isInvisible = false
             rm.renderEntityStatic(ent, pt.toFloat(), false)
