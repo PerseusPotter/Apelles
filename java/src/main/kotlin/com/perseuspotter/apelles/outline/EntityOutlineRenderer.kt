@@ -13,7 +13,7 @@ object EntityOutlineRenderer {
     val outlined = WeakHashMap<Entity, OutlineState>()
     fun getOutlineState(e: Entity): OutlineState = outlined.getOrPut(e) { OutlineState(e) }
     val outliners = linkedSetOf<RenderOutliner>()
-    val outlineRenderers = arrayOf(JFAEntityOutliner)
+    val outlineRenderers = arrayOf(JFAEntityOutliner, RobertsCrossEntityOutliner, SobelEntityOutliner, BlurEntityOutliner)
 
     private var checked = false
     fun checkEntities(pt: Double) {
