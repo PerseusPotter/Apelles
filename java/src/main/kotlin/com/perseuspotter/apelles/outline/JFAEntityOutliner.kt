@@ -10,7 +10,6 @@ import com.perseuspotter.apelles.state.GlState
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
-import net.minecraft.client.renderer.culling.Frustum
 import org.lwjgl.opengl.ContextCapabilities
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
@@ -71,8 +70,6 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         }
 
         prof.startSection("seeding")
-        val frust = Frustum()
-        frust.setPosition(Geometry.getRenderX(), Geometry.getRenderY(), Geometry.getRenderZ())
         GlStateManager.setActiveTexture(GL13.GL_TEXTURE0)
         GlStateManager.bindTexture(0)
         ents.sortedByDescending {
@@ -89,7 +86,6 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
             if (w2 > maxW) maxW = w2
 
             val ent = it.entity.get()!!
-            if (!frust.isBoundingBoxInFrustum(ent.entityBoundingBox)) return@forEach
             val id = colors.getId(it.getColor())
             if (id != prevCol) {
                 JFAInit.setColorId(id)
