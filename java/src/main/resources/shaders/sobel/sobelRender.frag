@@ -26,7 +26,7 @@ const mat3 lmsToRgb = M0_1 * M1_1;
 
 vec2 grayscale(vec4 col) {
   // return vec2(0.2126 * col.r + 0.7152 * col.g + 0.0722 * col.b, col.a);
-  return vec2(0.333333 * col.r + 0.333333 * col.g + 0.333333 * col.b, col.a);
+  return vec2(0.333333 * col.r + 0.333333 * col.g + 0.333333 * col.b, abs(col.a));
 }
 
 void main(void) {
