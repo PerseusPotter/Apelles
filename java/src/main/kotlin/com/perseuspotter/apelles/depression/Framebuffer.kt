@@ -261,8 +261,7 @@ class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val us
         for (y in 0 until height) {
             for (x in 0 until width) {
                 val index = (height - 1 - y) * width + x
-                val depth = 255 and buffer[index].toInt()
-                val grayscale = depth / 255
+                val grayscale = 255 and buffer[index].toInt()
                 val rgb = (grayscale shl 16) or (grayscale shl 8) or grayscale
                 image.setRGB(x, y, rgb)
             }
