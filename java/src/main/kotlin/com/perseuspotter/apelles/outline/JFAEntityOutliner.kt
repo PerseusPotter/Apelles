@@ -8,6 +8,7 @@ import com.perseuspotter.apelles.outline.shader.jfa.JFARender
 import com.perseuspotter.apelles.outline.shader.UBOColorShader
 import com.perseuspotter.apelles.state.GlState
 import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.client.renderer.culling.Frustum
 import org.lwjgl.opengl.ContextCapabilities
@@ -16,6 +17,7 @@ import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL30
 import java.io.File
 import javax.imageio.ImageIO
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 object JFAEntityOutliner : EntityOutliner(1, "JFA") {
@@ -71,26 +73,36 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         prof.startSection("seeding")
         val frust = Frustum()
         frust.setPosition(Geometry.getRenderX(), Geometry.getRenderY(), Geometry.getRenderZ())
-        ents.groupBy { it.getWidth() }.forEach { (w, e) ->
+        GlStateManager.setActiveTexture(GL13.GL_TEXTURE0)
+        GlStateManager.bindTexture(0)
+        ents.sortedByDescending {
+            val ent = it.entity.get()!!
+            val x = ent.lastTickPosX + (ent.posX - ent.lastTickPosX) * pt
+            val y = ent.lastTickPosY + (ent.posY - ent.lastTickPosY) * pt
+            val z = ent.lastTickPosZ + (ent.posZ - ent.lastTickPosZ) * pt
+            (Geometry.getRenderX() - x).pow(2) + (Geometry.getRenderY() - y).pow(2) + (Geometry.getRenderZ() - z).pow(2)
+        }.forEach {
+            val w = it.getWidth()
             JFAInit.setWidth(w)
             // "fixed"
             val w2 = if (w < 0) -32 * w else w
             if (w2 > maxW) maxW = w2
-            e.forEach Inner@ {
-                val ent = it.entity.get()!!
-                if (!frust.isBoundingBoxInFrustum(ent.entityBoundingBox)) return@Inner
-                val id = colors.getId(it.getColor())
-                if (id != prevCol) {
-                    JFAInit.setColorId(id)
-                    prevCol = id
-                }
-                val invis = it.renderInvis() && ent.isInvisible
-                if (invis) ent.isInvisible = false
-                rm.renderEntityStatic(ent, pt.toFloat(), false)
-                if (invis) ent.isInvisible = true
+
+            val ent = it.entity.get()!!
+            if (!frust.isBoundingBoxInFrustum(ent.entityBoundingBox)) return@forEach
+            val id = colors.getId(it.getColor())
+            if (id != prevCol) {
+                JFAInit.setColorId(id)
+                prevCol = id
             }
+            val invis = it.renderInvis() && ent.isInvisible
+            if (invis) ent.isInvisible = false
+            rm.renderEntityStatic(ent, pt.toFloat(), false)
+            if (invis) ent.isInvisible = true
         }
         GlState.reset()
+        GlState.setDepthTest(false)
+
         if (dump) {
             fb1!!.bindFramebuffer()
             val colorImage = fb1!!.dumpColor(jfaTransformer)
@@ -98,7 +110,6 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
             ImageIO.write(colorImage, "png", File("./$name-colorBufferInit$pass.png"))
             ImageIO.write(depthImage, "png", File("./$name-depthBufferInit$pass.png"))
         }
-        GlState.setDepthTest(false)
 
         prof.endStartSection("iters")
         JFAPass.bind()
@@ -139,7 +150,6 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3)
         JFARender.unbindUbo()
         prof.endSection()
-        fb1!!.unbindTexture()
     }
 
     override fun renderCleanup1() {
@@ -148,6 +158,7 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
 
     override fun renderCleanup2() {
         GlState.bindShader(0)
+        GlState.bindTexture(0)
         Minecraft.getMinecraft().framebuffer.bindFramebuffer(false)
     }
 }

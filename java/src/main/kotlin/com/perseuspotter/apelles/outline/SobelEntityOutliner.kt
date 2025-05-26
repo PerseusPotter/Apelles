@@ -6,15 +6,14 @@ import com.perseuspotter.apelles.outline.shader.sobel.SobelInit
 import com.perseuspotter.apelles.outline.shader.sobel.SobelRender
 import com.perseuspotter.apelles.state.GlState
 import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.client.renderer.culling.Frustum
-import org.lwjgl.opengl.ContextCapabilities
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL13
-import org.lwjgl.opengl.GL30
+import org.lwjgl.opengl.*
 import java.io.File
 import javax.imageio.ImageIO
 import kotlin.math.abs
+import kotlin.math.pow
 
 object SobelEntityOutliner : EntityOutliner(3, "Sobel") {
     override fun checkCapabilities(cap: ContextCapabilities): Boolean = cap.OpenGL30
@@ -22,7 +21,7 @@ object SobelEntityOutliner : EntityOutliner(3, "Sobel") {
     var fb: Framebuffer? = null
 
     override fun renderSetup() {
-        if (fb == null) fb = createFB(false)
+        if (fb == null) fb = createFB(false, false)
 
         val width = Minecraft.getMinecraft().displayWidth
         val height = Minecraft.getMinecraft().displayHeight
@@ -30,6 +29,8 @@ object SobelEntityOutliner : EntityOutliner(3, "Sobel") {
 
         fb!!.clear(GL11.GL_COLOR_BUFFER_BIT)
         copyDepth(fb!!)
+
+        GL11.glDepthMask(true)
     }
 
     private val sobelTransformer = object : Framebuffer.Companion.ColorTransformer() {
@@ -49,7 +50,15 @@ object SobelEntityOutliner : EntityOutliner(3, "Sobel") {
         prof.startSection("render")
         val frust = Frustum()
         frust.setPosition(Geometry.getRenderX(), Geometry.getRenderY(), Geometry.getRenderZ())
-        ents.forEach {
+        GlStateManager.setActiveTexture(GL13.GL_TEXTURE0)
+        GlStateManager.bindTexture(0)
+        ents.sortedByDescending {
+            val ent = it.entity.get()!!
+            val x = ent.lastTickPosX + (ent.posX - ent.lastTickPosX) * pt
+            val y = ent.lastTickPosY + (ent.posY - ent.lastTickPosY) * pt
+            val z = ent.lastTickPosZ + (ent.posZ - ent.lastTickPosZ) * pt
+            (Geometry.getRenderX() - x).pow(2) + (Geometry.getRenderY() - y).pow(2) + (Geometry.getRenderZ() - z).pow(2)
+        }.forEach {
             val ent = it.entity.get()!!
             if (!frust.isBoundingBoxInFrustum(ent.entityBoundingBox)) return@forEach
             SobelInit.setColor(it.getColor())
@@ -77,7 +86,6 @@ object SobelEntityOutliner : EntityOutliner(3, "Sobel") {
         GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, mainFb.framebufferObject)
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3)
         prof.endSection()
-        fb!!.unbindTexture()
     }
 
     override fun renderCleanup1() {
@@ -86,6 +94,7 @@ object SobelEntityOutliner : EntityOutliner(3, "Sobel") {
 
     override fun renderCleanup2() {
         GlState.bindShader(0)
+        GlState.bindTexture(0)
         Minecraft.getMinecraft().framebuffer.bindFramebuffer(false)
     }
 }
