@@ -17,7 +17,7 @@ abstract class Outliner(
         setColor(color)
         when (type) {
             1 -> {}
-            2, 3 -> {
+            2, 3, 4 -> {
                 if (width != 1) throw IllegalArgumentException("changing width is only available with JFA")
                 if (blackOutline) throw IllegalArgumentException("blackOutline is only available with JFA")
                 if (absoluteSize) throw IllegalArgumentException("absoluteSize is only available with JFA")
