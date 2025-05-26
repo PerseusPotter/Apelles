@@ -654,9 +654,13 @@ export function lineSmooth(enabled) {
   _lineSmooth.call(GlState, enabled);
 }
 
-const _bindTexture = GlState['bindTexture(net.minecraft.util.ResourceLocation)'] ?? throwExp('bad');
+const _bindTexture = GlState.bindTexture ?? throwExp('bad');
 /**
+ * @overload
  * @param {string} tex `ResourceLocation` or texture path, e.g. `'textures/entity/beacon_beam.png'`
+ *
+ * @overload
+ * @param {number} id
  */
 export function bindTexture(tex) {
   _bindTexture.call(GlState, coerceResourceLocation(tex));
