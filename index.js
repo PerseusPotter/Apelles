@@ -108,6 +108,7 @@ export function renderLine(color, points, { lw = 1, lighting = 0, phase = false,
 }
 
 /**
+ * tip: if points does not change often, using `java.util.List` over native js arrays will offer better performance
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} mode GL primitive constant
  * @param {[number, number, number][]} points
