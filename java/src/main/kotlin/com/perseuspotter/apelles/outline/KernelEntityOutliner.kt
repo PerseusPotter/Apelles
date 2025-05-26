@@ -8,7 +8,6 @@ import com.perseuspotter.apelles.state.GlState
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
-import net.minecraft.client.renderer.culling.Frustum
 import org.lwjgl.opengl.ContextCapabilities
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
@@ -51,8 +50,6 @@ abstract class KernelEntityOutliner(type: Int, name: String, val renderShader: C
         fb!!.bindFramebuffer()
         OutlineInit.bind()
         prof.startSection("render")
-        val frust = Frustum()
-        frust.setPosition(Geometry.getRenderX(), Geometry.getRenderY(), Geometry.getRenderZ())
         GlStateManager.setActiveTexture(GL13.GL_TEXTURE0)
         GlStateManager.bindTexture(0)
         ents.sortedByDescending {
@@ -63,7 +60,6 @@ abstract class KernelEntityOutliner(type: Int, name: String, val renderShader: C
             (Geometry.getRenderX() - x).pow(2) + (Geometry.getRenderY() - y).pow(2) + (Geometry.getRenderZ() - z).pow(2)
         }.forEach {
             val ent = it.entity.get()!!
-            if (!frust.isBoundingBoxInFrustum(ent.entityBoundingBox)) return@forEach
             OutlineInit.setColor(it.getColor())
             val invis = it.renderInvis() && ent.isInvisible
             if (invis) ent.isInvisible = false

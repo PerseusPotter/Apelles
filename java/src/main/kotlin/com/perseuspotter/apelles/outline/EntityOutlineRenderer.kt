@@ -1,6 +1,7 @@
 package com.perseuspotter.apelles.outline
 
 import com.perseuspotter.apelles.geo.Frustum
+import com.perseuspotter.apelles.geo.Geometry
 import com.perseuspotter.apelles.outline.outliner.RenderOutliner
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityPlayerSP
@@ -39,12 +40,15 @@ object EntityOutlineRenderer {
                 outliners.forEach { if (it.registered) it.test(e) }
             }
         }
+        val frust = net.minecraft.client.renderer.culling.Frustum()
+        frust.setPosition(Geometry.getRenderX(), Geometry.getRenderY(), Geometry.getRenderZ())
         outlineRenderers.forEach { it.clear() }
         outlined.forEach { (e, s) ->
             if (e.isDead) return@forEach
             if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 0 && e is EntityPlayerSP) return@forEach
             if (s.getOutlineType() == 0) return@forEach
             if (s.getColor().a == 0f) return@forEach
+            if (!frust.isBoundingBoxInFrustum(e.entityBoundingBox)) return@forEach
             outlineRenderers[s.getOutlineType() - 1].add(s)
         }
         prof.endSection()
