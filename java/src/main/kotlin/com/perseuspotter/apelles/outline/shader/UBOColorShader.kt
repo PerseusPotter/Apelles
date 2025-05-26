@@ -13,7 +13,6 @@ import kotlin.math.min
 abstract class UBOColorShader(fragSrc: String?, vertSrc: String?) : ChromaShader(fragSrc, vertSrc, true) {
     var uboId = -1
     override fun init() {
-        bind()
         val b = BufferUtils.createIntBuffer(1)
         GL15.glGenBuffers(b)
         uboId = b[0]

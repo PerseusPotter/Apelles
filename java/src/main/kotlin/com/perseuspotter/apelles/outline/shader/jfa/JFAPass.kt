@@ -13,7 +13,6 @@ object JFAPass : Shader(getResource("/shaders/jfa/jfaPass.frag"), getResource("/
     }
 
     override fun init() {
-        this.bind()
         GL20.glUniform1i(getUniformLoc("pingPong"), 0)
     }
 }
