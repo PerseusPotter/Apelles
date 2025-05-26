@@ -1,5 +1,6 @@
 package com.perseuspotter.apelles.depression
 
+import com.perseuspotter.apelles.state.GlState
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL14
@@ -159,15 +160,15 @@ class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val us
     }
 
     fun bindTexture() {
-        glBindTexture(GL_TEXTURE_2D, framebufferTexture)
+        GlState.bindTexture(framebufferTexture)
     }
 
     fun unbindTexture() {
-        glBindTexture(GL_TEXTURE_2D, 0)
+        GlState.bindTexture(0)
     }
 
     fun bindDepthTexture() {
-        glBindTexture(GL_TEXTURE_2D, depthBuffer)
+        GlState.bindTexture(depthBuffer)
     }
 
     fun bindFramebuffer() {
