@@ -2,6 +2,8 @@ package com.perseuspotter.apelles.state
 
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.texture.ITextureObject
+import net.minecraft.client.renderer.texture.SimpleTexture
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL20
@@ -500,11 +502,26 @@ object GlState {
             else glDisable(GL_LINE_SMOOTH)
         }
     }
-    private var boundTex: ResourceLocation? = null
+    private var boundTexRL: ResourceLocation? = null
+    private var boundTexID: Int? = null
+    private val mapTextureObjects: Map<ResourceLocation, ITextureObject>
+    init {
+        val tm = Minecraft.getMinecraft().textureManager
+        mapTextureObjects = tm::class.java.getDeclaredField("field_110584_c").also { it.isAccessible = true }.get(tm) as Map<ResourceLocation, ITextureObject>
+    }
     fun bindTexture(tex: ResourceLocation) {
-        if (tex != boundTex) {
-            boundTex = tex
-            Minecraft.getMinecraft().textureManager.bindTexture(tex)
+        if (tex != boundTexRL) {
+            val tm = Minecraft.getMinecraft().textureManager
+            // loadTexture calls GlStateManager and that's scary. but surely it will only be for one frame and will be fine right?
+            bindTexture((mapTextureObjects[tex] ?: SimpleTexture(tex).also { tm.loadTexture(tex, it) }).glTextureId)
+            boundTexRL = tex
+        }
+    }
+    fun bindTexture(id: Int) {
+        if (id != boundTexID) {
+            boundTexID = id
+            boundTexRL = null
+            glBindTexture(GL_TEXTURE_2D, id)
         }
     }
     private var cr: Float? = null
@@ -583,7 +600,8 @@ object GlState {
     fun reset() {
         prevLw = null
         prevSmooth = null
-        boundTex = null
+        boundTexRL = null
+        boundTexID = null
         cr = null
         cg = null
         cb = null
