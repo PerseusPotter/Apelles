@@ -3,6 +3,7 @@ package com.perseuspotter.apelles.depression
 import com.perseuspotter.apelles.state.GlState
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL12
 import org.lwjgl.opengl.GL14
 import org.lwjgl.opengl.GL30.*
 import java.awt.image.BufferedImage
@@ -15,7 +16,6 @@ class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val us
     var framebufferTexture: Int
     var depthBuffer: Int
     var color: FloatArray
-    var filter: Int = 0
 
     init {
         framebufferObject = -1
@@ -67,11 +67,13 @@ class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val us
 
         framebufferObject = glGenFramebuffers()
         framebufferTexture = glGenTextures()
-
         if (useDepth || useStencil) depthBuffer = if (useDepthTexture) glGenTextures() else glGenRenderbuffers()
 
-        setTexFilter(GL_NEAREST)
         bindTexture()
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE)
         glTexImage2D(
             GL_TEXTURE_2D,
             0,
@@ -91,7 +93,12 @@ class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val us
 
         if (useDepth || useStencil) {
             if (useDepthTexture) {
-                glBindTexture(GL_TEXTURE_2D, depthBuffer)
+                bindDepthTexture()
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE)
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE)
+                glTexParameteri(GL_TEXTURE_2D, GL14.GL_TEXTURE_COMPARE_MODE, GL_NONE)
                 glTexImage2D(
                     GL_TEXTURE_2D,
                     0,
@@ -100,7 +107,7 @@ class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val us
                     textureHeight,
                     0,
                     if (useStencil) GL_DEPTH_STENCIL else GL_DEPTH_COMPONENT,
-                    GL_UNSIGNED_INT,
+                    if (useStencil) GL_UNSIGNED_INT_24_8 else GL_UNSIGNED_INT,
                     null as ByteBuffer?
                 )
                 glFramebufferTexture2D(
@@ -128,16 +135,6 @@ class Framebuffer(var width: Int, var height: Int, val useDepth: Boolean, val us
         }
 
         clear()
-        unbindTexture()
-    }
-
-    fun setTexFilter(filter: Int) {
-        this.filter = filter
-        bindTexture()
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
         unbindTexture()
     }
 
