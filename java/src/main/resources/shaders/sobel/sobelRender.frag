@@ -32,13 +32,13 @@ vec2 grayscale(vec4 col) {
 void main(void) {
   ivec2 pos = ivec2(gl_FragCoord.xy);
   vec2 k00 = grayscale(texelFetch(sampler, pos + ivec2(-1, -1), 0));
-  vec2 k01 = grayscale(texelFetch(sampler, pos + ivec2(-1, +0), 0));
-  vec2 k02 = grayscale(texelFetch(sampler, pos + ivec2(-1, +1), 0));
-  vec2 k10 = grayscale(texelFetch(sampler, pos + ivec2(+0, -1), 0));
+  vec2 k01 = grayscale(texelFetch(sampler, pos + ivec2(+0, -1), 0));
+  vec2 k02 = grayscale(texelFetch(sampler, pos + ivec2(+1, -1), 0));
+  vec2 k10 = grayscale(texelFetch(sampler, pos + ivec2(-1, +0), 0));
   vec4 k11 = texelFetch(sampler, pos + ivec2(+0, +0), 0);
-  vec2 k12 = grayscale(texelFetch(sampler, pos + ivec2(+0, +1), 0));
-  vec2 k20 = grayscale(texelFetch(sampler, pos + ivec2(+1, -1), 0));
-  vec2 k21 = grayscale(texelFetch(sampler, pos + ivec2(+1, +0), 0));
+  vec2 k12 = grayscale(texelFetch(sampler, pos + ivec2(+1, +0), 0));
+  vec2 k20 = grayscale(texelFetch(sampler, pos + ivec2(-1, +1), 0));
+  vec2 k21 = grayscale(texelFetch(sampler, pos + ivec2(+0, +1), 0));
   vec2 k22 = grayscale(texelFetch(sampler, pos + ivec2(+1, +1), 0));
 
   vec2 edgeH = k00 + 2.0 * k10 + k20 - (k02 + 2.0 * k12 + k22);
