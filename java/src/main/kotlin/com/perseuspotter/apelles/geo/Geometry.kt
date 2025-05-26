@@ -105,13 +105,14 @@ abstract class Geometry {
         }
 
         private val SQRT_2 = sqrt(2.0)
+        fun getFarPlaneDist() = (Minecraft.getMinecraft().gameSettings.renderDistanceChunks shl 4) * SQRT_2
         @JvmStatic
         fun rescale(x: Double, y: Double, z: Double): DoubleArray {
             val rx = getRenderX()
             val ry = getRenderY() + (Minecraft.getMinecraft().thePlayer?.getEyeHeight() ?: 0f) - 0.1
             val rz = getRenderZ()
             val d = (rx - x).pow(2) + (ry - y).pow(2) + (rz - z).pow(2)
-            val rd = (Minecraft.getMinecraft().gameSettings.renderDistanceChunks shl 4) * SQRT_2
+            val rd = getFarPlaneDist()
             if (d >= rd * rd) {
                 val f = rd / sqrt(d)
                 return doubleArrayOf(
