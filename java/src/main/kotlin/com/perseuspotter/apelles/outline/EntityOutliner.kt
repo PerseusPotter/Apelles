@@ -53,7 +53,6 @@ abstract class EntityOutliner(val type: Int, val name: String) {
 
         prof.startSection("setup")
         GlState.setLighting(0)
-        GL11.glEnable(GL11.GL_TEXTURE_2D)
         GL11.glDepthMask(false)
         renderSetup()
 
@@ -69,6 +68,8 @@ abstract class EntityOutliner(val type: Int, val name: String) {
             GlState.setDepthTest(true)
             renderPass(pt, t, occluded, 1)
         }
+
+        prof.endStartSection("cleanup")
         GL11.glDepthMask(true)
         renderCleanup2()
         prof.endSection()
@@ -76,9 +77,9 @@ abstract class EntityOutliner(val type: Int, val name: String) {
         prof.endSection()
     }
 
-    protected fun createFB(stencil: Boolean): Framebuffer {
+    protected fun createFB(stencil: Boolean, depthTexture: Boolean = false): Framebuffer {
         val main = Minecraft.getMinecraft().framebuffer
-        val fb = Framebuffer(main.framebufferTextureWidth, main.framebufferTextureHeight, true, stencil)
+        val fb = Framebuffer(main.framebufferTextureWidth, main.framebufferTextureHeight, true, stencil, depthTexture)
         fb.setColor(0.0f, 0.0f, 0.0f, 0.0f)
         fb.bindFramebuffer()
         GL13.glActiveTexture(GL13.GL_TEXTURE0)
