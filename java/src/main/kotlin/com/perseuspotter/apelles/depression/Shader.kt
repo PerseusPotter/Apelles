@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL20
 
 open class Shader(val fragSrc: String?, val vertSrc: String?) {
     var init = false
+    var postInit = false
     var progId = 0
     val uniformCache = mutableMapOf<String, Int>()
 
@@ -88,9 +89,8 @@ open class Shader(val fragSrc: String?, val vertSrc: String?) {
         if (fragId != 0) GL20.glDeleteShader(fragId)
         if (vertId != 0) GL20.glDeleteShader(vertId)
 
-        init()
+        postInit = true
     }
-
 
     open fun init() {}
 
@@ -103,6 +103,10 @@ open class Shader(val fragSrc: String?, val vertSrc: String?) {
     fun bind() {
         if (!init) build()
         GlState.bindShader(progId)
+        if (postInit) {
+            postInit = false
+            init()
+        }
     }
 
     fun unbind() {
