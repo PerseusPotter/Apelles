@@ -32,7 +32,7 @@ void main() {
 	float lightness = floor(outColor.b) * ONE_OVER_256;
 	float chroma = fract(outColor.b) * 256.0;
 
-  vec3 Lab = vec3(lightness, chroma * cos(hue), chroma * sin(hue));
+  vec3 Lab = vec3(lightness * max(origColor.r, max(origColor.g, origColor.b)), chroma * cos(hue), chroma * sin(hue));
   vec3 lms = pow(M2_1 * Lab, vec3(3.0));
 	gl_FragColor = vec4(lmsToRgb * lms, origColor.a * outColor.a);
 }
