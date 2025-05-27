@@ -504,16 +504,18 @@ object GlState {
     }
     private var boundTexRL: ResourceLocation? = null
     private var boundTexID: Int? = null
-    private val mapTextureObjects: Map<ResourceLocation, ITextureObject>
-    init {
-        val tm = Minecraft.getMinecraft().textureManager
-        mapTextureObjects = tm::class.java.getDeclaredField("field_110584_c").also { it.isAccessible = true }.get(tm) as Map<ResourceLocation, ITextureObject>
-    }
     fun bindTexture(tex: ResourceLocation) {
         if (tex != boundTexRL) {
             val tm = Minecraft.getMinecraft().textureManager
-            // loadTexture calls GlStateManager and that's scary. but surely it will only be for one frame and will be fine right?
-            bindTexture((mapTextureObjects[tex] ?: SimpleTexture(tex).also { tm.loadTexture(tex, it) }).glTextureId)
+            var itex = tm.getTexture(tex)
+            // elvis operator compiles into something that doesn't work?? thanks.
+            if (itex == null) {
+                itex = SimpleTexture(tex)
+                // loadTexture calls GlStateManager and that's scary. but surely it will only be for one frame and will be fine right?
+                tm.loadTexture(tex, itex)
+                println("loading texture $tex")
+            }
+            bindTexture(itex.glTextureId)
             boundTexRL = tex
         }
     }
