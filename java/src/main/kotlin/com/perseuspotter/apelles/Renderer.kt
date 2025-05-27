@@ -13,10 +13,8 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.util.BlockPos
 import net.minecraft.util.ResourceLocation
+import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL15
-import org.lwjgl.opengl.GL31
-import org.lwjgl.opengl.GLContext
 import kotlin.math.*
 
 object Renderer {
@@ -1420,6 +1418,12 @@ object Renderer {
             USE_NEW_SHIT = cap.GL_NV_primitive_restart && cap.OpenGL15
             CAN_USE_CHROMA = cap.OpenGL20
             checked = true
+            // glEnable(GL43.GL_DEBUG_OUTPUT)
+            // GL43.glDebugMessageCallback(KHRDebugCallback { source: Int, type: Int, id: Int, severity: Int, message: String? ->
+            //     if (severity == GL43.GL_DEBUG_SEVERITY_NOTIFICATION) return@KHRDebugCallback
+            //     println("ye fucked up")
+            //     println("source: $source type: $type id: $id severity $severity message: $message")
+            // })
         }
 
         val prof = Minecraft.getMinecraft().mcProfiler

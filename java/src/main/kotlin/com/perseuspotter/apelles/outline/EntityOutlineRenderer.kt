@@ -20,12 +20,6 @@ object EntityOutlineRenderer {
             val cap = GLContext.getCapabilities()
             outlineRenderers.forEach { it.CAN_OUTLINE = it.checkCapabilities(cap) }
             checked = true
-            // GL11.glEnable(GL43.GL_DEBUG_OUTPUT)
-            // GL43.glDebugMessageCallback(KHRDebugCallback { source: Int, type: Int, id: Int, severity: Int, message: String? ->
-            //     if (severity == GL43.GL_DEBUG_SEVERITY_NOTIFICATION || id == 131154) return@KHRDebugCallback
-            //     println("ye fucked up")
-            //     println("source: $source type: $type id: $id severity $severity message: $message")
-            // })
         }
         val prof = Minecraft.getMinecraft().mcProfiler
         prof.startSection("testEntities")
