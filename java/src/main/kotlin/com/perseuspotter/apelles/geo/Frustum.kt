@@ -1,6 +1,7 @@
 package com.perseuspotter.apelles.geo
 
 import net.minecraft.client.renderer.culling.ClippingHelperImpl
+import net.minecraft.util.AxisAlignedBB
 
 object Frustum {
     private val implInst: ClippingHelperImpl
@@ -26,6 +27,16 @@ object Frustum {
         return true
     }
     fun test(p: Point): Boolean = test(p.x, p.y, p.z)
+
+    fun checkAABB(aabb: AxisAlignedBB): Boolean =
+        test(aabb.minX, aabb.minY, aabb.minZ) ||
+        test(aabb.minX, aabb.minY, aabb.maxZ) ||
+        test(aabb.minX, aabb.maxY, aabb.minZ) ||
+        test(aabb.minX, aabb.maxY, aabb.maxZ) ||
+        test(aabb.maxX, aabb.minY, aabb.minZ) ||
+        test(aabb.maxX, aabb.minY, aabb.maxZ) ||
+        test(aabb.maxX, aabb.maxY, aabb.minZ) ||
+        test(aabb.maxX, aabb.maxY, aabb.maxZ)
 
     fun clip(p1: Point, p2: Point): Array<Point?> {
         val rx = Geometry.getRenderX()
