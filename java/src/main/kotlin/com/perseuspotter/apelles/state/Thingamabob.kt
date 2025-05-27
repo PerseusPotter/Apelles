@@ -32,7 +32,7 @@ open class Thingamabob(
         }
         if (Renderer.CAN_USE_CHROMA) {
             if (chroma > 0) {
-                val shader = ChromaShader.get(chroma, tex != null)
+                val shader = (getRenderer().shader ?: ChromaShader.normalBundle).get(chroma, tex != null)
                 shader.bind()
             } else GlState.bindShader(0)
         }
