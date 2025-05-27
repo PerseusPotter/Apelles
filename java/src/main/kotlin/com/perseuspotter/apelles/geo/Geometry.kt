@@ -1,6 +1,7 @@
 package com.perseuspotter.apelles.geo
 
 import com.perseuspotter.apelles.Renderer
+import com.perseuspotter.apelles.depression.ChromaShader
 import com.perseuspotter.apelles.depression.VAO
 import com.perseuspotter.apelles.state.Color
 import com.perseuspotter.apelles.state.GlState
@@ -375,6 +376,7 @@ abstract class Geometry {
     abstract fun getVertexCount(params: List<Double>): Int
     abstract fun getIndicesCount(params: List<Double>): Int
     abstract fun getDrawMode(params: List<Double>): Int
+    open val shader: ChromaShader.Companion.ChromaBundle? = null
 }
 operator fun <E> List<E>.component6() = get(5)
 operator fun <E> List<E>.component7() = get(6)
