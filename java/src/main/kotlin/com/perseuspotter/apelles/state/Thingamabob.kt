@@ -3,7 +3,27 @@ package com.perseuspotter.apelles.state
 import com.perseuspotter.apelles.Renderer
 import com.perseuspotter.apelles.depression.ChromaShader
 import com.perseuspotter.apelles.geo.Geometry
-import com.perseuspotter.apelles.geo.Geometry3D
+import com.perseuspotter.apelles.geo.dim3.Icosphere
+import com.perseuspotter.apelles.geo.dim3.Primitive
+import com.perseuspotter.apelles.geo.dim3.aabb.AABBFilled
+import com.perseuspotter.apelles.geo.dim3.aabb.AABBOutline
+import com.perseuspotter.apelles.geo.dim3.aabb.AABBOutlineJoined
+import com.perseuspotter.apelles.geo.dim3.beacon.BeaconInside
+import com.perseuspotter.apelles.geo.dim3.beacon.BeaconOutside
+import com.perseuspotter.apelles.geo.dim3.beacon.BeaconTopInside
+import com.perseuspotter.apelles.geo.dim3.beacon.BeaconTopOutside
+import com.perseuspotter.apelles.geo.dim3.cylinder.VerticalCylinderFilledCircle
+import com.perseuspotter.apelles.geo.dim3.cylinder.VerticalCylinderFilledRectangle
+import com.perseuspotter.apelles.geo.dim3.octahedron.OctahedronFilled
+import com.perseuspotter.apelles.geo.dim3.octahedron.OctahedronOutline
+import com.perseuspotter.apelles.geo.dim3.pyramid.PyramidFilled
+import com.perseuspotter.apelles.geo.dim3.pyramid.PyramidOutline
+import com.perseuspotter.apelles.geo.dim3.stair.inner.StairInnerFilled
+import com.perseuspotter.apelles.geo.dim3.stair.inner.StairInnerOutline
+import com.perseuspotter.apelles.geo.dim3.stair.outer.StairOuterFilled
+import com.perseuspotter.apelles.geo.dim3.stair.outer.StairOuterOutline
+import com.perseuspotter.apelles.geo.dim3.stair.straight.StairStraightFilled
+import com.perseuspotter.apelles.geo.dim3.stair.straight.StairStraightOutline
 import net.minecraft.util.ResourceLocation
 
 open class Thingamabob(
@@ -41,27 +61,27 @@ open class Thingamabob(
     }
 
     fun getRenderer(): Geometry = when (type) {
-        Type.Primitive -> Geometry3D.primitive
-        Type.AABBO -> Geometry3D.aabbO
-        Type.AABBF -> Geometry3D.aabbF
-        Type.BeaconI -> Geometry3D.beaconI
-        Type.BeaconO -> Geometry3D.beaconO
-        Type.BeaconTI -> Geometry3D.beaconTI
-        Type.BeaconTO -> Geometry3D.beaconTO
-        Type.Icosphere -> Geometry3D.icosphere
-        Type.PyramidO -> Geometry3D.pyramidO
-        Type.PyramidF -> Geometry3D.pyramidF
-        Type.VertCylinderR -> Geometry3D.vertCylinderR
-        Type.VertCylinderC -> Geometry3D.vertCylinderC
-        Type.OctahedronO -> Geometry3D.octahedronO
-        Type.OctahedronF -> Geometry3D.octahedronF
-        Type.StairStraightO -> Geometry3D.stairStraightO
-        Type.StairStraightF -> Geometry3D.stairStraightF
-        Type.StairInnerO -> Geometry3D.stairInnerO
-        Type.StairInnerF -> Geometry3D.stairInnerF
-        Type.StairOuterO -> Geometry3D.stairOuterO
-        Type.StairOuterF -> Geometry3D.stairOuterF
-        Type.AABBOJ -> Geometry3D.aabbOJ
+        Type.Primitive -> Primitive
+        Type.AABBO -> AABBOutline
+        Type.AABBF -> AABBFilled
+        Type.BeaconI -> BeaconInside
+        Type.BeaconO -> BeaconOutside
+        Type.BeaconTI -> BeaconTopInside
+        Type.BeaconTO -> BeaconTopOutside
+        Type.Icosphere -> Icosphere
+        Type.PyramidO -> PyramidOutline
+        Type.PyramidF -> PyramidFilled
+        Type.VertCylinderR -> VerticalCylinderFilledRectangle
+        Type.VertCylinderC -> VerticalCylinderFilledCircle
+        Type.OctahedronO -> OctahedronOutline
+        Type.OctahedronF -> OctahedronFilled
+        Type.StairStraightO -> StairStraightOutline
+        Type.StairStraightF -> StairStraightFilled
+        Type.StairInnerO -> StairInnerOutline
+        Type.StairInnerF -> StairInnerFilled
+        Type.StairOuterO -> StairOuterOutline
+        Type.StairOuterF -> StairOuterFilled
+        Type.AABBOJ -> AABBOutlineJoined
     }
 
     open fun render(pt: Double) {
