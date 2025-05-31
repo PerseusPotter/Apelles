@@ -792,6 +792,70 @@ class BatchUploaderJ {
                     );
                     break;
                 }
+                case 28: {
+                    if (isArrCol) Renderer.INSTANCE.addBoxOJ(
+                            (List<Double>) color,
+                            asDouble(arr.get(2)),
+                            asDouble(arr.get(3)),
+                            asDouble(arr.get(4)),
+                            asDouble(arr.get(5)),
+                            asDouble(arr.get(6)),
+                            asDouble(arr.get(7)),
+                            (Boolean) arr.get(8),
+                            asDouble(arr.get(9)),
+                            asInt(arr.get(10)),
+                            (Boolean) arr.get(11),
+                            (Boolean) arr.get(12),
+                            asInt(arr.get(13))
+                    );
+                    else Renderer.INSTANCE.addBoxOJ(
+                            asLong(color),
+                            asDouble(arr.get(2)),
+                            asDouble(arr.get(3)),
+                            asDouble(arr.get(4)),
+                            asDouble(arr.get(5)),
+                            asDouble(arr.get(6)),
+                            asDouble(arr.get(7)),
+                            (Boolean) arr.get(8),
+                            asDouble(arr.get(9)),
+                            asInt(arr.get(10)),
+                            (Boolean) arr.get(11),
+                            (Boolean) arr.get(12),
+                            asInt(arr.get(13))
+                    );
+                    break;
+                }
+                case 29: {
+                    if (isArrCol) Renderer.INSTANCE.addAABBOJ(
+                            (List<Double>) color,
+                            asDouble(arr.get(2)),
+                            asDouble(arr.get(3)),
+                            asDouble(arr.get(4)),
+                            asDouble(arr.get(5)),
+                            asDouble(arr.get(6)),
+                            asDouble(arr.get(7)),
+                            asDouble(arr.get(8)),
+                            asInt(arr.get(9)),
+                            (Boolean) arr.get(10),
+                            (Boolean) arr.get(11),
+                            asInt(arr.get(12))
+                    );
+                    else Renderer.INSTANCE.addAABBOJ(
+                            asLong(color),
+                            asDouble(arr.get(2)),
+                            asDouble(arr.get(3)),
+                            asDouble(arr.get(4)),
+                            asDouble(arr.get(5)),
+                            asDouble(arr.get(6)),
+                            asDouble(arr.get(7)),
+                            asDouble(arr.get(8)),
+                            asInt(arr.get(9)),
+                            (Boolean) arr.get(10),
+                            (Boolean) arr.get(11),
+                            asInt(arr.get(12))
+                    );
+                    break;
+                }
             }
         });
     }

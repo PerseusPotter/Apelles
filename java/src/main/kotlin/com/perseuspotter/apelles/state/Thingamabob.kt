@@ -61,6 +61,7 @@ open class Thingamabob(
         Type.StairInnerF -> Geometry3D.stairInnerF
         Type.StairOuterO -> Geometry3D.stairOuterO
         Type.StairOuterF -> Geometry3D.stairOuterF
+        Type.AABBOJ -> Geometry3D.aabbOJ
     }
 
     open fun render(pt: Double) {
@@ -131,6 +132,7 @@ open class Thingamabob(
         StairInnerF,
         StairOuterO,
         StairOuterF,
+        AABBOJ,
 
         BeaconI,
         BeaconO

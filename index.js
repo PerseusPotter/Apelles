@@ -618,6 +618,110 @@ export function renderStairFilledManual(color, x, y, z, type, { lighting = 0, ph
   else addStairF.call(APRendererI, color, x, y, z, type, lighting, phase, cull, chroma);
 }
 
+const addBoxOJ = APRendererI.addBoxOJ ?? throwExp('bad');
+/**
+ * box but corners are miter-joined to look better with high lw
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @param {number} w
+ * @param {number} h
+ * @param {number} lw warning: `lw` units are different than all other methods; measured in 1/16ths of a block
+ * @param {RenderOptions & AABBOptions} options
+ */
+export function renderBoxOutlineMiter(color, x, y, z, w, h, lw, { centered = true, wz = w, lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([28, color, x, y, z, w, h, wz, centered, lw, lighting, phase, cull, chroma]);
+  else addBoxOJ.call(APRendererI, color, x, y, z, w, h, wz, centered, lw, lighting, phase, cull, chroma);
+}
+
+const addAABBOJ = APRendererI.addAABBOJ ?? throwExp('bad');
+/**
+ * box but corners are miter-joined to look better with high lw
+ *
+ * warning: `lw` units are different than all other methods
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x1
+ * @param {number} y1
+ * @param {number} z1
+ * @param {number} x2
+ * @param {number} y2
+ * @param {number} z2
+ * @param {number} lw warning: `lw` units are different than all other methods; measured in 1/16ths of a block
+ * @param {RenderOptions} options
+ */
+export function renderAABBOutlineMiter(color, x1, y1, z1, x2, y2, z2, lw, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([
+    29,
+    color,
+    Math.min(x1, x2),
+    Math.min(y1, y2),
+    Math.min(z1, z2),
+    Math.max(x1, x2),
+    Math.max(y1, y2),
+    Math.max(z1, z2),
+    lw,
+    lighting,
+    phase,
+    cull,
+    chroma
+  ]);
+  else addAABBOJ.call(APRendererI,
+    color,
+    Math.min(x1, x2),
+    Math.min(y1, y2),
+    Math.min(z1, z2),
+    Math.max(x1, x2),
+    Math.max(y1, y2),
+    Math.max(z1, z2),
+    lw,
+    lighting,
+    phase,
+    cull,
+    chroma
+  );
+}
+/**
+ * box but corners are miter-joined to look better with high lw
+ *
+ * warning: `lw` units are different than all other methods
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param aabb net.minecraft.util.AxisAlignedBB
+ * @param {number} lw warning: `lw` units are different than all other methods; measured in 1/16ths of a block
+ * @param {RenderOptions} options
+ */
+export function renderMCAABBOutlineMiter(color, aabb, lw, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([
+    29,
+    color,
+    aabb.field_72340_a,
+    aabb.field_72338_b,
+    aabb.field_72339_c,
+    aabb.field_72336_d,
+    aabb.field_72337_e,
+    aabb.field_72334_f,
+    lw,
+    lighting,
+    phase,
+    cull,
+    chroma
+  ]);
+  else addAABBOJ.call(APRendererI,
+    color,
+    aabb.field_72340_a,
+    aabb.field_72338_b,
+    aabb.field_72339_c,
+    aabb.field_72336_d,
+    aabb.field_72337_e,
+    aabb.field_72334_f,
+    lw,
+    lighting,
+    phase,
+    cull,
+    chroma
+  );
+}
+
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
