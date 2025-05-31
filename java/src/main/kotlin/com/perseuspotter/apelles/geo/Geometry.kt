@@ -25,19 +25,28 @@ abstract class Geometry {
         private val rxf = RenderManager::class.java.getDeclaredField("field_78725_b")
         private val ryf = RenderManager::class.java.getDeclaredField("field_78726_c")
         private val rzf = RenderManager::class.java.getDeclaredField("field_78723_d")
+        private var rxc = 0.0
+        private var ryc = 0.0
+        private var rzc = 0.0
         init {
             rxf.isAccessible = true
             ryf.isAccessible = true
             rzf.isAccessible = true
         }
+        fun cacheValues() {
+            rxc = rxf.getDouble(rm)
+            ryc = ryf.getDouble(rm)
+            rzc = rzf.getDouble(rm)
+            fpdc = (Minecraft.getMinecraft().gameSettings.renderDistanceChunks shl 4) * SQRT_2
+        }
         @JvmField
         val rm = Minecraft.getMinecraft().renderManager
         @JvmStatic
-        fun getRenderX(): Double = rxf.getDouble(rm)
+        fun getRenderX(): Double = rxc
         @JvmStatic
-        fun getRenderY(): Double = ryf.getDouble(rm)
+        fun getRenderY(): Double = ryc
         @JvmStatic
-        fun getRenderZ(): Double = rzf.getDouble(rm)
+        fun getRenderZ(): Double = rzc
 
         @JvmStatic
         fun begin(mode: Int, tex: Boolean, x: Double, y: Double, z: Double) {
@@ -106,20 +115,19 @@ abstract class Geometry {
         }
 
         private val SQRT_2 = sqrt(2.0)
-        fun getFarPlaneDist() = (Minecraft.getMinecraft().gameSettings.renderDistanceChunks shl 4) * SQRT_2
+        private var fpdc = 0.0
+        fun getFarPlaneDist() = fpdc
         @JvmStatic
         fun rescale(x: Double, y: Double, z: Double): DoubleArray {
-            val rx = getRenderX()
-            val ry = getRenderY() + (Minecraft.getMinecraft().thePlayer?.getEyeHeight() ?: 0f) - 0.1
-            val rz = getRenderZ()
-            val d = (rx - x).pow(2) + (ry - y).pow(2) + (rz - z).pow(2)
+            val dy = (Minecraft.getMinecraft().thePlayer?.getEyeHeight() ?: 0f) - 0.1
+            val d = (rxc - x).pow(2) + (ryc + dy - y).pow(2) + (rzc - z).pow(2)
             val rd = getFarPlaneDist()
             if (d >= rd * rd) {
                 val f = rd / sqrt(d)
                 return doubleArrayOf(
-                    rx + (x - rx) * f,
-                    ry + (y - ry) * f,
-                    rz + (z - rz) * f,
+                    rxc + (x - rxc) * f,
+                    ryc + dy + (y - ryc - dy) * f,
+                    rzc + (z - rzc) * f,
                     f
                 )
             }
