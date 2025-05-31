@@ -1408,6 +1408,108 @@ object Renderer {
         else addOuterStairF(color, x, y, z, type and 7, type and 8 > 0, lighting, phase, cull, chroma)
     }
 
+    fun addBoxOJ(
+        color: Long,
+        x: Double,
+        y: Double,
+        z: Double,
+        wx: Double,
+        h: Double,
+        wz: Double,
+        centered: Boolean,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBOJ(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, cull, chroma)
+    fun addBoxOJ(
+        color: List<Double>,
+        x: Double,
+        y: Double,
+        z: Double,
+        wx: Double,
+        h: Double,
+        wz: Double,
+        centered: Boolean,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBOJ(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, cull, chroma)
+    fun addBoxOJ(
+        color: Color,
+        x: Double,
+        y: Double,
+        z: Double,
+        wx: Double,
+        h: Double,
+        wz: Double,
+        centered: Boolean,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBOJ(color, if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, cull, chroma)
+    fun addAABBOJ(
+        color: Long,
+        x1: Double,
+        y1: Double,
+        z1: Double,
+        x2: Double,
+        y2: Double,
+        z2: Double,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBOJ(Color(color), x1, y1, z1, x2, y2, z2, lw, lighting, phase, cull, chroma)
+    fun addAABBOJ(
+        color: List<Double>,
+        x1: Double,
+        y1: Double,
+        z1: Double,
+        x2: Double,
+        y2: Double,
+        z2: Double,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBOJ(Color(color), x1, y1, z1, x2, y2, z2, lw, lighting, phase, cull, chroma)
+    fun addAABBOJ(
+        color: Color,
+        x1: Double,
+        y1: Double,
+        z1: Double,
+        x2: Double,
+        y2: Double,
+        z2: Double,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) {
+        addThing(
+            Thingamabob(
+                Thingamabob.Type.AABBOJ,
+                listOf(x1, y1, z1, x2, y2, z2, lw),
+                color,
+                1f,
+                lighting,
+                phase,
+                false,
+                cull,
+                chroma
+            )
+        )
+    }
+
     @JvmField
     var USE_NEW_SHIT: Boolean = false
     @JvmField
