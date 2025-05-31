@@ -1,6 +1,7 @@
 #version 120
 
 uniform float timeOffset;
+uniform vec3 playerPos;
 
 uniform sampler2D outTexture;
 
@@ -28,7 +29,7 @@ const mat3 lmsToRgb = M0_1 * M1_1;
 
 void main() {
   vec4 origColor = texture2D(outTexture, outTextureCoords);
-	float hue = ((outPosition.x - outPosition.y + outPosition.z) * outColor.r) - timeOffset * outColor.g;
+	float hue = ((outPosition.x + playerPos.x - outPosition.y - playerPos.y + outPosition.z + playerPos.z) * outColor.r) - timeOffset * outColor.g;
 	float lightness = floor(outColor.b) * ONE_OVER_256;
 	float chroma = fract(outColor.b) * 256.0;
 

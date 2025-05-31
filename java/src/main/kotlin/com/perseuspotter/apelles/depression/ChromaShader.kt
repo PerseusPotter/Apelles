@@ -1,5 +1,6 @@
 package com.perseuspotter.apelles.depression
 
+import com.perseuspotter.apelles.geo.Geometry
 import com.perseuspotter.apelles.state.GlState
 import net.minecraft.client.Minecraft
 import org.lwjgl.opengl.GL20
@@ -32,6 +33,12 @@ open class ChromaShader(fragSrc: String?, vertSrc: String?, private val twoD: Bo
 
     protected open fun updateUniforms(pt: Double, t: Int) {
         GL20.glUniform1f(getUniformLoc("timeOffset"), (t + pt).toFloat() / 5f)
-        if (twoD) GL20.glUniform1f(getUniformLoc("oneOverDisplayWidth"), 1f / Minecraft.getMinecraft().displayWidth)
+        if (twoD) {
+            GL20.glUniform1f(getUniformLoc("oneOverDisplayWidth"), 1f / Minecraft.getMinecraft().displayWidth)
+        } else {
+            GL20.glUniform3f(getUniformLoc("playerPos"),
+                Geometry.getRenderX().toFloat(), Geometry.getRenderY().toFloat(), Geometry.getRenderZ().toFloat()
+            )
+        }
     }
 }
