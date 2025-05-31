@@ -4,7 +4,7 @@ import com.perseuspotter.apelles.outline.outliner.Outliner
 import com.perseuspotter.apelles.state.Color
 import net.minecraft.entity.Entity
 import java.lang.ref.WeakReference
-import java.util.PriorityQueue
+import java.util.*
 
 class OutlineState(entity: Entity) {
     val entity = WeakReference(entity)

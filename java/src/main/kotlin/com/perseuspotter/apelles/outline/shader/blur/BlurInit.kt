@@ -1,7 +1,6 @@
 package com.perseuspotter.apelles.outline.shader.blur
 
 import com.perseuspotter.apelles.depression.ChromaShader
-import com.perseuspotter.apelles.depression.Shader
 import com.perseuspotter.apelles.state.Color
 import org.lwjgl.opengl.GL20
 

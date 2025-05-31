@@ -13,8 +13,10 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.util.BlockPos
 import net.minecraft.util.ResourceLocation
-import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL15
+import org.lwjgl.opengl.GL31
+import org.lwjgl.opengl.GLContext
 import kotlin.math.*
 
 object Renderer {

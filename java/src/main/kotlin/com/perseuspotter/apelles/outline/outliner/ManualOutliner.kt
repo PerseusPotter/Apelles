@@ -3,8 +3,7 @@ package com.perseuspotter.apelles.outline.outliner
 import com.perseuspotter.apelles.outline.EntityOutlineRenderer
 import com.perseuspotter.apelles.state.Color
 import net.minecraft.entity.Entity
-import java.util.Collections
-import java.util.WeakHashMap
+import java.util.*
 
 class ManualOutliner(
     color: Color,
