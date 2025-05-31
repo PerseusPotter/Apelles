@@ -2,7 +2,6 @@ package com.perseuspotter.apelles.state
 
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.client.renderer.texture.ITextureObject
 import net.minecraft.client.renderer.texture.SimpleTexture
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11.*
