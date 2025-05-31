@@ -34,13 +34,18 @@ object EntityOutlineRenderer {
             }
         }
         outlineRenderers.forEach { it.clear() }
-        outlined.forEach { (e, s) ->
-            if (e.isDead) return@forEach
-            if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 0 && e is EntityPlayerSP) return@forEach
-            if (s.getOutlineType() == 0) return@forEach
-            if (s.getColor().a == 0f) return@forEach
-            if (!Frustum.checkAABB(e.entityBoundingBox)) return@forEach
-            outlineRenderers[s.getOutlineType() - 1].add(s)
+        if (outlined.isNotEmpty()) {
+            val loadedEntities = Minecraft.getMinecraft().theWorld.loadedEntityList.toSet()
+            outlined.entries.removeIf { (e, s) ->
+                if (!loadedEntities.contains(e)) return@removeIf true
+                if (e.isDead) return@removeIf true
+                if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 0 && e is EntityPlayerSP) return@removeIf false
+                if (s.getOutlineType() == 0) return@removeIf false
+                if (s.getColor().a == 0f) return@removeIf false
+                if (!Frustum.checkAABB(e.entityBoundingBox)) return@removeIf false
+                outlineRenderers[s.getOutlineType() - 1].add(s)
+                return@removeIf false
+            }
         }
         prof.endSection()
         outlineRenderers.forEach { it.endPrepare(pt) }
