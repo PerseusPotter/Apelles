@@ -178,43 +178,16 @@ export function renderAABBOutline(color, x1, y1, z1, x2, y2, z2, { lw = 1, light
     chroma
   );
 }
+
+const addAABBOM = APRendererI.addAABBOM ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param aabb net.minecraft.util.AxisAlignedBB
  * @param {LineRenderOptions} options
  */
 export function renderMCAABBOutline(color, aabb, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([
-    3,
-    color,
-    aabb.field_72340_a,
-    aabb.field_72338_b,
-    aabb.field_72339_c,
-    aabb.field_72336_d,
-    aabb.field_72337_e,
-    aabb.field_72334_f,
-    lw,
-    lighting,
-    phase,
-    smooth,
-    cull,
-    chroma
-  ]);
-  else addAABBO.call(APRendererI,
-    color,
-    aabb.field_72340_a,
-    aabb.field_72338_b,
-    aabb.field_72339_c,
-    aabb.field_72336_d,
-    aabb.field_72337_e,
-    aabb.field_72334_f,
-    lw,
-    lighting,
-    phase,
-    smooth,
-    cull,
-    chroma
-  );
+  if (batchCalls) batched.push([30, color, aabb, lw, lighting, phase, smooth, cull, chroma]);
+  else addAABBOM.call(APRendererI, color, lw, lighting, phase, smooth, cull, chroma);
 }
 
 const addBoxF = APRendererI.addBoxF ?? throwExp('bad');
@@ -272,39 +245,16 @@ export function renderAABBFilled(color, x1, y1, z1, x2, y2, z2, { lighting = 0, 
     chroma
   );
 }
+
+const addAABBFM = APRendererI.addAABBFM ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param aabb net.minecraft.util.AxisAlignedBB
  * @param {RenderOptions} options
  */
 export function renderMCAABBFilled(color, aabb, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([
-    5,
-    color,
-    aabb.field_72340_a,
-    aabb.field_72338_b,
-    aabb.field_72339_c,
-    aabb.field_72336_d,
-    aabb.field_72337_e,
-    aabb.field_72334_f,
-    lighting,
-    phase,
-    cull,
-    chroma
-  ]);
-  else addAABBF.call(APRendererI,
-    color,
-    aabb.field_72340_a,
-    aabb.field_72338_b,
-    aabb.field_72339_c,
-    aabb.field_72336_d,
-    aabb.field_72337_e,
-    aabb.field_72334_f,
-    lighting,
-    phase,
-    cull,
-    chroma
-  );
+  if (batchCalls) batched.push([31, color, aabb, lighting, phase, cull, chroma]);
+  else addAABBFM.call(APRendererI, color, aabb, lighting, phase, cull, chroma);
 }
 
 const addBeacon = APRendererI.addBeacon ?? throwExp('bad');
@@ -681,6 +631,8 @@ export function renderAABBOutlineMiter(color, x1, y1, z1, x2, y2, z2, lw, { ligh
     chroma
   );
 }
+
+const addAABBOJM = APRendererI.addAABBOJM ?? throwExp('bad');
 /**
  * box but corners are miter-joined to look better with high lw
  *
@@ -691,35 +643,8 @@ export function renderAABBOutlineMiter(color, x1, y1, z1, x2, y2, z2, lw, { ligh
  * @param {RenderOptions} options
  */
 export function renderMCAABBOutlineMiter(color, aabb, lw, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([
-    29,
-    color,
-    aabb.field_72340_a,
-    aabb.field_72338_b,
-    aabb.field_72339_c,
-    aabb.field_72336_d,
-    aabb.field_72337_e,
-    aabb.field_72334_f,
-    lw,
-    lighting,
-    phase,
-    cull,
-    chroma
-  ]);
-  else addAABBOJ.call(APRendererI,
-    color,
-    aabb.field_72340_a,
-    aabb.field_72338_b,
-    aabb.field_72339_c,
-    aabb.field_72336_d,
-    aabb.field_72337_e,
-    aabb.field_72334_f,
-    lw,
-    lighting,
-    phase,
-    cull,
-    chroma
-  );
+  if (batchCalls) batched.push([32, color, aabb, lw, lighting, phase, cull, chroma]);
+  else addAABBOJM.call(APRendererI, color, aabb, lw, lighting, phase, cull, chroma);
 }
 
 /**

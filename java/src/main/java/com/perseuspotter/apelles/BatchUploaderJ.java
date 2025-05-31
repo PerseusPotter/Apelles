@@ -1,6 +1,7 @@
 package com.perseuspotter.apelles;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 
 import java.util.List;
@@ -853,6 +854,69 @@ class BatchUploaderJ {
                             (Boolean) arr.get(10),
                             (Boolean) arr.get(11),
                             asInt(arr.get(12))
+                    );
+                    break;
+                }
+                case 30: {
+                    if (isArrCol) Renderer.INSTANCE.addAABBOM(
+                            (List<Double>) color,
+                            (AxisAlignedBB) arr.get(2),
+                            asDouble(arr.get(3)),
+                            asInt(arr.get(4)),
+                            (Boolean) arr.get(5),
+                            (Boolean) arr.get(6),
+                            (Boolean) arr.get(7),
+                            asInt(arr.get(8))
+                    );
+                    else Renderer.INSTANCE.addAABBOM(
+                            asLong(color),
+                            (AxisAlignedBB) arr.get(2),
+                            asDouble(arr.get(3)),
+                            asInt(arr.get(4)),
+                            (Boolean) arr.get(5),
+                            (Boolean) arr.get(6),
+                            (Boolean) arr.get(7),
+                            asInt(arr.get(8))
+                    );
+                    break;
+                }
+                case 31: {
+                    if (isArrCol) Renderer.INSTANCE.addAABBFM(
+                            (List<Double>) color,
+                            (AxisAlignedBB) arr.get(2),
+                            asInt(arr.get(3)),
+                            (Boolean) arr.get(4),
+                            (Boolean) arr.get(5),
+                            asInt(arr.get(6))
+                    );
+                    else Renderer.INSTANCE.addAABBFM(
+                            asLong(color),
+                            (AxisAlignedBB) arr.get(2),
+                            asInt(arr.get(3)),
+                            (Boolean) arr.get(4),
+                            (Boolean) arr.get(5),
+                            asInt(arr.get(6))
+                    );
+                    break;
+                }
+                case 32: {
+                    if (isArrCol) Renderer.INSTANCE.addAABBOJM(
+                            (List<Double>) color,
+                            (AxisAlignedBB) arr.get(2),
+                            asDouble(arr.get(3)),
+                            asInt(arr.get(4)),
+                            (Boolean) arr.get(5),
+                            (Boolean) arr.get(6),
+                            asInt(arr.get(7))
+                    );
+                    else Renderer.INSTANCE.addAABBOJM(
+                            asLong(color),
+                            (AxisAlignedBB) arr.get(2),
+                            asDouble(arr.get(3)),
+                            asInt(arr.get(4)),
+                            (Boolean) arr.get(5),
+                            (Boolean) arr.get(6),
+                            asInt(arr.get(7))
                     );
                     break;
                 }
