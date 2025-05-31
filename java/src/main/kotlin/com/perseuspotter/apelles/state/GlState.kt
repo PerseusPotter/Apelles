@@ -512,7 +512,7 @@ object GlState {
                 itex = SimpleTexture(tex)
                 // loadTexture calls GlStateManager and that's scary. but surely it will only be for one frame and will be fine right?
                 tm.loadTexture(tex, itex)
-                println("loading texture $tex")
+                // println("loading texture $tex")
             }
             bindTexture(itex.glTextureId)
             boundTexRL = tex
