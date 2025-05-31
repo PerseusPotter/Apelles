@@ -11,6 +11,7 @@ import com.perseuspotter.apelles.state.Thingamabob
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.OpenGlHelper
+import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.BlockPos
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11.*
@@ -133,6 +134,36 @@ object Renderer {
         cull: Boolean,
         chroma: Int
     ) = addAABBO(color, if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, smooth, cull, chroma)
+    fun addAABBOM(
+        color: Long,
+        aabb: AxisAlignedBB,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBO(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, lighting, phase, smooth, cull, chroma)
+    fun addAABBOM(
+        color: List<Double>,
+        aabb: AxisAlignedBB,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBO(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, lighting, phase, smooth, cull, chroma)
+    fun addAABBOM(
+        color: Color,
+        aabb: AxisAlignedBB,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBO(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, lighting, phase, smooth, cull, chroma)
     fun addAABBO(
         color: Long,
         x1: Double,
@@ -235,6 +266,30 @@ object Renderer {
         cull: Boolean,
         chroma: Int
     ) = addAABBF(color, if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lighting, phase, cull, chroma)
+    fun addAABBFM(
+        color: Long,
+        aabb: AxisAlignedBB,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBF(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lighting, phase, cull, chroma)
+    fun addAABBFM(
+        color: List<Double>,
+        aabb: AxisAlignedBB,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBF(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lighting, phase, cull, chroma)
+    fun addAABBFM(
+        color: Color,
+        aabb: AxisAlignedBB,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBF(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lighting, phase, cull, chroma)
     fun addAABBF(
         color: Long,
         x1: Double,
@@ -1453,6 +1508,33 @@ object Renderer {
         cull: Boolean,
         chroma: Int
     ) = addAABBOJ(color, if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, cull, chroma)
+    fun addAABBOJM(
+        color: Long,
+        aabb: AxisAlignedBB,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBOJ(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, lighting, phase, cull, chroma)
+    fun addAABBOJM(
+        color: List<Double>,
+        aabb: AxisAlignedBB,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBOJ(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, lighting, phase, cull, chroma)
+    fun addAABBOJM(
+        color: Color,
+        aabb: AxisAlignedBB,
+        lw: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        chroma: Int
+    ) = addAABBOJ(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, lighting, phase, cull, chroma)
     fun addAABBOJ(
         color: Long,
         x1: Double,
