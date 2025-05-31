@@ -74,7 +74,11 @@ object BlurEntityOutliner : EntityOutliner(4, "Blur") {
             BlurInit.setColor(it.getColor())
             val invis = it.renderInvis() && ent.isInvisible
             if (invis) ent.isInvisible = false
-            rm.renderEntityStatic(ent, pt.toFloat(), false)
+            val x = ent.lastTickPosX + (ent.posX - ent.lastTickPosX) * pt
+            val y = ent.lastTickPosY + (ent.posY - ent.lastTickPosY) * pt
+            val z = ent.lastTickPosZ + (ent.posZ - ent.lastTickPosZ) * pt
+            val f = ent.prevRotationYaw + (ent.rotationYaw - ent.prevRotationYaw) * pt
+            rm.doRenderEntity(ent, x - Geometry.getRenderX(), y - Geometry.getRenderY(), z - Geometry.getRenderZ(), f.toFloat(), pt.toFloat(), false)
             if (invis) ent.isInvisible = true
         }
         GlState.reset()
