@@ -181,7 +181,7 @@ export function renderAABBOutline(color, x1, y1, z1, x2, y2, z2, { lw = 1, light
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param aabb net.minecraft.util.AxisAlignedBB
- * @param {RenderOptions} options
+ * @param {LineRenderOptions} options
  */
 export function renderMCAABBOutline(color, aabb, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([
