@@ -597,6 +597,14 @@ object GlState {
             primitiveRestart = restart
         }
     }
+    private var backfaceCull: Boolean? = null
+    fun setBackfaceCull(cull: Boolean) {
+        if (cull != backfaceCull) {
+            if (cull) glEnable(GL_CULL_FACE)
+            else glDisable(GL_CULL_FACE)
+            backfaceCull = cull
+        }
+    }
 
     fun reset() {
         prevLw = null
@@ -614,5 +622,6 @@ object GlState {
         normalArray = null
         texArray = null
         primitiveRestart = null
+        backfaceCull = null
     }
 }

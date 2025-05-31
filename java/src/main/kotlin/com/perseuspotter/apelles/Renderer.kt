@@ -45,8 +45,9 @@ object Renderer {
         phase: Boolean,
         smooth: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addPrimitive(Color(color), mode, points, lw, lighting, phase, smooth, cull, chroma)
+    ) = addPrimitive(Color(color), mode, points, lw, lighting, phase, smooth, cull, backfaceCull, chroma)
     fun addPrimitive(
         color: List<Double>,
         mode: Int,
@@ -56,8 +57,9 @@ object Renderer {
         phase: Boolean,
         smooth: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addPrimitive(Color(color), mode, points, lw, lighting, phase, smooth, cull, chroma)
+    ) = addPrimitive(Color(color), mode, points, lw, lighting, phase, smooth, cull, backfaceCull, chroma)
     fun addPrimitive(
         color: Color,
         mode: Int,
@@ -67,6 +69,7 @@ object Renderer {
         phase: Boolean,
         smooth: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
     ) {
         val params = points.flatten().toMutableList()
@@ -81,6 +84,7 @@ object Renderer {
                 phase,
                 smooth,
                 cull,
+                backfaceCull,
                 chroma
             )
         )
@@ -219,6 +223,7 @@ object Renderer {
                 phase,
                 smooth,
                 cull,
+                true,
                 chroma
             )
         )
@@ -236,8 +241,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBF(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lighting, phase, cull, chroma)
+    ) = addAABBF(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lighting, phase, cull, backfaceCull, chroma)
     fun addBoxF(
         color: List<Double>,
         x: Double,
@@ -250,8 +256,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBF(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lighting, phase, cull, chroma)
+    ) = addAABBF(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lighting, phase, cull, backfaceCull, chroma)
     fun addBoxF(
         color: Color,
         x: Double,
@@ -264,32 +271,36 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBF(color, if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lighting, phase, cull, chroma)
+    ) = addAABBF(color, if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBFM(
         color: Long,
         aabb: AxisAlignedBB,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBF(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lighting, phase, cull, chroma)
+    ) = addAABBF(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBFM(
         color: List<Double>,
         aabb: AxisAlignedBB,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBF(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lighting, phase, cull, chroma)
+    ) = addAABBF(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBFM(
         color: Color,
         aabb: AxisAlignedBB,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBF(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lighting, phase, cull, chroma)
+    ) = addAABBF(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBF(
         color: Long,
         x1: Double,
@@ -301,8 +312,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBF(Color(color), x1, y1, z1, x2, y2, z2, lighting, phase, cull, chroma)
+    ) = addAABBF(Color(color), x1, y1, z1, x2, y2, z2, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBF(
         color: List<Double>,
         x1: Double,
@@ -314,8 +326,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBF(Color(color), x1, y1, z1, x2, y2, z2, lighting, phase, cull, chroma)
+    ) = addAABBF(Color(color), x1, y1, z1, x2, y2, z2, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBF(
         color: Color,
         x1: Double,
@@ -327,6 +340,7 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
     ) {
         addThing(
@@ -339,6 +353,7 @@ object Renderer {
                 phase,
                 false,
                 cull,
+                backfaceCull,
                 chroma
             )
         )
@@ -354,8 +369,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addBeacon(Color(color), x, y, z, h, lighting, phase, cull, chroma)
+    ) = addBeacon(Color(color), x, y, z, h, lighting, phase, cull, backfaceCull, chroma)
     fun addBeacon(
         color: List<Double>,
         x: Double,
@@ -365,8 +381,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addBeacon(Color(color), x, y, z, h, lighting, phase, cull, chroma)
+    ) = addBeacon(Color(color), x, y, z, h, lighting, phase, cull, backfaceCull, chroma)
     fun addBeacon(
         color: Color,
         x: Double,
@@ -376,6 +393,7 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
     ) {
         val (sx, sy, sz, s) = Geometry.rescale(x, y, z)
@@ -412,6 +430,7 @@ object Renderer {
                 phase,
                 false,
                 cull,
+                backfaceCull,
                 chroma,
                 beaconBeamTexture
             )
@@ -426,6 +445,7 @@ object Renderer {
                 phase,
                 false,
                 cull,
+                backfaceCull,
                 chroma,
                 beaconBeamTexture
             )
@@ -440,6 +460,7 @@ object Renderer {
                 phase,
                 false,
                 cull,
+                backfaceCull,
                 chroma
             )
         )
@@ -453,6 +474,7 @@ object Renderer {
                 phase,
                 false,
                 cull,
+                backfaceCull,
                 chroma
             )
         )
@@ -522,6 +544,7 @@ object Renderer {
                 phase,
                 smooth,
                 cull,
+                true,
                 chroma
             )
         )
@@ -537,8 +560,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addIcosphere(Color(color), x, y, z, r, divisions, lighting, phase, cull, chroma)
+    ) = addIcosphere(Color(color), x, y, z, r, divisions, lighting, phase, cull, backfaceCull, chroma)
     fun addIcosphere(
         color: List<Double>,
         x: Double,
@@ -549,8 +573,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addIcosphere(Color(color), x, y, z, r, divisions, lighting, phase, cull, chroma)
+    ) = addIcosphere(Color(color), x, y, z, r, divisions, lighting, phase, cull, backfaceCull, chroma)
     fun addIcosphere(
         color: Color,
         x: Double,
@@ -561,6 +586,7 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
     ) {
         addThing(
@@ -573,6 +599,7 @@ object Renderer {
                 phase,
                 false,
                 cull,
+                backfaceCull,
                 chroma
             )
         )
@@ -633,6 +660,7 @@ object Renderer {
                 phase,
                 smooth,
                 cull,
+                true,
                 chroma
             )
         )
@@ -649,8 +677,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addPyramidF(Color(color), x, y, z, r, h, n, lighting, phase, cull, chroma)
+    ) = addPyramidF(Color(color), x, y, z, r, h, n, lighting, phase, cull, backfaceCull, chroma)
     fun addPyramidF(
         color: List<Double>,
         x: Double,
@@ -662,8 +691,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addPyramidF(Color(color), x, y, z, r, h, n, lighting, phase, cull, chroma)
+    ) = addPyramidF(Color(color), x, y, z, r, h, n, lighting, phase, cull, backfaceCull, chroma)
     fun addPyramidF(
         color: Color,
         x: Double,
@@ -675,6 +705,7 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
     ) {
         addThing(
@@ -687,6 +718,7 @@ object Renderer {
                 phase,
                 false,
                 cull,
+                backfaceCull,
                 chroma
             )
         )
@@ -703,8 +735,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addVertCylinder(Color(color), x, y, z, r, h, segments, lighting, phase, cull, chroma)
+    ) = addVertCylinder(Color(color), x, y, z, r, h, segments, lighting, phase, cull, backfaceCull, chroma)
     fun addVertCylinder(
         color: List<Double>,
         x: Double,
@@ -716,8 +749,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addVertCylinder(Color(color), x, y, z, r, h, segments, lighting, phase, cull, chroma)
+    ) = addVertCylinder(Color(color), x, y, z, r, h, segments, lighting, phase, cull, backfaceCull, chroma)
     fun addVertCylinder(
         color: Color,
         x: Double,
@@ -729,6 +763,7 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
     ) {
         addThing(
@@ -741,6 +776,7 @@ object Renderer {
                 phase,
                 false,
                 cull,
+                backfaceCull,
                 chroma
             )
         )
@@ -754,6 +790,7 @@ object Renderer {
                 phase,
                 false,
                 cull,
+                backfaceCull,
                 chroma
             )
         )
@@ -811,6 +848,7 @@ object Renderer {
                 phase,
                 smooth,
                 cull,
+                true,
                 chroma
             )
         )
@@ -826,8 +864,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addOctahedronF(Color(color), x, y, z, w, h, lighting, phase, cull, chroma)
+    ) = addOctahedronF(Color(color), x, y, z, w, h, lighting, phase, cull, backfaceCull, chroma)
     fun addOctahedronF(
         color: List<Double>,
         x: Double,
@@ -838,8 +877,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addOctahedronF(Color(color), x, y, z, w, h, lighting, phase, cull, chroma)
+    ) = addOctahedronF(Color(color), x, y, z, w, h, lighting, phase, cull, backfaceCull, chroma)
     fun addOctahedronF(
         color: Color,
         x: Double,
@@ -850,6 +890,7 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
     ) {
         addThing(
@@ -862,6 +903,7 @@ object Renderer {
                 phase,
                 false,
                 cull,
+                backfaceCull,
                 chroma
             )
         )
@@ -916,6 +958,7 @@ object Renderer {
                 phase,
                 smooth,
                 cull,
+                true,
                 chroma
             )
         )
@@ -930,8 +973,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addStraightStairF(Color(color), x, y, z, type, lighting, phase, cull, chroma)
+    ) = addStraightStairF(Color(color), x, y, z, type, lighting, phase, cull, backfaceCull, chroma)
     fun addStraightStairF(
         color: List<Double>,
         x: Int,
@@ -941,8 +985,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addStraightStairF(Color(color), x, y, z, type, lighting, phase, cull, chroma)
+    ) = addStraightStairF(Color(color), x, y, z, type, lighting, phase, cull, backfaceCull, chroma)
     fun addStraightStairF(
         color: Color,
         x: Int,
@@ -952,6 +997,7 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
     ) {
         addThing(
@@ -964,6 +1010,7 @@ object Renderer {
                 phase,
                 false,
                 cull,
+                backfaceCull,
                 chroma
             )
         )
@@ -1023,6 +1070,7 @@ object Renderer {
                 phase,
                 smooth,
                 cull,
+                true,
                 chroma
             )
         )
@@ -1038,8 +1086,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addInnerStairF(Color(color), x, y, z, type, left, lighting, phase, cull, chroma)
+    ) = addInnerStairF(Color(color), x, y, z, type, left, lighting, phase, cull, backfaceCull, chroma)
     fun addInnerStairF(
         color: List<Double>,
         x: Int,
@@ -1050,8 +1099,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addInnerStairF(Color(color), x, y, z, type, left, lighting, phase, cull, chroma)
+    ) = addInnerStairF(Color(color), x, y, z, type, left, lighting, phase, cull, backfaceCull, chroma)
     fun addInnerStairF(
         color: Color,
         x: Int,
@@ -1062,6 +1112,7 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
     ) {
         addThing(
@@ -1074,6 +1125,7 @@ object Renderer {
                 phase,
                 false,
                 cull,
+                backfaceCull,
                 chroma
             )
         )
@@ -1131,6 +1183,7 @@ object Renderer {
                 phase,
                 smooth,
                 cull,
+                true,
                 chroma
             )
         )
@@ -1146,8 +1199,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addOuterStairF(Color(color), x, y, z, type, left, lighting, phase, cull, chroma)
+    ) = addOuterStairF(Color(color), x, y, z, type, left, lighting, phase, cull, backfaceCull, chroma)
     fun addOuterStairF(
         color: List<Double>,
         x: Int,
@@ -1158,8 +1212,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addOuterStairF(Color(color), x, y, z, type, left, lighting, phase, cull, chroma)
+    ) = addOuterStairF(Color(color), x, y, z, type, left, lighting, phase, cull, backfaceCull, chroma)
     fun addOuterStairF(
         color: Color,
         x: Int,
@@ -1170,6 +1225,7 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
     ) {
         addThing(
@@ -1182,6 +1238,7 @@ object Renderer {
                 phase,
                 false,
                 cull,
+                backfaceCull,
                 chroma
             )
         )
@@ -1345,8 +1402,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addStairF(color, BlockPos(x, y, z), lighting, phase, cull, chroma)
+    ) = addStairF(color, BlockPos(x, y, z), lighting, phase, cull, backfaceCull, chroma)
     fun addStairF(
         color: List<Double>,
         x: Int,
@@ -1355,8 +1413,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addStairF(color, BlockPos(x, y, z), lighting, phase, cull, chroma)
+    ) = addStairF(color, BlockPos(x, y, z), lighting, phase, cull, backfaceCull, chroma)
     fun addStairF(
         color: Color,
         x: Int,
@@ -1365,32 +1424,36 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addStairF(color, BlockPos(x, y, z), lighting, phase, cull, chroma)
+    ) = addStairF(color, BlockPos(x, y, z), lighting, phase, cull, backfaceCull, chroma)
     fun addStairF(
         color: Long,
         bp: BlockPos,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addStairF(color, bp.x, bp.y, bp.z, Minecraft.getMinecraft().theWorld.getBlockState(bp), lighting, phase, cull, chroma)
+    ) = addStairF(color, bp.x, bp.y, bp.z, Minecraft.getMinecraft().theWorld.getBlockState(bp), lighting, phase, cull, backfaceCull, chroma)
     fun addStairF(
         color: List<Double>,
         bp: BlockPos,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addStairF(color, bp.x, bp.y, bp.z, Minecraft.getMinecraft().theWorld.getBlockState(bp), lighting, phase, cull, chroma)
+    ) = addStairF(color, bp.x, bp.y, bp.z, Minecraft.getMinecraft().theWorld.getBlockState(bp), lighting, phase, cull, backfaceCull, chroma)
     fun addStairF(
         color: Color,
         bp: BlockPos,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addStairF(color, bp.x, bp.y, bp.z, Minecraft.getMinecraft().theWorld.getBlockState(bp), lighting, phase, cull, chroma)
+    ) = addStairF(color, bp.x, bp.y, bp.z, Minecraft.getMinecraft().theWorld.getBlockState(bp), lighting, phase, cull, backfaceCull, chroma)
     fun addStairF(
         color: Long,
         x: Int,
@@ -1400,8 +1463,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addStairF(Color(color), x, y, z, RandomShit.comprehensiveStairMetadata(bs, BlockPos(x, y, z)), lighting, phase, cull, chroma)
+    ) = addStairF(Color(color), x, y, z, RandomShit.comprehensiveStairMetadata(bs, BlockPos(x, y, z)), lighting, phase, cull, backfaceCull, chroma)
     fun addStairF(
         color: List<Double>,
         x: Int,
@@ -1411,8 +1475,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addStairF(Color(color), x, y, z, RandomShit.comprehensiveStairMetadata(bs, BlockPos(x, y, z)), lighting, phase, cull, chroma)
+    ) = addStairF(Color(color), x, y, z, RandomShit.comprehensiveStairMetadata(bs, BlockPos(x, y, z)), lighting, phase, cull, backfaceCull, chroma)
     fun addStairF(
         color: Color,
         x: Int,
@@ -1422,8 +1487,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addStairF(color, x, y, z, RandomShit.comprehensiveStairMetadata(bs, BlockPos(x, y, z)), lighting, phase, cull, chroma)
+    ) = addStairF(color, x, y, z, RandomShit.comprehensiveStairMetadata(bs, BlockPos(x, y, z)), lighting, phase, cull, backfaceCull, chroma)
     fun addStairF(
         color: Long,
         x: Int,
@@ -1433,8 +1499,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addStairF(Color(color), x, y, z, type, lighting, phase, cull, chroma)
+    ) = addStairF(Color(color), x, y, z, type, lighting, phase, cull, backfaceCull, chroma)
     fun addStairF(
         color: List<Double>,
         x: Int,
@@ -1444,8 +1511,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addStairF(Color(color), x, y, z, type, lighting, phase, cull, chroma)
+    ) = addStairF(Color(color), x, y, z, type, lighting, phase, cull, backfaceCull, chroma)
     fun addStairF(
         color: Color,
         x: Int,
@@ -1455,12 +1523,13 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
     ) {
         if (type < 0) return
-        if (type and 32 == 0) addStraightStairF(color, x, y, z, type and 7, lighting, phase, cull, chroma)
-        else if (type and 16 == 0) addInnerStairF(color, x, y, z, type and 7, type and 8 > 0, lighting, phase, cull, chroma)
-        else addOuterStairF(color, x, y, z, type and 7, type and 8 > 0, lighting, phase, cull, chroma)
+        if (type and 32 == 0) addStraightStairF(color, x, y, z, type and 7, lighting, phase, cull, backfaceCull, chroma)
+        else if (type and 16 == 0) addInnerStairF(color, x, y, z, type and 7, type and 8 > 0, lighting, phase, cull, backfaceCull, chroma)
+        else addOuterStairF(color, x, y, z, type and 7, type and 8 > 0, lighting, phase, cull, backfaceCull, chroma)
     }
 
     fun addBoxOJ(
@@ -1476,8 +1545,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBOJ(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, cull, chroma)
+    ) = addAABBOJ(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, cull, backfaceCull, chroma)
     fun addBoxOJ(
         color: List<Double>,
         x: Double,
@@ -1491,8 +1561,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBOJ(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, cull, chroma)
+    ) = addAABBOJ(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, cull, backfaceCull, chroma)
     fun addBoxOJ(
         color: Color,
         x: Double,
@@ -1506,8 +1577,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBOJ(color, if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, cull, chroma)
+    ) = addAABBOJ(color, if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBOJM(
         color: Long,
         aabb: AxisAlignedBB,
@@ -1515,8 +1587,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBOJ(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, lighting, phase, cull, chroma)
+    ) = addAABBOJ(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBOJM(
         color: List<Double>,
         aabb: AxisAlignedBB,
@@ -1524,8 +1597,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBOJ(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, lighting, phase, cull, chroma)
+    ) = addAABBOJ(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBOJM(
         color: Color,
         aabb: AxisAlignedBB,
@@ -1533,8 +1607,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBOJ(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, lighting, phase, cull, chroma)
+    ) = addAABBOJ(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBOJ(
         color: Long,
         x1: Double,
@@ -1547,8 +1622,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBOJ(Color(color), x1, y1, z1, x2, y2, z2, lw, lighting, phase, cull, chroma)
+    ) = addAABBOJ(Color(color), x1, y1, z1, x2, y2, z2, lw, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBOJ(
         color: List<Double>,
         x1: Double,
@@ -1561,8 +1637,9 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBOJ(Color(color), x1, y1, z1, x2, y2, z2, lw, lighting, phase, cull, chroma)
+    ) = addAABBOJ(Color(color), x1, y1, z1, x2, y2, z2, lw, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBOJ(
         color: Color,
         x1: Double,
@@ -1575,6 +1652,7 @@ object Renderer {
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
+        backfaceCull: Boolean,
         chroma: Int
     ) {
         addThing(
@@ -1587,6 +1665,7 @@ object Renderer {
                 phase,
                 false,
                 cull,
+                backfaceCull,
                 chroma
             )
         )
