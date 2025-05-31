@@ -45,7 +45,7 @@ abstract class EntityOutliner(val type: Int, val name: String) {
             Renderer.addAABBO(it.getColor(), x - w / 2.0, y, z - w / 2.0, x + w / 2.0, y + h, z + w / 2.0, it.getWidth().toDouble(), 0, false, false, true, if (it.isChroma()) 1 else 0)
         }
     }
-    fun render(pt: Double, t: Int) {
+    fun render(pt: Double) {
         if (!CAN_OUTLINE || (phase.size == 0 && occluded.size == 0)) return
 
         val prof = Minecraft.getMinecraft().mcProfiler
@@ -59,14 +59,14 @@ abstract class EntityOutliner(val type: Int, val name: String) {
         prof.endStartSection("phase")
         if (phase.size > 0) {
             GlState.setDepthTest(false)
-            renderPass(pt, t, phase, 0)
+            renderPass(pt, phase, 0)
             if (occluded.size > 0) renderCleanup1()
         }
 
         prof.endStartSection("occluded")
         if (occluded.size > 0) {
             GlState.setDepthTest(true)
-            renderPass(pt, t, occluded, 1)
+            renderPass(pt, occluded, 1)
         }
 
         prof.endStartSection("cleanup")
@@ -95,7 +95,7 @@ abstract class EntityOutliner(val type: Int, val name: String) {
     }
 
     protected abstract fun renderSetup()
-    protected abstract fun renderPass(pt: Double, t: Int, ents: List<OutlineState>, pass: Int)
+    protected abstract fun renderPass(pt: Double, ents: List<OutlineState>, pass: Int)
     protected open fun renderCleanup1() {}
     protected open fun renderCleanup2() {}
 

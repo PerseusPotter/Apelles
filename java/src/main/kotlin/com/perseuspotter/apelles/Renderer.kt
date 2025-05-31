@@ -1796,7 +1796,7 @@ object Renderer {
         if (!errored) {
             try {
                 prof.endStartSection("outlines")
-                EntityOutlineRenderer.renderOutlines(pt, t)
+                EntityOutlineRenderer.renderOutlines(pt)
             } catch (e: Exception) {
                 println("gg shitter")
                 e.printStackTrace()

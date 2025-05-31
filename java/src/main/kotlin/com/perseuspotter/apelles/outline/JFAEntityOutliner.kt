@@ -49,7 +49,7 @@ object JFAEntityOutliner : EntityOutliner(1, "JFA") {
     }
 
     private fun ceilLog2(x: Int): Int = 32 - (x - 1).coerceAtLeast(0).countLeadingZeroBits()
-    override fun renderPass(pt: Double, t: Int, ents: List<OutlineState>, pass: Int) {
+    override fun renderPass(pt: Double, ents: List<OutlineState>, pass: Int) {
         val prof = Minecraft.getMinecraft().mcProfiler
         val rm = Minecraft.getMinecraft().renderManager
         val mainFb = Minecraft.getMinecraft().framebuffer

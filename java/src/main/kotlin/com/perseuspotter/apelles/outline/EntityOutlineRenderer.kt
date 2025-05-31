@@ -46,9 +46,9 @@ object EntityOutlineRenderer {
         outlineRenderers.forEach { it.endPrepare(pt) }
     }
 
-    fun renderOutlines(pt: Double, t: Int) {
+    fun renderOutlines(pt: Double) {
         Minecraft.getMinecraft().renderManager.setRenderOutlines(true)
-        outlineRenderers.forEach { it.render(pt, t) }
+        outlineRenderers.forEach { it.render(pt) }
         Minecraft.getMinecraft().renderManager.setRenderOutlines(false)
 
         outliners.forEach { it._internalClear() }
