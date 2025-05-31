@@ -1434,8 +1434,6 @@ object Renderer {
         prof.startSection("Apelles")
         GlState.reset()
         GlState.push()
-        glPushMatrix()
-        glTranslated(-Geometry.getRenderX(), -Geometry.getRenderY(), -Geometry.getRenderZ())
 
         glDisable(GL_ALPHA_TEST)
         glEnable(GL_CULL_FACE)
@@ -1453,7 +1451,10 @@ object Renderer {
             glEnable(GL31.GL_PRIMITIVE_RESTART)
             glEnableClientState(GL_VERTEX_ARRAY)
         }
-        if (CAN_USE_CHROMA) ChromaShader.updateUniforms(pt, t)
+        if (CAN_USE_CHROMA) {
+            // Shader.updateInfo()
+            ChromaShader.updateUniforms(pt, t)
+        }
 
         glDisable(GL_BLEND)
         glDepthMask(true)
@@ -1608,7 +1609,6 @@ object Renderer {
         prof.endSection()
         if (CAN_USE_CHROMA) GlState.bindShader(0)
 
-        glPopMatrix()
         if (!errored) {
             try {
                 prof.endStartSection("outlines")

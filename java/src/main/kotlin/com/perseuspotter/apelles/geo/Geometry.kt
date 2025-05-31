@@ -75,7 +75,7 @@ abstract class Geometry {
                 return
             }
             if (GlState.isLightingEnabled()) pos(x, y, z, x - cx, y - cy, z - cz)
-            else worldRen.pos(x, y, z).endVertex()
+            else worldRen.pos(x - rxc, y - ryc, z - rzc).endVertex()
         }
         @JvmStatic
         fun pos(x: Double, y: Double, z: Double, u: Double, v: Double) {
@@ -85,7 +85,7 @@ abstract class Geometry {
                 return
             }
             if (GlState.isLightingEnabled()) pos(x, y, z, u, v, x - cx, y - cy, z - cz)
-            else worldRen.pos(x, y, z).tex(u, v).endVertex()
+            else worldRen.pos(x - rxc, y - ryc, z - rzc).tex(u, v).endVertex()
         }
         @JvmStatic
         fun pos(x: Double, y: Double, z: Double, nx: Double, ny: Double, nz: Double) {
@@ -96,8 +96,8 @@ abstract class Geometry {
             }
             if (GlState.isLightingEnabled()) {
                 val l = 1.0 / sqrt(nx * nx + ny * ny + nz * nz)
-                worldRen.pos(x, y, z).normal((nx * l).toFloat(), (ny * l).toFloat(), (nz * l).toFloat()).endVertex()
-            } else worldRen.pos(x, y, z).endVertex()
+                worldRen.pos(x - rxc, y - ryc, z - rzc).normal((nx * l).toFloat(), (ny * l).toFloat(), (nz * l).toFloat()).endVertex()
+            } else worldRen.pos(x - rxc, y - ryc, z - rzc).endVertex()
         }
         @JvmStatic
         fun pos(x: Double, y: Double, z: Double, u: Double, v: Double, nx: Double, ny: Double, nz: Double) {
@@ -108,8 +108,8 @@ abstract class Geometry {
             }
             if (GlState.isLightingEnabled()) {
                 val l = 1.0 / sqrt(nx * nx + ny * ny + nz * nz)
-                worldRen.pos(x, y, z).tex(u, v).normal((nx * l).toFloat(), (ny * l).toFloat(), (nz * l).toFloat()).endVertex()
-            } else worldRen.pos(x, y, z).tex(u, v).endVertex()
+                worldRen.pos(x - rxc, y - ryc, z - rzc).tex(u, v).normal((nx * l).toFloat(), (ny * l).toFloat(), (nz * l).toFloat()).endVertex()
+            } else worldRen.pos(x - rxc, y - ryc, z - rzc).tex(u, v).endVertex()
         }
 
         private val SQRT_2 = sqrt(2.0)
@@ -355,15 +355,28 @@ abstract class Geometry {
         }
         @JvmStatic
         fun addVert(x: Double, y: Double, z: Double, nx: Double, ny: Double, nz: Double) {
-            currBuf!!.putP(x.toFloat(), y.toFloat(), z.toFloat())
+            currBuf!!.putP((x - rxc).toFloat(), (y - ryc).toFloat(), (z - rzc).toFloat())
             currBuf!!.putC(currCol!!.r, currCol!!.g, currCol!!.b, currCol!!.a)
             addNormVert(nx, ny, nz)
         }
         @JvmStatic
         fun addVert(x: Double, y: Double, z: Double, u: Double, v: Double, nx: Double, ny: Double, nz: Double) {
-            currBuf!!.putP(x.toFloat(), y.toFloat(), z.toFloat())
+            currBuf!!.putP((x - rxc).toFloat(), (y - ryc).toFloat(), (z - rzc).toFloat())
             currBuf!!.putC(currCol!!.r, currCol!!.g, currCol!!.b, currCol!!.a)
             addNormVert(nx, ny, nz)
+            currBuf!!.putT(u.toFloat(), v.toFloat())
+        }
+        @JvmStatic
+        fun addVertRaw(x: Double, y: Double, z: Double) {
+            currBuf!!.putP(x.toFloat(), y.toFloat(), z.toFloat())
+            currBuf!!.putC(currCol!!.r, currCol!!.g, currCol!!.b, currCol!!.a)
+            addNormVert(0.0, 0.0, 0.0)
+        }
+        @JvmStatic
+        fun addVertRaw(x: Double, y: Double, z: Double, u: Double, v: Double) {
+            currBuf!!.putP(x.toFloat(), y.toFloat(), z.toFloat())
+            currBuf!!.putC(currCol!!.r, currCol!!.g, currCol!!.b, currCol!!.a)
+            addNormVert(0.0, 0.0, 0.0)
             currBuf!!.putT(u.toFloat(), v.toFloat())
         }
         var vertOffset = 0
