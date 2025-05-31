@@ -46,7 +46,7 @@ object BlurEntityOutliner : EntityOutliner(4, "Blur") {
         override fun a(v: Float) = abs(v)
     }
 
-    override fun renderPass(pt: Double, t: Int, ents: List<OutlineState>, pass: Int) {
+    override fun renderPass(pt: Double, ents: List<OutlineState>, pass: Int) {
         val prof = Minecraft.getMinecraft().mcProfiler
         val rm = Minecraft.getMinecraft().renderManager
         val mainFb = Minecraft.getMinecraft().framebuffer
