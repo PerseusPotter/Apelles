@@ -1432,6 +1432,8 @@ object Renderer {
             // })
         }
 
+        Geometry.cacheValues()
+
         val prof = Minecraft.getMinecraft().mcProfiler
         prof.startSection("Apelles")
         GlState.reset()
