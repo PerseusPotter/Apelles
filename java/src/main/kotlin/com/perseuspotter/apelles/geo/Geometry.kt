@@ -1,18 +1,22 @@
 package com.perseuspotter.apelles.geo
 
+import akka.actor.dsl.Creators.Act
 import com.perseuspotter.apelles.Renderer
 import com.perseuspotter.apelles.depression.VAO
 import com.perseuspotter.apelles.state.Color
 import com.perseuspotter.apelles.state.GlState
 import com.perseuspotter.apelles.state.Thingamabob
 import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.ActiveRenderInfo
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.entity.RenderManager
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
+import org.lwjgl.BufferUtils
+import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30
+import java.nio.FloatBuffer
 import java.nio.IntBuffer
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 abstract class Geometry {
     companion object {
@@ -20,31 +24,89 @@ abstract class Geometry {
         val tess = Tessellator.getInstance()
         @JvmField
         val worldRen = tess.worldRenderer
-        private val rxf = RenderManager::class.java.getDeclaredField("field_78725_b")
-        private val ryf = RenderManager::class.java.getDeclaredField("field_78726_c")
-        private val rzf = RenderManager::class.java.getDeclaredField("field_78723_d")
+        private val rxf = RenderManager::class.java.getDeclaredField("field_78725_b").also { it.isAccessible = true }
+        private val ryf = RenderManager::class.java.getDeclaredField("field_78726_c").also { it.isAccessible = true }
+        private val rzf = RenderManager::class.java.getDeclaredField("field_78723_d").also { it.isAccessible = true }
         private var rxc = 0.0
         private var ryc = 0.0
         private var rzc = 0.0
-        init {
-            rxf.isAccessible = true
-            ryf.isAccessible = true
-            rzf.isAccessible = true
-        }
-        fun cacheValues() {
-            rxc = rxf.getDouble(rm)
-            ryc = ryf.getDouble(rm)
-            rzc = rzf.getDouble(rm)
-            fpdc = (Minecraft.getMinecraft().gameSettings.renderDistanceChunks shl 4) * SQRT_2
-        }
-        @JvmField
-        val rm = Minecraft.getMinecraft().renderManager
         @JvmStatic
         fun getRenderX(): Double = rxc
         @JvmStatic
         fun getRenderY(): Double = ryc
         @JvmStatic
         fun getRenderZ(): Double = rzc
+
+        @JvmField
+        val viewProjMatrix = BufferUtils.createFloatBuffer(16)
+        @JvmField
+        val MODELVIEW: FloatBuffer = ActiveRenderInfo::class.java.getDeclaredField("field_178812_b").also { it.isAccessible = true }.get(null) as FloatBuffer
+        @JvmField
+        val PROJECTION: FloatBuffer = ActiveRenderInfo::class.java.getDeclaredField("field_178813_c").also { it.isAccessible = true }.get(null) as FloatBuffer
+
+        @JvmField
+        var cameraFV = Point(0.0, 0.0, 0.0)
+        @JvmField
+        var cameraUV = Point(0.0, 0.0, 0.0)
+        @JvmField
+        var cameraRV = Point(0.0, 0.0, 0.0)
+
+        fun cacheValues() {
+            rxc = rxf.getDouble(rm)
+            ryc = ryf.getDouble(rm)
+            rzc = rzf.getDouble(rm)
+            fpdc = (Minecraft.getMinecraft().gameSettings.renderDistanceChunks shl 4) * SQRT_2
+            updateInfo()
+        }
+
+        private fun updateInfo() {
+            val view = FloatArray(16)
+            val proj = FloatArray(16)
+            MODELVIEW.get(view).rewind()
+            PROJECTION.get(proj).rewind()
+
+            viewProjMatrix.clear()
+            viewProjMatrix.put(proj[0] * view[0] + proj[4] * view[1] + proj[8] * view[2] + proj[12] * view[3])
+            viewProjMatrix.put(proj[1] * view[0] + proj[5] * view[1] + proj[9] * view[2] + proj[13] * view[3])
+            viewProjMatrix.put(proj[2] * view[0] + proj[6] * view[1] + proj[10] * view[2] + proj[14] * view[3])
+            viewProjMatrix.put(proj[3] * view[0] + proj[7] * view[1] + proj[11] * view[2] + proj[15] * view[3])
+
+            viewProjMatrix.put(proj[0] * view[4] + proj[4] * view[5] + proj[8] * view[6] + proj[12] * view[7])
+            viewProjMatrix.put(proj[1] * view[4] + proj[5] * view[5] + proj[9] * view[6] + proj[13] * view[7])
+            viewProjMatrix.put(proj[2] * view[4] + proj[6] * view[5] + proj[10] * view[6] + proj[14] * view[7])
+            viewProjMatrix.put(proj[3] * view[4] + proj[7] * view[5] + proj[11] * view[6] + proj[15] * view[7])
+
+            viewProjMatrix.put(proj[0] * view[8] + proj[4] * view[9] + proj[8] * view[10] + proj[12] * view[11])
+            viewProjMatrix.put(proj[1] * view[8] + proj[5] * view[9] + proj[9] * view[10] + proj[13] * view[11])
+            viewProjMatrix.put(proj[2] * view[8] + proj[6] * view[9] + proj[10] * view[10] + proj[14] * view[11])
+            viewProjMatrix.put(proj[3] * view[8] + proj[7] * view[9] + proj[11] * view[10] + proj[15] * view[11])
+
+            viewProjMatrix.put(proj[0] * view[12] + proj[4] * view[13] + proj[8] * view[14] + proj[12] * view[15])
+            viewProjMatrix.put(proj[1] * view[12] + proj[5] * view[13] + proj[9] * view[14] + proj[13] * view[15])
+            viewProjMatrix.put(proj[2] * view[12] + proj[6] * view[13] + proj[10] * view[14] + proj[14] * view[15])
+            viewProjMatrix.put(proj[3] * view[12] + proj[7] * view[13] + proj[11] * view[14] + proj[15] * view[15])
+            viewProjMatrix.flip()
+
+            val yaw = rm.playerViewY / 180.0 * PI
+            val pit = rm.playerViewX / 180.0 * PI
+            cameraFV = Point(
+                -sin(yaw) * cos(pit),
+                -sin(pit),
+                cos(yaw) * cos(pit)
+            )
+            cameraUV = Point(
+                -sin(yaw) * sin(pit),
+                cos(pit),
+                cos(yaw) * sin(pit)
+            )
+            cameraRV = Point(
+                cameraFV.y * cameraUV.z - cameraFV.z * cameraUV.y,
+                cameraFV.z * cameraUV.x - cameraFV.x * cameraUV.z,
+                cameraFV.x * cameraUV.y - cameraFV.y * cameraUV.x
+            )
+        }
+        @JvmField
+        val rm = Minecraft.getMinecraft().renderManager
 
         @JvmStatic
         fun begin(mode: Int, tex: Boolean, x: Double, y: Double, z: Double) {

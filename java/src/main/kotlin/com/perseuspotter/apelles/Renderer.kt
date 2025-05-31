@@ -1714,10 +1714,7 @@ object Renderer {
             glEnable(GL31.GL_PRIMITIVE_RESTART)
             glEnableClientState(GL_VERTEX_ARRAY)
         }
-        if (CAN_USE_CHROMA) {
-            // Shader.updateInfo()
-            ChromaShader.updateUniforms(pt, t)
-        }
+        if (CAN_USE_CHROMA) ChromaShader.updateUniforms(pt, t)
 
         glDisable(GL_BLEND)
         glDepthMask(true)
