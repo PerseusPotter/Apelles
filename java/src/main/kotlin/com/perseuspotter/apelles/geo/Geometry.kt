@@ -1,7 +1,6 @@
 package com.perseuspotter.apelles.geo
 
 import com.perseuspotter.apelles.Renderer
-import com.perseuspotter.apelles.depression.ChromaShader
 import com.perseuspotter.apelles.depression.VAO
 import com.perseuspotter.apelles.state.Color
 import com.perseuspotter.apelles.state.GlState
@@ -11,7 +10,6 @@ import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.entity.RenderManager
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import org.lwjgl.opengl.GL30
-import org.lwjgl.opengl.GL31
 import java.nio.IntBuffer
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -384,7 +382,6 @@ abstract class Geometry {
     abstract fun getVertexCount(params: List<Double>): Int
     abstract fun getIndicesCount(params: List<Double>): Int
     abstract fun getDrawMode(params: List<Double>): Int
-    open val shader: ChromaShader.Companion.ChromaBundle? = null
 }
 operator fun <E> List<E>.component6() = get(5)
 operator fun <E> List<E>.component7() = get(6)
