@@ -1412,8 +1412,6 @@ object Renderer {
     var USE_NEW_SHIT: Boolean = false
     @JvmField
     var CAN_USE_CHROMA: Boolean = false
-    @JvmField
-    var CAN_USE_GEOM_SHADER: Boolean = false
     private var checked = false
     private var errored = false
     fun render(pt: Double, t: Int) {
@@ -1421,9 +1419,7 @@ object Renderer {
             val cap = GLContext.getCapabilities()
             USE_NEW_SHIT = cap.GL_NV_primitive_restart && cap.OpenGL15
             CAN_USE_CHROMA = cap.OpenGL20
-            CAN_USE_GEOM_SHADER = cap.OpenGL32
             checked = true
-            ChromaShader.init()
             // glEnable(GL43.GL_DEBUG_OUTPUT)
             // GL43.glDebugMessageCallback(KHRDebugCallback { source: Int, type: Int, id: Int, severity: Int, message: String? ->
             //     if (severity == GL43.GL_DEBUG_SEVERITY_NOTIFICATION) return@KHRDebugCallback
