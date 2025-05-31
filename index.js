@@ -57,6 +57,11 @@ export function disableBatching() {
  * @property {boolean} [smooth=false] `false` - whether to enable `GL_LINE_SMOOTH`
  */
 
+/**
+ * @typedef FaceOptions
+ * @property {boolean} [backfaceCull=true] `true` - whether to cull back-facing faces
+ */
+
 // yea fuck this idc enough to make this "clean" typescript is not working with me
 /**
  * @typedef AABBOptions
@@ -72,7 +77,11 @@ export function disableBatching() {
  */
 
 /**
- * @typedef {RenderOptions & LineOptions} LineRenderOptions
+ * @typedef {RenderOptions & LineOptions} RenderOptions & LineOptions
+ */
+
+/**
+ * @typedef {RenderOptions & FaceOptions} FaceRenderOptions
  */
 
 const ResourceLocation = JavaTypeOrNull('net.minecraft.util.ResourceLocation') ?? throwExp('failed to load minecraft???');
@@ -100,11 +109,11 @@ const addPrimitive = APRendererI.addPrimitive ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {[number, number, number][]} points
- * @param {LineRenderOptions} options
+ * @param {RenderOptions & LineOptions} options
  */
 export function renderLine(color, points, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([1, color, 3, points, lw, lighting, phase, smooth, cull, chroma]);
-  else addPrimitive.call(APRendererI, color, 3, points, lw, lighting, phase, smooth, cull, chroma);
+  if (batchCalls) batched.push([1, color, 3, points, lw, lighting, phase, smooth, cull, true, chroma]);
+  else addPrimitive.call(APRendererI, color, 3, points, lw, lighting, phase, smooth, cull, true, chroma);
 }
 
 /**
@@ -112,11 +121,11 @@ export function renderLine(color, points, { lw = 1, lighting = 0, phase = false,
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} mode GL primitive constant
  * @param {[number, number, number][]} points
- * @param {LineRenderOptions} options
+ * @param {RenderOptions & LineOptions & FaceOptions} options
  */
-export function renderPrimitive(color, mode, points, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([1, color, mode, points, lw, lighting, phase, smooth, cull, chroma]);
-  else addPrimitive.call(APRendererI, color, mode, points, lw, lighting, phase, smooth, cull, chroma);
+export function renderPrimitive(color, mode, points, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([1, color, mode, points, lw, lighting, phase, smooth, cull, backfaceCull, chroma]);
+  else addPrimitive.call(APRendererI, color, mode, points, lw, lighting, phase, smooth, cull, backfaceCull, chroma);
 }
 
 const addBoxO = APRendererI.addBoxO ?? throwExp('bad');
@@ -127,7 +136,7 @@ const addBoxO = APRendererI.addBoxO ?? throwExp('bad');
  * @param {number} z
  * @param {number} w
  * @param {number} h
- * @param {LineRenderOptions & AABBOptions} options
+ * @param {RenderOptions & LineOptions & AABBOptions} options
  */
 export function renderBoxOutline(color, x, y, z, w, h, { centered = true, wz = w, lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([2, color, x, y, z, w, h, wz, centered, lw, lighting, phase, smooth, cull, chroma]);
@@ -143,7 +152,7 @@ const addAABBO = APRendererI.addAABBO ?? throwExp('bad');
  * @param {number} x2
  * @param {number} y2
  * @param {number} z2
- * @param {LineRenderOptions} options
+ * @param {RenderOptions & LineOptions} options
  */
 export function renderAABBOutline(color, x1, y1, z1, x2, y2, z2, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([
@@ -183,7 +192,7 @@ const addAABBOM = APRendererI.addAABBOM ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param aabb net.minecraft.util.AxisAlignedBB
- * @param {LineRenderOptions} options
+ * @param {RenderOptions & LineOptions} options
  */
 export function renderMCAABBOutline(color, aabb, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([30, color, aabb, lw, lighting, phase, smooth, cull, chroma]);
@@ -198,11 +207,11 @@ const addBoxF = APRendererI.addBoxF ?? throwExp('bad');
  * @param {number} z
  * @param {number} w
  * @param {number} h
- * @param {RenderOptions & AABBOptions} options
+ * @param {RenderOptions & FaceOptions & AABBOptions} options
  */
-export function renderBoxFilled(color, x, y, z, w, h, { centered = true, wz = w, lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([4, color, x, y, z, w, h, wz, centered, lighting, phase, cull, chroma]);
-  else addBoxF.call(APRendererI, color, x, y, z, w, h, wz, centered, lighting, phase, cull, chroma);
+export function renderBoxFilled(color, x, y, z, w, h, { centered = true, wz = w, lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([4, color, x, y, z, w, h, wz, centered, lighting, phase, cull, backfaceCull, chroma]);
+  else addBoxF.call(APRendererI, color, x, y, z, w, h, wz, centered, lighting, phase, cull, backfaceCull, chroma);
 }
 
 const addAABBF = APRendererI.addAABBF ?? throwExp('bad');
@@ -214,9 +223,9 @@ const addAABBF = APRendererI.addAABBF ?? throwExp('bad');
  * @param {number} x2
  * @param {number} y2
  * @param {number} z2
- * @param {RenderOptions} options
+ * @param {RenderOptions & FaceOptions} options
  */
-export function renderAABBFilled(color, x1, y1, z1, x2, y2, z2, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
+export function renderAABBFilled(color, x1, y1, z1, x2, y2, z2, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([
     5,
     color,
@@ -229,6 +238,7 @@ export function renderAABBFilled(color, x1, y1, z1, x2, y2, z2, { lighting = 0, 
     lighting,
     phase,
     cull,
+    backfaceCull,
     chroma
   ]);
   else addAABBF.call(APRendererI,
@@ -242,6 +252,7 @@ export function renderAABBFilled(color, x1, y1, z1, x2, y2, z2, { lighting = 0, 
     lighting,
     phase,
     cull,
+    backfaceCull,
     chroma
   );
 }
@@ -250,11 +261,11 @@ const addAABBFM = APRendererI.addAABBFM ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param aabb net.minecraft.util.AxisAlignedBB
- * @param {RenderOptions} options
+ * @param {RenderOptions & FaceOptions} options
  */
-export function renderMCAABBFilled(color, aabb, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([31, color, aabb, lighting, phase, cull, chroma]);
-  else addAABBFM.call(APRendererI, color, aabb, lighting, phase, cull, chroma);
+export function renderMCAABBFilled(color, aabb, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([31, color, aabb, lighting, phase, cull, backfaceCull, chroma]);
+  else addAABBFM.call(APRendererI, color, aabb, lighting, phase, cull, backfaceCull, chroma);
 }
 
 const addBeacon = APRendererI.addBeacon ?? throwExp('bad');
@@ -263,15 +274,15 @@ const addBeacon = APRendererI.addBeacon ?? throwExp('bad');
  * @param {number} x
  * @param {number} y
  * @param {number} z
- * @param {RenderOptions & BeaconOptions} options
+ * @param {RenderOptions & FaceOptions & BeaconOptions} options
  */
-export function renderBeacon(color, x, y, z, { centered = true, h = 300 - y, lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
+export function renderBeacon(color, x, y, z, { centered = true, h = 300 - y, lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
   if (!centered) {
     x += 0.5;
     z += 0.5;
   }
-  if (batchCalls) batched.push([6, color, x, y, z, h, lighting, phase, cull, chroma]);
-  else addBeacon.call(APRendererI, color, x, y, z, h, lighting, phase, cull, chroma);
+  if (batchCalls) batched.push([6, color, x, y, z, h, lighting, phase, cull, backfaceCull, chroma]);
+  else addBeacon.call(APRendererI, color, x, y, z, h, lighting, phase, cull, backfaceCull, chroma);
 }
 
 const addCircle = APRendererI.addCircle ?? throwExp('bad');
@@ -282,7 +293,7 @@ const addCircle = APRendererI.addCircle ?? throwExp('bad');
  * @param {number} z
  * @param {number} r
  * @param {number} segments
- * @param {LineRenderOptions} options
+ * @param {RenderOptions & LineOptions} options
  */
 export function renderCircle(color, x, y, z, r, segments, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([7, color, x, y, z, r, segments, lw, lighting, phase, smooth, cull, chroma]);
@@ -297,11 +308,11 @@ const addIcosphere = APRendererI.addIcosphere ?? throwExp('bad');
  * @param {number} z
  * @param {number} r
  * @param {number} divisions - warning, scales exponentially (0 = 20 triangles, 1 = 80, 2 = 320, 3 = 1280)
- * @param {RenderOptions} options
+ * @param {RenderOptions & FaceOptions} options
  */
-export function renderSphere(color, x, y, z, r, divisions, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([8, color, x, y, z, r, divisions, lighting, phase, cull, chroma]);
-  else addIcosphere.call(APRendererI, color, x, y, z, r, divisions, lighting, phase, cull, chroma);
+export function renderSphere(color, x, y, z, r, divisions, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([8, color, x, y, z, r, divisions, lighting, phase, cull, backfaceCull, chroma]);
+  else addIcosphere.call(APRendererI, color, x, y, z, r, divisions, lighting, phase, cull, backfaceCull, chroma);
 }
 
 const addPyramidO = APRendererI.addPyramidO ?? throwExp('bad');
@@ -313,7 +324,7 @@ const addPyramidO = APRendererI.addPyramidO ?? throwExp('bad');
  * @param {number} r length from center of base to corner, equal to `apothem / cos(PI / n)`
  * @param {number} h hint: negative to flip upside down
  * @param {number} n number of sides on base
- * @param {LineRenderOptions} options
+ * @param {RenderOptions & LineOptions} options
  */
 export function renderPyramidOutline(color, x, y, z, r, h, n, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([9, color, x, y, z, r, h, n, lw, lighting, phase, smooth, cull, chroma]);
@@ -329,11 +340,11 @@ const addPyramidF = APRendererI.addPyramidF ?? throwExp('bad');
  * @param {number} r length from center to corner, equal to `apothem / cos(PI / n)`
  * @param {number} h hint: negative to flip upside down
  * @param {number} n number of sides on base
- * @param {RenderOptions} options
+ * @param {RenderOptions & FaceOptions} options
  */
-export function renderPyramidFilled(color, x, y, z, r, h, n, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([10, color, x, y, z, r, h, n, lighting, phase, cull, chroma]);
-  else addPyramidF.call(APRendererI, color, x, y, z, r, h, n, lighting, phase, cull, chroma);
+export function renderPyramidFilled(color, x, y, z, r, h, n, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([10, color, x, y, z, r, h, n, lighting, phase, cull, backfaceCull, chroma]);
+  else addPyramidF.call(APRendererI, color, x, y, z, r, h, n, lighting, phase, cull, backfaceCull, chroma);
 }
 
 const addVertCylinder = APRendererI.addVertCylinder ?? throwExp('bad');
@@ -345,11 +356,11 @@ const addVertCylinder = APRendererI.addVertCylinder ?? throwExp('bad');
  * @param {number} r
  * @param {number} h
  * @param {number} segments
- * @param {RenderOptions} options
+ * @param {RenderOptions & FaceOptions} options
  */
-export function renderVerticalCylinder(color, x, y, z, r, h, segments, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([11, color, x, y, z, r, h, segments, lighting, phase, cull, chroma]);
-  else addVertCylinder.call(APRendererI, color, x, y, z, r, h, segments, lighting, phase, cull, chroma);
+export function renderVerticalCylinder(color, x, y, z, r, h, segments, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([11, color, x, y, z, r, h, segments, lighting, phase, cull, backfaceCull, chroma]);
+  else addVertCylinder.call(APRendererI, color, x, y, z, r, h, segments, lighting, phase, cull, backfaceCull, chroma);
 }
 
 const addOctahedronO = APRendererI.addOctahedronO ?? throwExp('bad');
@@ -360,7 +371,7 @@ const addOctahedronO = APRendererI.addOctahedronO ?? throwExp('bad');
  * @param {number} z
  * @param {number} w
  * @param {number} h
- * @param {LineRenderOptions} options
+ * @param {RenderOptions & LineOptions} options
  */
 export function renderOctahedronOutline(color, x, y, z, w, h, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([12, color, x, y, z, w / 2, h / 2, lw, lighting, phase, smooth, cull, chroma]);
@@ -375,11 +386,11 @@ const addOctahedronF = APRendererI.addOctahedronF ?? throwExp('bad');
  * @param {number} z
  * @param {number} w
  * @param {number} h
- * @param {RenderOptions} options
+ * @param {RenderOptions & FaceOptions} options
  */
-export function renderOctahedronFilled(color, x, y, z, w, h, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([13, color, x, y, z, w / 2, h / 2, lighting, phase, cull, chroma]);
-  else addOctahedronF.call(APRendererI, color, x, y, z, w / 2, h / 2, lighting, phase, cull, chroma);
+export function renderOctahedronFilled(color, x, y, z, w, h, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([13, color, x, y, z, w / 2, h / 2, lighting, phase, cull, backfaceCull, chroma]);
+  else addOctahedronF.call(APRendererI, color, x, y, z, w / 2, h / 2, lighting, phase, cull, backfaceCull, chroma);
 }
 
 const addStraightStairO = APRendererI.addStraightStairO ?? throwExp('bad');
@@ -389,7 +400,7 @@ const addStraightStairO = APRendererI.addStraightStairO ?? throwExp('bad');
  * @param {number} y int (BlockPos)
  * @param {number} z int (BlockPos)
  * @param {number} type int (metadata)
- * @param {LineRenderOptions} options
+ * @param {RenderOptions & LineOptions} options
  */
 export function renderStraightStairOutline(color, x, y, z, type, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([14, color, x, y, z, type, lighting, phase, cull, chroma]);
@@ -403,11 +414,11 @@ const addStraightStairF = APRendererI.addStraightStairF ?? throwExp('bad');
  * @param {number} y int (BlockPos)
  * @param {number} z int (BlockPos)
  * @param {number} type int (metadata)
- * @param {RenderOptions} options
+ * @param {RenderOptions & FaceOptions} options
  */
-export function renderStraightStairFilled(color, x, y, z, type, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([15, color, x, y, z, type, lighting, phase, cull, chroma]);
-  else addStraightStairF.call(APRendererI, color, x, y, z, type, lighting, phase, cull, chroma);
+export function renderStraightStairFilled(color, x, y, z, type, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([15, color, x, y, z, type, lighting, phase, cull, backfaceCull, chroma]);
+  else addStraightStairF.call(APRendererI, color, x, y, z, type, lighting, phase, cull, backfaceCull, chroma);
 }
 
 const addInnerStairO = APRendererI.addInnerStairO ?? throwExp('bad');
@@ -418,7 +429,7 @@ const addInnerStairO = APRendererI.addInnerStairO ?? throwExp('bad');
  * @param {number} z int (BlockPos)
  * @param {number} type int (metadata)
  * @param {boolean} left is the stair shape `INNER_LEFT`
- * @param {LineRenderOptions} options
+ * @param {RenderOptions & LineOptions} options
  */
 export function renderInnerStairOutline(color, x, y, z, type, left, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([16, color, x, y, z, type, left, lw, lighting, phase, smooth, cull, chroma]);
@@ -433,11 +444,11 @@ const addInnerStairF = APRendererI.addInnerStairF ?? throwExp('bad');
  * @param {number} z int (BlockPos)
  * @param {number} type int (metadata)
  * @param {boolean} left is the stair shape `INNER_LEFT`
- * @param {RenderOptions} options
+ * @param {RenderOptions & FaceOptions} options
  */
-export function renderInnerStairFilled(color, x, y, z, type, left, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([17, color, x, y, z, type, left, lighting, phase, cull, chroma]);
-  else addInnerStairF.call(APRendererI, color, x, y, z, type, left, lighting, phase, cull, chroma);
+export function renderInnerStairFilled(color, x, y, z, type, left, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([17, color, x, y, z, type, left, lighting, phase, cull, backfaceCull, chroma]);
+  else addInnerStairF.call(APRendererI, color, x, y, z, type, left, lighting, phase, cull, backfaceCull, chroma);
 }
 
 const addOuterStairO = APRendererI.addOuterStairO ?? throwExp('bad');
@@ -448,7 +459,7 @@ const addOuterStairO = APRendererI.addOuterStairO ?? throwExp('bad');
  * @param {number} z int (BlockPos)
  * @param {number} type int (metadata)
  * @param {boolean} left is the stair shape `OUTER_LEFT`
- * @param {LineRenderOptions} options
+ * @param {RenderOptions & LineOptions} options
  */
 export function renderOuterStairOutline(color, x, y, z, type, left, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([18, color, x, y, z, type, left, lw, lighting, phase, smooth, cull, chroma]);
@@ -463,11 +474,11 @@ const addOuterStairF = APRendererI.addOuterStairF ?? throwExp('bad');
  * @param {number} z int (BlockPos)
  * @param {number} type int (metadata)
  * @param {boolean} left is the stair shape `OUTER_LEFT`
- * @param {RenderOptions} options
+ * @param {RenderOptions & FaceOptions} options
  */
-export function renderOuterStairFilled(color, x, y, z, type, left, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([19, color, x, y, z, type, left, lighting, phase, cull, chroma]);
-  else addOuterStairF.call(APRendererI, color, x, y, z, type, left, lighting, phase, cull, chroma);
+export function renderOuterStairFilled(color, x, y, z, type, left, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([19, color, x, y, z, type, left, lighting, phase, cull, backfaceCull, chroma]);
+  else addOuterStairF.call(APRendererI, color, x, y, z, type, left, lighting, phase, cull, backfaceCull, chroma);
 }
 
 const addStairO = APRendererI.addStairO ?? throwExp('bad');
@@ -476,7 +487,7 @@ const addStairO = APRendererI.addStairO ?? throwExp('bad');
  * @param {number} x int (BlockPos)
  * @param {number} y int (BlockPos)
  * @param {number} z int (BlockPos)
- * @param {LineRenderOptions} options
+ * @param {RenderOptions & LineOptions} options
  */
 export function renderStairOutline(color, x, y, z, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([20, color, x, y, z, lw, lighting, phase, smooth, cull, chroma]);
@@ -489,17 +500,17 @@ const addStairF = APRendererI.addStairF ?? throwExp('bad');
  * @param {number} x int (BlockPos)
  * @param {number} y int (BlockPos)
  * @param {number} z int (BlockPos)
- * @param {RenderOptions} options
+ * @param {RenderOptions & FaceOptions} options
  */
-export function renderStairFilled(color, x, y, z, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([24, color, x, y, z, lighting, phase, cull, chroma]);
-  else addStairF.call(APRendererI, color, x, y, z, lighting, phase, cull, chroma);
+export function renderStairFilled(color, x, y, z, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([24, color, x, y, z, lighting, phase, cull, backfaceCull, chroma]);
+  else addStairF.call(APRendererI, color, x, y, z, lighting, phase, cull, backfaceCull, chroma);
 }
 
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param bp net.minecraft.util.BlockPos
- * @param {LineRenderOptions} options
+ * @param {RenderOptions & LineOptions} options
  */
 export function renderStairOutlineBP(color, bp, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([21, color, bp, lw, lighting, phase, smooth, cull, chroma]);
@@ -509,11 +520,11 @@ export function renderStairOutlineBP(color, bp, { lw = 1, lighting = 0, phase = 
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param bp net.minecraft.util.BlockPos
- * @param {RenderOptions} options
+ * @param {RenderOptions & FaceOptions} options
  */
-export function renderStairFilledBP(color, bp, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([25, color, bp, lighting, phase, cull, chroma]);
-  else addStairF.call(APRendererI, color, bp, lighting, phase, cull, chroma);
+export function renderStairFilledBP(color, bp, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([25, color, bp, lighting, phase, cull, backfaceCull, chroma]);
+  else addStairF.call(APRendererI, color, bp, lighting, phase, cull, backfaceCull, chroma);
 }
 
 /**
@@ -522,7 +533,7 @@ export function renderStairFilledBP(color, bp, { lighting = 0, phase = false, cu
  * @param {number} y int (BlockPos)
  * @param {number} z int (BlockPos)
  * @param bs net.minecraft.block.state.IBlockState
- * @param {LineRenderOptions} options
+ * @param {RenderOptions & LineOptions} options
  */
 export function renderStairOutlineBS(color, x, y, z, bs, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([22, color, x, y, z, bs, lw, lighting, phase, smooth, cull, chroma]);
@@ -535,11 +546,11 @@ export function renderStairOutlineBS(color, x, y, z, bs, { lw = 1, lighting = 0,
  * @param {number} y int (BlockPos)
  * @param {number} z int (BlockPos)
  * @param bs net.minecraft.block.state.IBlockState
- * @param {RenderOptions} options
+ * @param {RenderOptions & FaceOptions} options
  */
-export function renderStairFilledBS(color, x, y, z, bs, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([26, color, x, y, z, bs, lighting, phase, cull, chroma]);
-  else addStairF.call(APRendererI, color, x, y, z, bs, lighting, phase, cull, chroma);
+export function renderStairFilledBS(color, x, y, z, bs, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([26, color, x, y, z, bs, lighting, phase, cull, backfaceCull, chroma]);
+  else addStairF.call(APRendererI, color, x, y, z, bs, lighting, phase, cull, backfaceCull, chroma);
 }
 
 /**
@@ -548,7 +559,7 @@ export function renderStairFilledBS(color, x, y, z, bs, { lighting = 0, phase = 
  * @param {number} y int (BlockPos)
  * @param {number} z int (BlockPos)
  * @param {number} type MSB [set if not straight] | [set if outer] | [set if left] | [rest of metadata (length 3)] LSB
- * @param {LineRenderOptions} options
+ * @param {RenderOptions & LineOptions} options
  */
 export function renderStairOutlineManual(color, x, y, z, type, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([23, color, x, y, z, type, lw, lighting, phase, smooth, cull, chroma]);
@@ -561,11 +572,11 @@ export function renderStairOutlineManual(color, x, y, z, type, { lw = 1, lightin
  * @param {number} y int (BlockPos)
  * @param {number} z int (BlockPos)
  * @param {number} type MSB [set if not straight] | [set if outer] | [set if left] | [rest of metadata (length 3)] LSB
- * @param {RenderOptions} options
+ * @param {RenderOptions & FaceOptions} options
  */
-export function renderStairFilledManual(color, x, y, z, type, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([27, color, x, y, z, type, lighting, phase, cull, chroma]);
-  else addStairF.call(APRendererI, color, x, y, z, type, lighting, phase, cull, chroma);
+export function renderStairFilledManual(color, x, y, z, type, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([27, color, x, y, z, type, lighting, phase, cull, backfaceCull, chroma]);
+  else addStairF.call(APRendererI, color, x, y, z, type, lighting, phase, cull, backfaceCull, chroma);
 }
 
 const addBoxOJ = APRendererI.addBoxOJ ?? throwExp('bad');
@@ -578,11 +589,11 @@ const addBoxOJ = APRendererI.addBoxOJ ?? throwExp('bad');
  * @param {number} w
  * @param {number} h
  * @param {number} lw warning: `lw` units are different than all other methods; measured in 1/16ths of a block
- * @param {RenderOptions & AABBOptions} options
+ * @param {RenderOptions & FaceOptions & AABBOptions} options
  */
-export function renderBoxOutlineMiter(color, x, y, z, w, h, lw, { centered = true, wz = w, lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([28, color, x, y, z, w, h, wz, centered, lw, lighting, phase, cull, chroma]);
-  else addBoxOJ.call(APRendererI, color, x, y, z, w, h, wz, centered, lw, lighting, phase, cull, chroma);
+export function renderBoxOutlineMiter(color, x, y, z, w, h, lw, { centered = true, wz = w, lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([28, color, x, y, z, w, h, wz, centered, lw, lighting, phase, cull, backfaceCull, chroma]);
+  else addBoxOJ.call(APRendererI, color, x, y, z, w, h, wz, centered, lw, lighting, phase, cull, backfaceCull, chroma);
 }
 
 const addAABBOJ = APRendererI.addAABBOJ ?? throwExp('bad');
@@ -598,9 +609,9 @@ const addAABBOJ = APRendererI.addAABBOJ ?? throwExp('bad');
  * @param {number} y2
  * @param {number} z2
  * @param {number} lw warning: `lw` units are different than all other methods; measured in 1/16ths of a block
- * @param {RenderOptions} options
+ * @param {RenderOptions & FaceOptions} options
  */
-export function renderAABBOutlineMiter(color, x1, y1, z1, x2, y2, z2, lw, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
+export function renderAABBOutlineMiter(color, x1, y1, z1, x2, y2, z2, lw, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([
     29,
     color,
@@ -614,6 +625,7 @@ export function renderAABBOutlineMiter(color, x1, y1, z1, x2, y2, z2, lw, { ligh
     lighting,
     phase,
     cull,
+    backfaceCull,
     chroma
   ]);
   else addAABBOJ.call(APRendererI,
@@ -628,6 +640,7 @@ export function renderAABBOutlineMiter(color, x1, y1, z1, x2, y2, z2, lw, { ligh
     lighting,
     phase,
     cull,
+    backfaceCull,
     chroma
   );
 }
@@ -640,11 +653,11 @@ const addAABBOJM = APRendererI.addAABBOJM ?? throwExp('bad');
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param aabb net.minecraft.util.AxisAlignedBB
  * @param {number} lw warning: `lw` units are different than all other methods; measured in 1/16ths of a block
- * @param {RenderOptions} options
+ * @param {RenderOptions & FaceOptions} options
  */
-export function renderMCAABBOutlineMiter(color, aabb, lw, { lighting = 0, phase = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([32, color, aabb, lw, lighting, phase, cull, chroma]);
-  else addAABBOJM.call(APRendererI, color, aabb, lw, lighting, phase, cull, chroma);
+export function renderMCAABBOutlineMiter(color, aabb, lw, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([32, color, aabb, lw, lighting, phase, cull, backfaceCull, chroma]);
+  else addAABBOJM.call(APRendererI, color, aabb, lw, lighting, phase, cull, backfaceCull, chroma);
 }
 
 /**
@@ -652,7 +665,7 @@ export function renderMCAABBOutlineMiter(color, aabb, lw, { lighting = 0, phase 
  * @param {number} x
  * @param {number} y
  * @param {number} z
- * @param {LineRenderOptions} options
+ * @param {RenderOptions & LineOptions} options
  */
 export function renderTracer(color, x, y, z, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   const p = Player.getPlayer();
@@ -721,6 +734,14 @@ const _setLighting = GlState['setLighting(int)'] ?? throwExp('bad');
  */
 export function lighting(mode) {
   _setLighting.call(GlState, mode);
+}
+
+const _setBackfaceCull = GlState['setBackfaceCull(boolean)'] ?? throwExp('bad');
+/**
+ * @param {boolean} cull
+ */
+export function backfaceCull(cull) {
+  _setBackfaceCull.call(GlState, cull);
 }
 
 const _test = Frustum['test(double,double,double)'] ?? throwExp('bad');

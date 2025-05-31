@@ -48,7 +48,8 @@ class BatchUploaderJ {
                             (Boolean) arr.get(6),
                             (Boolean) arr.get(7),
                             (Boolean) arr.get(8),
-                            asInt(arr.get(9))
+                            (Boolean) arr.get(9),
+                            asInt(arr.get(10))
                     );
                     else Renderer.INSTANCE.addPrimitive(
                             asLong(color),
@@ -59,7 +60,8 @@ class BatchUploaderJ {
                             (Boolean) arr.get(6),
                             (Boolean) arr.get(7),
                             (Boolean) arr.get(8),
-                            asInt(arr.get(9))
+                            (Boolean) arr.get(9),
+                            asInt(arr.get(10))
                     );
                     break;
                 }
@@ -144,7 +146,8 @@ class BatchUploaderJ {
                             asInt(arr.get(9)),
                             (Boolean) arr.get(10),
                             (Boolean) arr.get(11),
-                            asInt(arr.get(12))
+                            (Boolean) arr.get(12),
+                            asInt(arr.get(13))
                     );
                     else Renderer.INSTANCE.addBoxF(
                             asLong(color),
@@ -158,7 +161,8 @@ class BatchUploaderJ {
                             asInt(arr.get(9)),
                             (Boolean) arr.get(10),
                             (Boolean) arr.get(11),
-                            asInt(arr.get(12))
+                            (Boolean) arr.get(12),
+                            asInt(arr.get(13))
                     );
                     break;
                 }
@@ -174,7 +178,8 @@ class BatchUploaderJ {
                             asInt(arr.get(8)),
                             (Boolean) arr.get(9),
                             (Boolean) arr.get(10),
-                            asInt(arr.get(11))
+                            (Boolean) arr.get(11),
+                            asInt(arr.get(12))
                     );
                     else Renderer.INSTANCE.addAABBF(
                             asLong(color),
@@ -187,7 +192,8 @@ class BatchUploaderJ {
                             asInt(arr.get(8)),
                             (Boolean) arr.get(9),
                             (Boolean) arr.get(10),
-                            asInt(arr.get(11))
+                            (Boolean) arr.get(11),
+                            asInt(arr.get(12))
                     );
                     break;
                 }
@@ -201,7 +207,8 @@ class BatchUploaderJ {
                             asInt(arr.get(6)),
                             (Boolean) arr.get(7),
                             (Boolean) arr.get(8),
-                            asInt(arr.get(9))
+                            (Boolean) arr.get(9),
+                            asInt(arr.get(10))
                     );
                     else Renderer.INSTANCE.addBeacon(
                             asLong(color),
@@ -212,7 +219,8 @@ class BatchUploaderJ {
                             asInt(arr.get(6)),
                             (Boolean) arr.get(7),
                             (Boolean) arr.get(8),
-                            asInt(arr.get(9))
+                            (Boolean) arr.get(9),
+                            asInt(arr.get(10))
                     );
                     break;
                 }
@@ -258,7 +266,8 @@ class BatchUploaderJ {
                             asInt(arr.get(7)),
                             (Boolean) arr.get(8),
                             (Boolean) arr.get(9),
-                            asInt(arr.get(10))
+                            (Boolean) arr.get(10),
+                            asInt(arr.get(11))
                     );
                     else Renderer.INSTANCE.addIcosphere(
                             asLong(color),
@@ -270,7 +279,8 @@ class BatchUploaderJ {
                             asInt(arr.get(7)),
                             (Boolean) arr.get(8),
                             (Boolean) arr.get(9),
-                            asInt(arr.get(10))
+                            (Boolean) arr.get(10),
+                            asInt(arr.get(11))
                     );
                     break;
                 }
@@ -319,7 +329,8 @@ class BatchUploaderJ {
                             asInt(arr.get(8)),
                             (Boolean) arr.get(9),
                             (Boolean) arr.get(10),
-                            asInt(arr.get(11))
+                            (Boolean) arr.get(11),
+                            asInt(arr.get(12))
                     );
                     else Renderer.INSTANCE.addPyramidF(
                             asLong(color),
@@ -332,7 +343,8 @@ class BatchUploaderJ {
                             asInt(arr.get(8)),
                             (Boolean) arr.get(9),
                             (Boolean) arr.get(10),
-                            asInt(arr.get(11))
+                            (Boolean) arr.get(11),
+                            asInt(arr.get(12))
                     );
                     break;
                 }
@@ -348,7 +360,8 @@ class BatchUploaderJ {
                             asInt(arr.get(8)),
                             (Boolean) arr.get(9),
                             (Boolean) arr.get(10),
-                            asInt(arr.get(11))
+                            (Boolean) arr.get(11),
+                            asInt(arr.get(12))
                     );
                     else Renderer.INSTANCE.addVertCylinder(
                             asLong(color),
@@ -361,7 +374,8 @@ class BatchUploaderJ {
                             asInt(arr.get(8)),
                             (Boolean) arr.get(9),
                             (Boolean) arr.get(10),
-                            asInt(arr.get(11))
+                            (Boolean) arr.get(11),
+                            asInt(arr.get(12))
                     );
                     break;
                 }
@@ -407,7 +421,8 @@ class BatchUploaderJ {
                             asInt(arr.get(7)),
                             (Boolean) arr.get(8),
                             (Boolean) arr.get(9),
-                            asInt(arr.get(10))
+                            (Boolean) arr.get(10),
+                            asInt(arr.get(11))
                     );
                     else Renderer.INSTANCE.addOctahedronF(
                             asLong(color),
@@ -419,7 +434,8 @@ class BatchUploaderJ {
                             asInt(arr.get(7)),
                             (Boolean) arr.get(8),
                             (Boolean) arr.get(9),
-                            asInt(arr.get(10))
+                            (Boolean) arr.get(10),
+                            asInt(arr.get(11))
                     );
                     break;
                 }
@@ -462,7 +478,8 @@ class BatchUploaderJ {
                             asInt(arr.get(6)),
                             (Boolean) arr.get(7),
                             (Boolean) arr.get(8),
-                            asInt(arr.get(9))
+                            (Boolean) arr.get(9),
+                            asInt(arr.get(10))
                     );
                     else Renderer.INSTANCE.addStraightStairF(
                             asLong(color),
@@ -473,7 +490,8 @@ class BatchUploaderJ {
                             asInt(arr.get(6)),
                             (Boolean) arr.get(7),
                             (Boolean) arr.get(8),
-                            asInt(arr.get(9))
+                            (Boolean) arr.get(9),
+                            asInt(arr.get(10))
                     );
                     break;
                 }
@@ -519,7 +537,8 @@ class BatchUploaderJ {
                             asInt(arr.get(7)),
                             (Boolean) arr.get(8),
                             (Boolean) arr.get(9),
-                            asInt(arr.get(10))
+                            (Boolean) arr.get(10),
+                            asInt(arr.get(11))
                     );
                     else Renderer.INSTANCE.addInnerStairF(
                             asLong(color),
@@ -531,7 +550,8 @@ class BatchUploaderJ {
                             asInt(arr.get(7)),
                             (Boolean) arr.get(8),
                             (Boolean) arr.get(9),
-                            asInt(arr.get(10))
+                            (Boolean) arr.get(10),
+                            asInt(arr.get(11))
                     );
                     break;
                 }
@@ -577,7 +597,8 @@ class BatchUploaderJ {
                             asInt(arr.get(7)),
                             (Boolean) arr.get(8),
                             (Boolean) arr.get(9),
-                            asInt(arr.get(10))
+                            (Boolean) arr.get(10),
+                            asInt(arr.get(11))
                     );
                     else Renderer.INSTANCE.addOuterStairF(
                             asLong(color),
@@ -589,7 +610,8 @@ class BatchUploaderJ {
                             asInt(arr.get(7)),
                             (Boolean) arr.get(8),
                             (Boolean) arr.get(9),
-                            asInt(arr.get(10))
+                            (Boolean) arr.get(10),
+                            asInt(arr.get(11))
                     );
                     break;
                 }
@@ -710,7 +732,8 @@ class BatchUploaderJ {
                             asInt(arr.get(5)),
                             (Boolean) arr.get(6),
                             (Boolean) arr.get(7),
-                            asInt(arr.get(8))
+                            (Boolean) arr.get(8),
+                            asInt(arr.get(9))
                     );
                     else Renderer.INSTANCE.addStairF(
                             asLong(color),
@@ -720,7 +743,8 @@ class BatchUploaderJ {
                             asInt(arr.get(5)),
                             (Boolean) arr.get(6),
                             (Boolean) arr.get(7),
-                            asInt(arr.get(8))
+                            (Boolean) arr.get(8),
+                            asInt(arr.get(9))
                     );
                     break;
                 }
@@ -731,7 +755,8 @@ class BatchUploaderJ {
                             asInt(arr.get(3)),
                             (Boolean) arr.get(4),
                             (Boolean) arr.get(5),
-                            asInt(arr.get(6))
+                            (Boolean) arr.get(6),
+                            asInt(arr.get(7))
                     );
                     else Renderer.INSTANCE.addStairF(
                             asLong(color),
@@ -739,7 +764,8 @@ class BatchUploaderJ {
                             asInt(arr.get(3)),
                             (Boolean) arr.get(4),
                             (Boolean) arr.get(5),
-                            asInt(arr.get(6))
+                            (Boolean) arr.get(6),
+                            asInt(arr.get(7))
                     );
                     break;
                 }
@@ -753,7 +779,8 @@ class BatchUploaderJ {
                             asInt(arr.get(6)),
                             (Boolean) arr.get(7),
                             (Boolean) arr.get(8),
-                            asInt(arr.get(9))
+                            (Boolean) arr.get(9),
+                            asInt(arr.get(10))
                     );
                     else Renderer.INSTANCE.addStairF(
                             asLong(color),
@@ -764,7 +791,8 @@ class BatchUploaderJ {
                             asInt(arr.get(6)),
                             (Boolean) arr.get(7),
                             (Boolean) arr.get(8),
-                            asInt(arr.get(9))
+                            (Boolean) arr.get(9),
+                            asInt(arr.get(10))
                     );
                     break;
                 }
@@ -778,7 +806,8 @@ class BatchUploaderJ {
                             asInt(arr.get(6)),
                             (Boolean) arr.get(7),
                             (Boolean) arr.get(8),
-                            asInt(arr.get(9))
+                            (Boolean) arr.get(9),
+                            asInt(arr.get(10))
                     );
                     else Renderer.INSTANCE.addStairF(
                             asLong(color),
@@ -789,7 +818,8 @@ class BatchUploaderJ {
                             asInt(arr.get(6)),
                             (Boolean) arr.get(7),
                             (Boolean) arr.get(8),
-                            asInt(arr.get(9))
+                            (Boolean) arr.get(9),
+                            asInt(arr.get(10))
                     );
                     break;
                 }
@@ -807,7 +837,8 @@ class BatchUploaderJ {
                             asInt(arr.get(10)),
                             (Boolean) arr.get(11),
                             (Boolean) arr.get(12),
-                            asInt(arr.get(13))
+                            (Boolean) arr.get(13),
+                            asInt(arr.get(14))
                     );
                     else Renderer.INSTANCE.addBoxOJ(
                             asLong(color),
@@ -822,7 +853,8 @@ class BatchUploaderJ {
                             asInt(arr.get(10)),
                             (Boolean) arr.get(11),
                             (Boolean) arr.get(12),
-                            asInt(arr.get(13))
+                            (Boolean) arr.get(13),
+                            asInt(arr.get(14))
                     );
                     break;
                 }
@@ -839,7 +871,8 @@ class BatchUploaderJ {
                             asInt(arr.get(9)),
                             (Boolean) arr.get(10),
                             (Boolean) arr.get(11),
-                            asInt(arr.get(12))
+                            (Boolean) arr.get(12),
+                            asInt(arr.get(13))
                     );
                     else Renderer.INSTANCE.addAABBOJ(
                             asLong(color),
@@ -853,7 +886,8 @@ class BatchUploaderJ {
                             asInt(arr.get(9)),
                             (Boolean) arr.get(10),
                             (Boolean) arr.get(11),
-                            asInt(arr.get(12))
+                            (Boolean) arr.get(12),
+                            asInt(arr.get(13))
                     );
                     break;
                 }
@@ -887,7 +921,8 @@ class BatchUploaderJ {
                             asInt(arr.get(3)),
                             (Boolean) arr.get(4),
                             (Boolean) arr.get(5),
-                            asInt(arr.get(6))
+                            (Boolean) arr.get(6),
+                            asInt(arr.get(7))
                     );
                     else Renderer.INSTANCE.addAABBFM(
                             asLong(color),
@@ -895,7 +930,8 @@ class BatchUploaderJ {
                             asInt(arr.get(3)),
                             (Boolean) arr.get(4),
                             (Boolean) arr.get(5),
-                            asInt(arr.get(6))
+                            (Boolean) arr.get(6),
+                            asInt(arr.get(7))
                     );
                     break;
                 }
@@ -907,7 +943,8 @@ class BatchUploaderJ {
                             asInt(arr.get(4)),
                             (Boolean) arr.get(5),
                             (Boolean) arr.get(6),
-                            asInt(arr.get(7))
+                            (Boolean) arr.get(7),
+                            asInt(arr.get(8))
                     );
                     else Renderer.INSTANCE.addAABBOJM(
                             asLong(color),
@@ -916,7 +953,8 @@ class BatchUploaderJ {
                             asInt(arr.get(4)),
                             (Boolean) arr.get(5),
                             (Boolean) arr.get(6),
-                            asInt(arr.get(7))
+                            (Boolean) arr.get(7),
+                            asInt(arr.get(8))
                     );
                     break;
                 }
