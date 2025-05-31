@@ -127,37 +127,5 @@ open class Shader(val fragSrc: String?, val vertSrc: String?, val createProgram:
     companion object {
         @JvmStatic
         protected fun getResource(name: String) = javaClass.getResourceAsStream(name)?.bufferedReader().use { it?.readText() }
-
-        val viewProjMatrix = BufferUtils.createFloatBuffer(16)
-        val MODELVIEW: FloatBuffer = ActiveRenderInfo::class.java.getDeclaredField("field_178812_b").also { it.isAccessible = true }.get(null) as FloatBuffer
-        val PROJECTION: FloatBuffer = ActiveRenderInfo::class.java.getDeclaredField("field_178813_c").also { it.isAccessible = true }.get(null) as FloatBuffer
-        fun updateInfo() {
-            val view = FloatArray(16)
-            val proj = FloatArray(16)
-            MODELVIEW.get(view).rewind()
-            PROJECTION.get(proj).rewind()
-
-            viewProjMatrix.clear()
-            viewProjMatrix.put(proj[0] * view[0] + proj[4] * view[1] + proj[8] * view[2] + proj[12] * view[3])
-            viewProjMatrix.put(proj[1] * view[0] + proj[5] * view[1] + proj[9] * view[2] + proj[13] * view[3])
-            viewProjMatrix.put(proj[2] * view[0] + proj[6] * view[1] + proj[10] * view[2] + proj[14] * view[3])
-            viewProjMatrix.put(proj[3] * view[0] + proj[7] * view[1] + proj[11] * view[2] + proj[15] * view[3])
-
-            viewProjMatrix.put(proj[0] * view[4] + proj[4] * view[5] + proj[8] * view[6] + proj[12] * view[7])
-            viewProjMatrix.put(proj[1] * view[4] + proj[5] * view[5] + proj[9] * view[6] + proj[13] * view[7])
-            viewProjMatrix.put(proj[2] * view[4] + proj[6] * view[5] + proj[10] * view[6] + proj[14] * view[7])
-            viewProjMatrix.put(proj[3] * view[4] + proj[7] * view[5] + proj[11] * view[6] + proj[15] * view[7])
-
-            viewProjMatrix.put(proj[0] * view[8] + proj[4] * view[9] + proj[8] * view[10] + proj[12] * view[11])
-            viewProjMatrix.put(proj[1] * view[8] + proj[5] * view[9] + proj[9] * view[10] + proj[13] * view[11])
-            viewProjMatrix.put(proj[2] * view[8] + proj[6] * view[9] + proj[10] * view[10] + proj[14] * view[11])
-            viewProjMatrix.put(proj[3] * view[8] + proj[7] * view[9] + proj[11] * view[10] + proj[15] * view[11])
-
-            viewProjMatrix.put(proj[0] * view[12] + proj[4] * view[13] + proj[8] * view[14] + proj[12] * view[15])
-            viewProjMatrix.put(proj[1] * view[12] + proj[5] * view[13] + proj[9] * view[14] + proj[13] * view[15])
-            viewProjMatrix.put(proj[2] * view[12] + proj[6] * view[13] + proj[10] * view[14] + proj[14] * view[15])
-            viewProjMatrix.put(proj[3] * view[12] + proj[7] * view[13] + proj[11] * view[14] + proj[15] * view[15])
-            viewProjMatrix.flip()
-        }
     }
 }
