@@ -81,6 +81,7 @@ object BlurEntityOutliner : EntityOutliner(4, "Blur") {
             rm.doRenderEntity(ent, x - Geometry.getRenderX(), y - Geometry.getRenderY(), z - Geometry.getRenderZ(), f.toFloat(), pt.toFloat(), false)
             if (invis) ent.isInvisible = true
         }
+        GlStateManager.disableAlpha()
         GlState.reset()
         GlState.setDepthTest(false)
         GL11.glDisable(GL11.GL_STENCIL_TEST)
