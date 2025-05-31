@@ -1671,6 +1671,61 @@ object Renderer {
         )
     }
 
+    fun addBillboard(
+        color: Long,
+        x: Double,
+        y: Double,
+        z: Double,
+        w: Double,
+        h: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        backfaceCull: Boolean,
+        chroma: Int
+    ) = addBillboard(Color(color), x, y, z, w, h, lighting, phase, cull, backfaceCull, chroma)
+    fun addBillboard(
+        color: List<Double>,
+        x: Double,
+        y: Double,
+        z: Double,
+        w: Double,
+        h: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        backfaceCull: Boolean,
+        chroma: Int
+    ) = addBillboard(Color(color), x, y, z, w, h, lighting, phase, cull, backfaceCull, chroma)
+    fun addBillboard(
+        color: Color,
+        x: Double,
+        y: Double,
+        z: Double,
+        w: Double,
+        h: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        backfaceCull: Boolean,
+        chroma: Int
+    ) {
+        addThing(
+            Thingamabob(
+                Thingamabob.Type.Billboard,
+                listOf(x, y, z, w, h),
+                color,
+                1f,
+                lighting,
+                phase,
+                false,
+                cull,
+                backfaceCull,
+                chroma
+            )
+        )
+    }
+
     @JvmField
     var USE_NEW_SHIT: Boolean = false
     @JvmField

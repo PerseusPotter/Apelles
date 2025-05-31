@@ -958,6 +958,35 @@ class BatchUploaderJ {
                     );
                     break;
                 }
+                case 33: {
+                    if (isArrCol) Renderer.INSTANCE.addBillboard(
+                            (List<Double>) color,
+                            asDouble(arr.get(2)),
+                            asDouble(arr.get(3)),
+                            asDouble(arr.get(4)),
+                            asDouble(arr.get(5)),
+                            asDouble(arr.get(6)),
+                            asInt(arr.get(7)),
+                            (Boolean) arr.get(8),
+                            (Boolean) arr.get(9),
+                            (Boolean) arr.get(10),
+                            asInt(arr.get(11))
+                    );
+                    else Renderer.INSTANCE.addBillboard(
+                            asLong(color),
+                            asDouble(arr.get(2)),
+                            asDouble(arr.get(3)),
+                            asDouble(arr.get(4)),
+                            asDouble(arr.get(5)),
+                            asDouble(arr.get(6)),
+                            asInt(arr.get(7)),
+                            (Boolean) arr.get(8),
+                            (Boolean) arr.get(9),
+                            (Boolean) arr.get(10),
+                            asInt(arr.get(11))
+                    );
+                    break;
+                }
             }
         });
     }

@@ -660,6 +660,22 @@ export function renderMCAABBOutlineMiter(color, aabb, lw, { lighting = 0, phase 
   else addAABBOJM.call(APRendererI, color, aabb, lw, lighting, phase, cull, backfaceCull, chroma);
 }
 
+const addBillboard = APRendererI.addBillboard ?? throwExp('bad');
+/**
+ * rectangle that rotates with the player
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @param {number} w
+ * @param {number} h
+ * @param {RenderOptions & FaceOptions} options
+ */
+export function renderBillboard(color, x, y, z, w, h, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([33, color, x, y, z, w, h, lighting, phase, cull, backfaceCull, chroma]);
+  else addBillboard.call(APRendererI, color, x, y, z, w, h, lighting, phase, cull, backfaceCull, chroma);
+}
+
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param {number} x
