@@ -1,4 +1,4 @@
-import { begin, clipLine, createPassthroughOutlineTester, createPerEntityOutliner, draw, isInView, packChromaParams, pos, renderAABBOutline, renderBeacon, renderBoxFilled, renderBoxOutline, renderCircle, renderLine, renderOctahedronFilled, renderOctahedronOutline, renderPyramidFilled, renderPyramidOutline, renderSphere, renderStairFilled, renderStairOutline, renderTracer, renderVerticalCylinder } from './index';
+import { begin, clipLine, createPassthroughOutlineTester, createPerEntityOutliner, draw, isInView, packChromaParams, pos, renderAABBOutline, renderBeacon, renderBoxFilled, renderBoxOutline, renderBoxOutlineMiter, renderCircle, renderLine, renderOctahedronFilled, renderOctahedronOutline, renderPrimitive, renderPyramidFilled, renderPyramidOutline, renderSphere, renderStairFilled, renderStairOutline, renderTracer, renderVerticalCylinder } from './index';
 
 const egg = r => {
   let guess = Math.sqrt(1 - 2 * r * r);
@@ -7,6 +7,10 @@ const egg = r => {
 };
 
 register('renderWorld', () => {
+  renderPrimitive(0xFF000040, 4, [
+    [20, 10, 0], [19, 10, 0], [19, 10, 1],
+    [19, 10, 0], [19, 10, 1], [20, 10, 1]
+  ]);
   renderLine(0x00FF00FF, [
     [-6, 10, -6],
     [-6, 10, +6],
@@ -57,6 +61,9 @@ register('renderWorld', () => {
       renderBeacon(packChromaParams(1, 0.3, 1.0, 0.1, 1), x + eggCenter[0], y1 + eggCenter[1], z + eggCenter[2], { h: (y2 - y1) * eggScale, chroma: 2 });
     }
   }
+
+  renderBoxOutlineMiter(0x00FFFFFF, -50, 10, 0, 10, 10, 3);
+  renderBoxOutline(0xFF0000FF, -50, 25, 0, 10, 10, { lw: 10 });
 });
 
 const tester = createPassthroughOutlineTester();
