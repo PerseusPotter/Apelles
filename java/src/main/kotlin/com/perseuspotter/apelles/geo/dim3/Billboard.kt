@@ -1,7 +1,6 @@
 package com.perseuspotter.apelles.geo.dim3
 
 import com.perseuspotter.apelles.geo.Geometry
-import net.minecraft.client.renderer.ActiveRenderInfo
 import org.lwjgl.opengl.GL11
 
 object Billboard : Geometry() {
