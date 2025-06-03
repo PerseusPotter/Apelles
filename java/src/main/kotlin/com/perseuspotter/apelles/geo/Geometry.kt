@@ -27,9 +27,12 @@ abstract class Geometry {
         private val rxf = RenderManager::class.java.getDeclaredField("field_78725_b").also { it.isAccessible = true }
         private val ryf = RenderManager::class.java.getDeclaredField("field_78726_c").also { it.isAccessible = true }
         private val rzf = RenderManager::class.java.getDeclaredField("field_78723_d").also { it.isAccessible = true }
-        private var rxc = 0.0
-        private var ryc = 0.0
-        private var rzc = 0.0
+        @JvmStatic
+        protected var rxc = 0.0
+        @JvmStatic
+        protected var ryc = 0.0
+        @JvmStatic
+        protected var rzc = 0.0
         @JvmStatic
         fun getRenderX(): Double = rxc
         @JvmStatic

@@ -2025,7 +2025,7 @@ object Renderer {
             return@mapIndexed Pair(min(tx1, bx1), max(tx2, bx2))
         }
 
-        val decoratorTris = DoubleArrayList(lines.sumOf { it.decorators.size } * 22 * (if (shadow) 2 else 1))
+        val decoratorTris = DoubleArrayList(lines.sumOf { it.decorators.size } * 16 * (if (shadow) 2 else 1))
         val charTris = mutableMapOf<ResourceLocation, DoubleArrayList>()
         lines.forEachIndexed { i, l ->
             val (minI, maxI) = bounds[i]
@@ -2078,17 +2078,9 @@ object Renderer {
                     decoratorTris.add(sd.y + ry * x2 + dy * y1)
                     decoratorTris.add(sd.z + rz * x2 + dz * y1)
 
-                    decoratorTris.add(sd.x + rx * x1 + dx * y2)
-                    decoratorTris.add(sd.y + ry * x1 + dy * y2)
-                    decoratorTris.add(sd.z + rz * x1 + dz * y2)
-
                     decoratorTris.add(sd.x + rx * x2 + dx * y2)
                     decoratorTris.add(sd.y + ry * x2 + dy * y2)
                     decoratorTris.add(sd.z + rz * x2 + dz * y2)
-
-                    decoratorTris.add(sd.x + rx * x2 + dx * y1)
-                    decoratorTris.add(sd.y + ry * x2 + dy * y1)
-                    decoratorTris.add(sd.z + rz * x2 + dz * y1)
                 }
 
                 val col = if (it.c == '\u0000') baseCol else StringParser.COLORS_NORMAL.get(it.c)
@@ -2109,23 +2101,15 @@ object Renderer {
                 decoratorTris.add(d.y + ry * x2 + dy * y1)
                 decoratorTris.add(d.z + rz * x2 + dz * y1)
 
-                decoratorTris.add(d.x + rx * x1 + dx * y2)
-                decoratorTris.add(d.y + ry * x1 + dy * y2)
-                decoratorTris.add(d.z + rz * x1 + dz * y2)
-
                 decoratorTris.add(d.x + rx * x2 + dx * y2)
                 decoratorTris.add(d.y + ry * x2 + dy * y2)
                 decoratorTris.add(d.z + rz * x2 + dz * y2)
-
-                decoratorTris.add(d.x + rx * x2 + dx * y1)
-                decoratorTris.add(d.y + ry * x2 + dy * y1)
-                decoratorTris.add(d.z + rz * x2 + dz * y1)
             }
 
             var ci = minI
             while (ci <= maxI) {
                 val c = l.chars[ci++].get()
-                val t = charTris.getOrPut(c.info.rl) { DoubleArrayList((l.charCount[c.info.rl] ?: 10) * 34 * (if (shadow) 2 else 1)) }
+                val t = charTris.getOrPut(c.info.rl) { DoubleArrayList((l.charCount[c.info.rl] ?: 10) * 24 * (if (shadow) 2 else 1)) }
 
                 if (shadow) {
                     val col = if (c.co == '\u0000') baseColShadow else StringParser.COLORS_SHADOW.get(c.co)
@@ -2152,23 +2136,11 @@ object Renderer {
                     t.add((c.info.u + c.info.uw).toDouble())
                     t.add(c.info.v.toDouble())
 
-                    t.add(sp.x + rx * (c.x + if (c.ital) -1f else 0f) + dx * (c.y + c.info.h))
-                    t.add(sp.y + ry * (c.x + if (c.ital) -1f else 0f) + dy * (c.y + c.info.h))
-                    t.add(sp.z + rz * (c.x + if (c.ital) -1f else 0f) + dz * (c.y + c.info.h))
-                    t.add(c.info.u.toDouble())
-                    t.add((c.info.v + c.info.vh).toDouble())
-
                     t.add(sp.x + rx * (c.x + c.info.w + if (c.ital) -1f else 0f) + dx * (c.y + c.info.h))
                     t.add(sp.y + ry * (c.x + c.info.w + if (c.ital) -1f else 0f) + dy * (c.y + c.info.h))
                     t.add(sp.z + rz * (c.x + c.info.w + if (c.ital) -1f else 0f) + dz * (c.y + c.info.h))
                     t.add((c.info.u + c.info.uw).toDouble())
                     t.add((c.info.v + c.info.vh).toDouble())
-
-                    t.add(sp.x + rx * (c.x + c.info.w + if (c.ital) 1f else 0f) + dx * c.y)
-                    t.add(sp.y + ry * (c.x + c.info.w + if (c.ital) 1f else 0f) + dy * c.y)
-                    t.add(sp.z + rz * (c.x + c.info.w + if (c.ital) 1f else 0f) + dz * c.y)
-                    t.add((c.info.u + c.info.uw).toDouble())
-                    t.add(c.info.v.toDouble())
                 }
 
                 val col = if (c.co == '\u0000') baseCol else StringParser.COLORS_NORMAL.get(c.co)
@@ -2195,23 +2167,11 @@ object Renderer {
                 t.add((c.info.u + c.info.uw).toDouble())
                 t.add(c.info.v.toDouble())
 
-                t.add(p.x + rx * (c.x + if (c.ital) -1f else 0f) + dx * (c.y + c.info.h))
-                t.add(p.y + ry * (c.x + if (c.ital) -1f else 0f) + dy * (c.y + c.info.h))
-                t.add(p.z + rz * (c.x + if (c.ital) -1f else 0f) + dz * (c.y + c.info.h))
-                t.add(c.info.u.toDouble())
-                t.add((c.info.v + c.info.vh).toDouble())
-
                 t.add(p.x + rx * (c.x + c.info.w + if (c.ital) -1f else 0f) + dx * (c.y + c.info.h))
                 t.add(p.y + ry * (c.x + c.info.w + if (c.ital) -1f else 0f) + dy * (c.y + c.info.h))
                 t.add(p.z + rz * (c.x + c.info.w + if (c.ital) -1f else 0f) + dz * (c.y + c.info.h))
                 t.add((c.info.u + c.info.uw).toDouble())
                 t.add((c.info.v + c.info.vh).toDouble())
-
-                t.add(p.x + rx * (c.x + c.info.w + if (c.ital) 1f else 0f) + dx * c.y)
-                t.add(p.y + ry * (c.x + c.info.w + if (c.ital) 1f else 0f) + dy * c.y)
-                t.add(p.z + rz * (c.x + c.info.w + if (c.ital) 1f else 0f) + dz * c.y)
-                t.add((c.info.u + c.info.uw).toDouble())
-                t.add(c.info.v.toDouble())
             }
         }
 
