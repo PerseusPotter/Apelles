@@ -1,13 +1,18 @@
 package com.perseuspotter.apelles.font
 
 import com.perseuspotter.apelles.state.Color
+import net.minecraft.util.ResourceLocation
 import kotlin.math.max
 import kotlin.math.min
 
 class StringParser(key: StringKey) {
-    val decorators = mutableListOf<Decorator>()
-    val chars = mutableListOf<CharacterRenderInfoWrapped>()
-    val cumWidth = mutableListOf<Int>()
+    private val decoratorsList = mutableListOf<Decorator>()
+    private val charsList = mutableListOf<CharacterRenderInfoWrapped>()
+    private val cumWidthList = mutableListOf<Int>()
+    val decorators: Array<Decorator>
+    val chars: Array<CharacterRenderInfoWrapped>
+    val cumWidth: Array<Int>
+    val charCount = mutableMapOf<ResourceLocation, Int>()
 
     fun getWidthLowerBound(w: Double): Int {
         var l = 0
@@ -30,53 +35,60 @@ class StringParser(key: StringKey) {
         return max(l - 1, 0)
     }
     fun getWidth() = cumWidth.lastOrNull() ?: 0
-    fun getXOff(i: Int) = if (i <= 0) 0 else cumWidth[i - 1]
+    private fun getLength() = cumWidthList.lastOrNull() ?: 0
+    fun getXOff(i: Int) = if (i <= 0) 0 else cumWidthList[i - 1]
 
-    var obfu = false
-    var bold = false
-    var ital = false
-    var strike = -1
-    var under = -1
-    var col = '\u0000'
+    private var obfu = false
+    private var bold = false
+    private var ital = false
+    private var strike = -1
+    private var under = -1
+    private var col = '\u0000'
 
-    fun reset() {
+    private fun reset() {
         obfu = false
         bold = false
         ital = false
         if (strike >= 0) {
-            if (strike < getWidth()) decorators.add(Decorator(strike, getWidth(), CHAR_HEIGHT * 0.5f, 1f, col))
+            if (strike < getLength()) decoratorsList.add(Decorator(strike, getLength(), CHAR_HEIGHT * 0.5f, 1f, col))
             strike = -1
         }
         if (under >= 0) {
-            if (under < getWidth()) decorators.add(Decorator(under, getWidth(), CHAR_HEIGHT, 1f, col))
+            if (under < getLength()) decoratorsList.add(Decorator(under, getLength(), CHAR_HEIGHT, 1f, col))
             under = -1
         }
         col = '\u0000'
     }
 
-    fun setColor(co: Char) {
-        if (strike >= 0 && strike < getWidth()) {
-            if (strike < getWidth()) decorators.add(Decorator(strike, getWidth(), CHAR_HEIGHT * 0.5f, 1f, col))
-            strike = getWidth()
+    private fun setColor(co: Char) {
+        if (strike >= 0 && strike < getLength()) {
+            if (strike < getLength()) decoratorsList.add(Decorator(strike, getLength(), CHAR_HEIGHT * 0.5f, 1f, col))
+            strike = getLength()
         }
-        if (under >= 0 && under < getWidth()) {
-            decorators.add(Decorator(under, getWidth(), CHAR_HEIGHT, 1f, col))
-            under = getWidth()
+        if (under >= 0 && under < getLength()) {
+            if (under < getLength()) decoratorsList.add(Decorator(under, getLength(), CHAR_HEIGHT, 1f, col))
+            under = getLength()
         }
         col = co
     }
 
-    fun emit(c: Char) {
+    private fun _addChar(info: CharacterRenderInfoWrapped) {
+        charsList.add(info)
+        val rl = info.getCharInfo().rl
+        charCount[rl] = 1 + (charCount.getOrDefault(rl, 10))
+    }
+
+    private fun emit(c: Char) {
         val info = FONT.getInfo(c)
         if (obfu) {
-            chars.add(CharacterRenderInfoObfuscated(info, getWidth(), 0, col, ital))
-            if (bold) chars.add(CharacterRenderInfoObfuscated(info, getWidth() + 1, 0, col, ital))
+            _addChar(CharacterRenderInfoObfuscated(info, getLength(), 0, col, ital))
+            if (bold) _addChar(CharacterRenderInfoObfuscated(info, getLength() + 1, 0, col, ital))
         } else {
-            chars.add(CharacterRenderInfo(info, getWidth(), 0, col, ital))
-            if (bold) chars.add(CharacterRenderInfo(info, getWidth() + 1, 0, col, ital))
+            _addChar(CharacterRenderInfo(info, getLength(), 0, col, ital))
+            if (bold) _addChar(CharacterRenderInfo(info, getLength() + 1, 0, col, ital))
         }
-        cumWidth.add(getWidth() + info.w)
-        if (bold) cumWidth.add(getWidth() + 1)
+        cumWidthList.add(getLength() + info.w)
+        if (bold) cumWidthList.add(getLength() + 1)
     }
 
     init {
@@ -109,6 +121,10 @@ class StringParser(key: StringKey) {
             emit(c)
         }
         reset()
+
+        decorators = decoratorsList.toTypedArray()
+        chars = charsList.toTypedArray()
+        cumWidth = cumWidthList.toTypedArray()
     }
 
     companion object {

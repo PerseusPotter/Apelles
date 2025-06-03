@@ -2,7 +2,9 @@ package com.perseuspotter.apelles.state
 
 import com.perseuspotter.apelles.Renderer
 import com.perseuspotter.apelles.depression.ChromaShader
+import com.perseuspotter.apelles.depression.DoubleArrayList
 import com.perseuspotter.apelles.geo.Geometry
+import com.perseuspotter.apelles.geo.GeometryInternal
 import com.perseuspotter.apelles.geo.dim3.*
 import com.perseuspotter.apelles.geo.dim3.aabb.AABBFilled
 import com.perseuspotter.apelles.geo.dim3.aabb.AABBOutline
@@ -85,7 +87,8 @@ open class Thingamabob(
         Type.AABBOJ -> AABBOutlineJoined
         Type.Billboard -> Billboard
         Type.PrimitiveInternal -> PrimitiveInternal
-        Type.PrimitiveUVInternal -> PrimitiveUVInternal
+        Type.PrimitiveColorInternal -> PrimitiveColorInternal
+        Type.PrimitiveColorUVInternal -> PrimitiveColorUVInternal
     }
 
     open fun render(pt: Double) {
@@ -160,9 +163,55 @@ open class Thingamabob(
         AABBOJ,
         Billboard,
         PrimitiveInternal,
+        PrimitiveColorInternal,
 
         BeaconI,
         BeaconO,
-        PrimitiveUVInternal
+        PrimitiveColorUVInternal
+    }
+
+    class InternalThingamabob(
+        type: Type,
+        paramsDAL: DoubleArrayList,
+        color: Color,
+        lw: Float,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        backfaceCull: Boolean,
+        chroma: Int,
+        tex: ResourceLocation? = null
+    ) : Thingamabob(
+        type,
+        emptyList(),
+        color,
+        lw,
+        lighting,
+        phase,
+        smooth,
+        cull,
+        backfaceCull,
+        chroma,
+        tex
+    ) {
+        val paramsA = paramsDAL.elems
+        val paramsL = paramsDAL.length
+
+        override fun render(pt: Double) {
+            if (color.a == 0f) return
+
+            val geo = getRenderer() as GeometryInternal
+
+            if (cull && !geo.inView(params)) return
+
+            if (!Renderer.USE_NEW_SHIT) prerender(pt)
+
+            geo.render(pt, paramsA, paramsL)
+        }
+
+        override fun getVertexCount(): Int = (getRenderer() as GeometryInternal).getVertexCount(paramsA, paramsL)
+        override fun getIndicesCount(): Int = (getRenderer() as GeometryInternal).getIndicesCount(paramsA, paramsL)
+        override fun getDrawMode(): Int = (getRenderer() as GeometryInternal).getDrawMode(paramsA, paramsL)
     }
 }
