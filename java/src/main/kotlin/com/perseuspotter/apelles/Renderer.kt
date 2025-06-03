@@ -1773,6 +1773,8 @@ object Renderer {
 
         glDisable(GL_BLEND)
         glDepthMask(true)
+        glEnable(GL_ALPHA_TEST)
+        glAlphaFunc(GL_GREATER, 0.5f)
 
         glEnable(GL_TEXTURE_2D)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.toFloat())
@@ -1814,6 +1816,7 @@ object Renderer {
         glEnable(GL_BLEND)
         OpenGlHelper.glBlendFunc(770, 771, 1, 771)
         glDepthMask(false)
+        glDisable(GL_ALPHA_TEST)
 
         prof.endStartSection("texturedTranslucent")
         texturedTranslucent.sort()
