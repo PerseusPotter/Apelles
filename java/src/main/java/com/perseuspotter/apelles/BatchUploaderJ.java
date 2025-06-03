@@ -31,6 +31,14 @@ class BatchUploaderJ {
             return ((Double) v).longValue();
         }
     }
+    
+    private static String asString(Object v) {
+        if (v instanceof String) {
+            return (String) v;
+        } else {
+            return v.toString();
+        }
+    }
 
     public static void upload(List<List<Object>> params) {
         params.forEach(arr -> {
@@ -990,7 +998,7 @@ class BatchUploaderJ {
                 case 34: {
                     if (isArrCol) Renderer.INSTANCE.addString(
                             (List<Double>) color,
-                            (String) arr.get(2),
+                            asString(arr.get(2)),
                             asDouble(arr.get(3)),
                             asDouble(arr.get(4)),
                             asDouble(arr.get(5)),
@@ -1019,7 +1027,7 @@ class BatchUploaderJ {
                     );
                     else Renderer.INSTANCE.addString(
                             asLong(color),
-                            (String) arr.get(2),
+                            asString(arr.get(2)),
                             asDouble(arr.get(3)),
                             asDouble(arr.get(4)),
                             asDouble(arr.get(5)),
@@ -1051,7 +1059,7 @@ class BatchUploaderJ {
                 case 35: {
                     if (isArrCol) Renderer.INSTANCE.addBillboardString(
                             (List<Double>) color,
-                            (String) arr.get(2),
+                            asString(arr.get(2)),
                             asDouble(arr.get(3)),
                             asDouble(arr.get(4)),
                             asDouble(arr.get(5)),
@@ -1071,7 +1079,7 @@ class BatchUploaderJ {
                     );
                     else Renderer.INSTANCE.addBillboardString(
                             asLong(color),
-                            (String) arr.get(2),
+                            asString(arr.get(2)),
                             asDouble(arr.get(3)),
                             asDouble(arr.get(4)),
                             asDouble(arr.get(5)),
