@@ -1,6 +1,7 @@
 package com.perseuspotter.apelles
 
 import com.perseuspotter.apelles.depression.ChromaShader
+import com.perseuspotter.apelles.depression.DoubleArrayList
 import com.perseuspotter.apelles.font.StringParser
 import com.perseuspotter.apelles.geo.Frustum
 import com.perseuspotter.apelles.geo.Geometry
@@ -523,7 +524,7 @@ object Renderer {
         cull: Boolean,
         chroma: Int
     ) {
-        val points = mutableListOf<Double>()
+        val points = DoubleArrayList(1 + (segments + 1) * 3)
         points.add(GL_LINE_STRIP.toDouble())
         for (i in 0 until segments) {
             val t = 2.0 * PI * i / segments
@@ -532,12 +533,12 @@ object Renderer {
             points.add(z + sin(t) * r)
         }
         // something something floating point cos(0) ~= cos(2pi)
-        points.add(points[1])
-        points.add(points[2])
-        points.add(points[3])
+        points.add(points.elems[1])
+        points.add(points.elems[2])
+        points.add(points.elems[3])
         addThing(
-            Thingamabob(
-                Thingamabob.Type.Primitive,
+            Thingamabob.InternalThingamabob(
+                Thingamabob.Type.PrimitiveInternal,
                 points,
                 color,
                 lw.toFloat(),
@@ -593,7 +594,7 @@ object Renderer {
         backfaceCull: Boolean,
         chroma: Int
     ) {
-        val points = mutableListOf<Double>()
+        val points = DoubleArrayList(1 + 3 + (segments + 1) * 3)
         points.add(GL_TRIANGLE_FAN.toDouble())
         points.add(x)
         points.add(y)
@@ -605,12 +606,12 @@ object Renderer {
             points.add(z + sin(t) * r)
         }
         // something something floating point cos(0) ~= cos(2pi)
-        points.add(points[4])
-        points.add(points[5])
-        points.add(points[6])
+        points.add(points.elems[4])
+        points.add(points.elems[5])
+        points.add(points.elems[6])
         addThing(
-            Thingamabob(
-                Thingamabob.Type.Primitive,
+            Thingamabob.InternalThingamabob(
+                Thingamabob.Type.PrimitiveInternal,
                 points,
                 color,
                 1f,
@@ -2024,8 +2025,8 @@ object Renderer {
             return@mapIndexed Pair(min(tx1, bx1), max(tx2, bx2))
         }
 
-        val decoratorTris = mutableListOf<Double>()
-        val charTris = mutableMapOf<ResourceLocation, MutableList<Double>>()
+        val decoratorTris = DoubleArrayList(lines.sumOf { it.decorators.size } * 22 * (if (shadow) 2 else 1))
+        val charTris = mutableMapOf<ResourceLocation, DoubleArrayList>()
         lines.forEachIndexed { i, l ->
             val (minI, maxI) = bounds[i]
             if (minI >= maxI) return@forEachIndexed
@@ -2121,10 +2122,10 @@ object Renderer {
                 decoratorTris.add(d.z + rz * x2 + dz * y1)
             }
 
-            val iter = l.chars.listIterator(minI)
-            while (iter.hasNext() && iter.nextIndex() <= maxI) {
-                val c = iter.next().get()
-                val t = charTris.getOrPut(c.info.rl) { mutableListOf() }
+            var ci = minI
+            while (ci <= maxI) {
+                val c = l.chars[ci++].get()
+                val t = charTris.getOrPut(c.info.rl) { DoubleArrayList((l.charCount[c.info.rl] ?: 10) * 34 * (if (shadow) 2 else 1)) }
 
                 if (shadow) {
                     val col = if (c.co == '\u0000') baseColShadow else StringParser.COLORS_SHADOW.get(c.co)
@@ -2215,7 +2216,8 @@ object Renderer {
         }
 
         if (blackBox != 0) {
-            val boxTris = mutableListOf(GL_TRIANGLES.toDouble())
+            val boxTris = DoubleArrayList(1 + 18 * (if (blackBox == 1) 1 else lines.size))
+            boxTris.add(GL_TRIANGLES.toDouble())
             when (blackBox) {
                 1 -> {
                     val d = Point(
@@ -2294,9 +2296,9 @@ object Renderer {
                     }
                 }
             }
-            if (boxTris.size > 1) addThing(
-                Thingamabob(
-                    Thingamabob.Type.Primitive,
+            if (boxTris.length > 1) addThing(
+                Thingamabob.InternalThingamabob(
+                    Thingamabob.Type.PrimitiveInternal,
                     boxTris,
                     Color(0f, 0f, 0f, 0.25f),
                     1f,
@@ -2310,9 +2312,9 @@ object Renderer {
             )
         }
 
-        if (decoratorTris.isNotEmpty()) addThing(
-            Thingamabob(
-                Thingamabob.Type.PrimitiveInternal,
+        if (decoratorTris.length > 0) addThing(
+            Thingamabob.InternalThingamabob(
+                Thingamabob.Type.PrimitiveColorInternal,
                 decoratorTris,
                 color,
                 1f,
@@ -2326,8 +2328,8 @@ object Renderer {
         )
         charTris.forEach { (rl, t) ->
             addTexturedThing(
-                Thingamabob(
-                    Thingamabob.Type.PrimitiveUVInternal,
+                Thingamabob.InternalThingamabob(
+                    Thingamabob.Type.PrimitiveColorUVInternal,
                     t,
                     color,
                     1f,

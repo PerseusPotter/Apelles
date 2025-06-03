@@ -1,29 +1,21 @@
 package com.perseuspotter.apelles.geo.dim3
 
-import com.perseuspotter.apelles.Renderer
-import com.perseuspotter.apelles.geo.Geometry
-import com.perseuspotter.apelles.state.Color
-import org.lwjgl.opengl.GL11
+import com.perseuspotter.apelles.geo.GeometryInternal
 
-object PrimitiveInternal : Geometry() {
+object PrimitiveInternal : GeometryInternal() {
     override val name = "primitiveinternal"
-    override fun render(pt: Double, params: List<Double>) {
-        begin(GL11.GL_TRIANGLES, false, params[0], params[1], params[2])
-        val iter = params.iterator()
-        while (iter.hasNext()) {
-            val r = iter.next()
-            val g = iter.next()
-            val b = iter.next()
-            val a = iter.next()
-            if (Renderer.USE_NEW_SHIT) currCol = Color(r, g, b, a)
-            for (i in 0 until 6) pos(iter.next(), iter.next(), iter.next())
+    override fun render(pt: Double, params: DoubleArray, N: Int) {
+        begin(params[0].toInt(), false, params[1], params[2], params[3])
+        var i = 1
+        while (i < N) {
+            pos(params[i++], params[i++], params[i++])
         }
         draw()
     }
 
     override fun inView(params: List<Double>): Boolean = true
 
-    override fun getVertexCount(params: List<Double>): Int = params.size / 22 * 6
-    override fun getIndicesCount(params: List<Double>): Int = params.size / 22 * 6
-    override fun getDrawMode(params: List<Double>): Int = GL11.GL_TRIANGLES
+    override fun getVertexCount(params: DoubleArray, N: Int): Int = (N - 1) / 3
+    override fun getIndicesCount(params: DoubleArray, N: Int): Int = (N - 1) / 3
+    override fun getDrawMode(params: DoubleArray, N: Int): Int = params[0].toInt()
 }

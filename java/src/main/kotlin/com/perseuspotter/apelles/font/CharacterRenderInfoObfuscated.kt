@@ -9,4 +9,5 @@ data class CharacterRenderInfoObfuscated(val info: CharacterInfo, val x: Int, va
             x, y, co, ital
         )
     }
+    override fun getCharInfo(): CharacterInfo = info
 }
