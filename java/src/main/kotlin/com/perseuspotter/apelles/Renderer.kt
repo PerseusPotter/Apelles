@@ -1913,9 +1913,10 @@ object Renderer {
         }
         prof.endStartSection("postRender")
         translucent.clear()
-        if (USE_NEW_SHIT) {
-            Geometry.render(pt)
+        if (USE_NEW_SHIT) Geometry.render(pt)
+        prof.endSection()
 
+        if (USE_NEW_SHIT) {
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
             GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0)
             glDisable(GL31.GL_PRIMITIVE_RESTART)
@@ -1924,7 +1925,6 @@ object Renderer {
             GlState.setNormalArray(false)
             GlState.setTexArray(false)
         }
-        prof.endSection()
         if (CAN_USE_CHROMA) GlState.bindShader(0)
 
         if (!errored) {
