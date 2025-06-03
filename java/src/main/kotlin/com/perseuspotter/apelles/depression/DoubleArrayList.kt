@@ -1,6 +1,11 @@
 package com.perseuspotter.apelles.depression
 
+import kotlin.math.max
+
 class DoubleArrayList(var capacity: Int = 10) {
+    init {
+        capacity = max(capacity, 10)
+    }
     var elems = DoubleArray(capacity)
     var length = 0
     fun add(v: Double) {
