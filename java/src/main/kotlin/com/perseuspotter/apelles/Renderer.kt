@@ -2314,7 +2314,7 @@ object Renderer {
     fun render(pt: Double, t: Int) {
         if (!checked) {
             val cap = GLContext.getCapabilities()
-            USE_NEW_SHIT = cap.GL_NV_primitive_restart && cap.OpenGL15
+            USE_NEW_SHIT = cap.GL_NV_primitive_restart && cap.OpenGL15 && !glGetString(GL_VENDOR).lowercase().contains("intel")
             CAN_USE_CHROMA = cap.OpenGL20
             checked = true
             // glEnable(GL43.GL_DEBUG_OUTPUT)
