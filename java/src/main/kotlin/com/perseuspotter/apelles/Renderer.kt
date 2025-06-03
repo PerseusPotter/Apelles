@@ -1947,7 +1947,7 @@ object Renderer {
             val tx1 = if (ts.isNaN()) Int.MAX_VALUE else l.getWidthUpperBound(ts * l.getWidth())
             val tx2 = if (te.isNaN()) Int.MIN_VALUE else l.getWidthLowerBound(te * l.getWidth())
             val bx1 = if (bs.isNaN()) Int.MAX_VALUE else l.getWidthUpperBound(bs * l.getWidth())
-            val bx2 = if (be.isNaN()) Int.MAX_VALUE else l.getWidthLowerBound(be * l.getWidth())
+            val bx2 = if (be.isNaN()) Int.MIN_VALUE else l.getWidthLowerBound(be * l.getWidth())
             return@mapIndexed Pair(min(tx1, bx1), max(tx2, bx2))
         }
 
