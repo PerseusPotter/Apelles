@@ -108,8 +108,8 @@ class StringParser(key: StringKey) {
                     }
                     'k' -> if (doSpecial) obfu = true
                     'l' -> if (doSpecial) bold = true
-                    'm' -> if (doSpecial && strike < 0) strike = getWidth()
-                    'n' -> if (doSpecial && under < 0) under = getWidth()
+                    'm' -> if (doSpecial && strike < 0) strike = getLength()
+                    'n' -> if (doSpecial && under < 0) under = getLength()
                     'o' -> if (doSpecial) ital = true
                     'r' -> if (doSpecial) reset()
                     else -> isSpecial = false
