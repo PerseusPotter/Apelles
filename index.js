@@ -44,10 +44,10 @@ export function disableBatching() {
 
 /**
  * @typedef RenderOptions
- * @property {number} [lighting=0] `0` - 0 = none | 1 = smooth | 2 = flat
+ * @property {number} [lighting=0] `0` - 0: none | 1: smooth | 2: flat
  * @property {boolean} [phase=false] `false`
  * @property {boolean} [cull=true] `true` - whether to frustum cull the object. you should only disable this if you know what you are doing. though i doubt there will be any false positives, the option is here
- * @property {number} [chroma=0] `0` - use chroma, the color will be interpreted as [chromaSize, speed, lightness & chroma, alpha] (hint, use `packChromaParams`). 0-no chroma | 1-2d chroma | 2-3d chroma
+ * @property {number} [chroma=0] `0` - use chroma, the color will be interpreted as [chromaSize, speed, lightness & chroma, alpha] (hint, use `packChromaParams`). 0: no chroma | 1: 2d chroma | 2: 3d chroma
  */
 
 // why was jsdoc being a bitch idk idc
@@ -746,7 +746,7 @@ export function depthTest(enabled) {
 
 const _setLighting = GlState['setLighting(int)'] ?? throwExp('bad');
 /**
- * @param {number} mode 0 = none | 1 = smooth | 2 = flat
+ * @param {number} mode 0: none | 1: smooth | 2: flat
  */
 export function lighting(mode) {
   _setLighting.call(GlState, mode);
