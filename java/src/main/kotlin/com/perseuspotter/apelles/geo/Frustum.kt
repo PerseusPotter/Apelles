@@ -2,6 +2,8 @@ package com.perseuspotter.apelles.geo
 
 import net.minecraft.client.renderer.culling.ClippingHelperImpl
 import net.minecraft.util.AxisAlignedBB
+import kotlin.math.max
+import kotlin.math.min
 
 object Frustum {
     private val implInst: ClippingHelperImpl
@@ -73,5 +75,34 @@ object Frustum {
             Point(x1 + rx, y1 + ry, z1 + rz),
             Point(x2 + rx, y2 + ry, z2 + rz)
         )
+    }
+
+    fun clipParam(p1: Point, p2: Point): Pair<Double, Double> {
+        val rx = Geometry.getRenderX()
+        val ry = Geometry.getRenderY()
+        val rz = Geometry.getRenderZ()
+        val x1 = p1.x - rx
+        val y1 = p1.y - ry
+        val z1 = p1.z - rz
+        val x2 = p2.x - rx
+        val y2 = p2.y - ry
+        val z2 = p2.z - rz
+        var s = 0.0
+        var e = 1.0
+        val f = getFrustum()
+        for (i in 0..5) {
+            if (i == 4) continue
+            val p = f[i]
+            val m = p[0] * x1 + p[1] * y1 + p[2] * z1 + p[3]
+            val n = p[0] * x2 + p[1] * y2 + p[2] * z2 + p[3]
+            if (m > 0.0 && n > 0.0) continue
+            if (m < 0.0 && n < 0.0) return Pair(Double.NaN, Double.NaN)
+            val a = p[0] * x1 + p[1] * y1 + p[2] * z1 + p[3]
+            val b = p[0] * (x1 - x2) + p[1] * (y1 - y2) + p[2] * (z1 - z2)
+            val u = if (b == 0.0) 0.0 else a / b
+            if (m < 0.0) s = max(s, u)
+            else e = min(e, u)
+        }
+        return Pair(s, e)
     }
 }
