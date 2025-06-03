@@ -1,4 +1,4 @@
-import { begin, clipLine, createPassthroughOutlineTester, createPerEntityOutliner, draw, isInView, packChromaParams, pos, renderAABBOutline, renderBeacon, renderBillboard, renderBillboardString, renderBoxFilled, renderBoxOutline, renderBoxOutlineMiter, renderCircle, renderLine, renderOctahedronFilled, renderOctahedronOutline, renderPrimitive, renderPyramidFilled, renderPyramidOutline, renderSphere, renderStairFilled, renderStairOutline, renderString, renderTracer, renderVerticalCylinder } from './index';
+import { begin, clipLine, createPassthroughOutlineTester, createPerEntityOutliner, draw, isInView, packChromaParams, pos, renderAABBOutline, renderBeacon, renderBillboard, renderBillboardString, renderBoxFilled, renderBoxOutline, renderBoxOutlineMiter, renderCircle, renderDisk, renderLine, renderOctahedronFilled, renderOctahedronOutline, renderPrimitive, renderPyramidFilled, renderPyramidOutline, renderSphere, renderStairFilled, renderStairOutline, renderString, renderTracer, renderVerticalCylinder } from './index';
 
 const egg = r => {
   let guess = Math.sqrt(1 - 2 * r * r);
@@ -26,11 +26,12 @@ register('renderWorld', () => {
     }
   }
   // renderTracer(0x000000FF, 0, 5, 0);
-  renderCircle(0xFF00FFFF, 20, 5, 20, 3, 20, { lw: 3 });
+  renderCircle(0x000000FF, 20, 5, 20, 3, 20, { lw: 3 });
+  renderDisk(0xFF55FFFF, 20, 5, 20, 3, 20, true);
   renderSphere(0x007FFFFF, 10, 10, 20, 4, 0, { lighting: 2 });
-  renderSphere(0x007FFFFF, 10, 20, 20, 4, 1, { lighting: 2 });
-  renderSphere(0x007FFFFF, 10, 30, 20, 4, 2, { lighting: 2 });
-  renderSphere(0x007FFFFF, 10, 40, 20, 4, 3, { lighting: 2 });
+  renderSphere(0x007FFFFF, 10, 20, 20, 4, 1, { lighting: 1 });
+  renderSphere(0x007FFFFF, 10, 30, 20, 4, 2, { lighting: 1 });
+  renderSphere(0x007FFFFF, 10, 40, 20, 4, 3, { lighting: 1 });
 
   renderPyramidOutline(0xD11D05FF, 10, 10, 30, 2, 4, 3);
   renderPyramidOutline(0xD11D05FF, 10, 15, 30, 2, 4, 4);
