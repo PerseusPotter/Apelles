@@ -3,9 +3,7 @@ package com.perseuspotter.apelles.state
 import com.perseuspotter.apelles.Renderer
 import com.perseuspotter.apelles.depression.ChromaShader
 import com.perseuspotter.apelles.geo.Geometry
-import com.perseuspotter.apelles.geo.dim3.Billboard
-import com.perseuspotter.apelles.geo.dim3.Icosphere
-import com.perseuspotter.apelles.geo.dim3.Primitive
+import com.perseuspotter.apelles.geo.dim3.*
 import com.perseuspotter.apelles.geo.dim3.aabb.AABBFilled
 import com.perseuspotter.apelles.geo.dim3.aabb.AABBOutline
 import com.perseuspotter.apelles.geo.dim3.aabb.AABBOutlineJoined
@@ -86,6 +84,8 @@ open class Thingamabob(
         Type.StairOuterF -> StairOuterFilled
         Type.AABBOJ -> AABBOutlineJoined
         Type.Billboard -> Billboard
+        Type.PrimitiveInternal -> PrimitiveInternal
+        Type.PrimitiveUVInternal -> PrimitiveUVInternal
     }
 
     open fun render(pt: Double) {
@@ -159,8 +159,10 @@ open class Thingamabob(
         StairOuterF,
         AABBOJ,
         Billboard,
+        PrimitiveInternal,
 
         BeaconI,
-        BeaconO
+        BeaconO,
+        PrimitiveUVInternal
     }
 }
