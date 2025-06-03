@@ -13,7 +13,7 @@ class DoubleArrayList(var capacity: Int = 10) {
         elems[length++] = v
     }
     fun resize() {
-        capacity = capacity + capacity shr 1
+        capacity = capacity + (capacity shr 1)
         val newElems = DoubleArray(capacity)
         elems.copyInto(newElems)
         elems = newElems
