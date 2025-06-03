@@ -1,6 +1,7 @@
 package com.perseuspotter.apelles
 
 import com.perseuspotter.apelles.depression.ChromaShader
+import com.perseuspotter.apelles.font.StringParser
 import com.perseuspotter.apelles.geo.Frustum
 import com.perseuspotter.apelles.geo.Geometry
 import com.perseuspotter.apelles.geo.Point
@@ -1726,6 +1727,549 @@ object Renderer {
         )
     }
 
+    fun addBillboardString(
+        color: Long,
+        string: String,
+        x: Double,
+        y: Double,
+        z: Double,
+        scale: Double,
+        increase: Boolean,
+        shadow: Boolean,
+        blackBox: Int,
+        anchor: Int,
+        alignX: Int,
+        parseMode: Int,
+        lineHeight: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        backfaceCull: Boolean,
+        chroma: Int
+    ) = addString(color, string, x, y, z, Geometry.cameraRV.x, Geometry.cameraRV.y, Geometry.cameraRV.z, -Geometry.cameraUV.x, -Geometry.cameraUV.y, -Geometry.cameraUV.z, -Geometry.cameraFV.x, -Geometry.cameraFV.y, -Geometry.cameraFV.z, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma)
+    fun addBillboardString(
+        color: List<Double>,
+        string: String,
+        x: Double,
+        y: Double,
+        z: Double,
+        scale: Double,
+        increase: Boolean,
+        shadow: Boolean,
+        blackBox: Int,
+        anchor: Int,
+        alignX: Int,
+        parseMode: Int,
+        lineHeight: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        backfaceCull: Boolean,
+        chroma: Int
+    ) = addString(color, string, x, y, z, Geometry.cameraRV.x, Geometry.cameraRV.y, Geometry.cameraRV.z, -Geometry.cameraUV.x, -Geometry.cameraUV.y, -Geometry.cameraUV.z, -Geometry.cameraFV.x, -Geometry.cameraFV.y, -Geometry.cameraFV.z, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma)
+    fun addBillboardString(
+        color: Color,
+        string: String,
+        x: Double,
+        y: Double,
+        z: Double,
+        scale: Double,
+        increase: Boolean,
+        shadow: Boolean,
+        blackBox: Int,
+        anchor: Int,
+        alignX: Int,
+        parseMode: Int,
+        lineHeight: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        backfaceCull: Boolean,
+        chroma: Int
+    ) = addString(color, string, x, y, z, Geometry.cameraRV.x, Geometry.cameraRV.y, Geometry.cameraRV.z, -Geometry.cameraUV.x, -Geometry.cameraUV.y, -Geometry.cameraUV.z, -Geometry.cameraFV.x, -Geometry.cameraFV.y, -Geometry.cameraFV.z, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma)
+    fun addString(
+        color: Long,
+        string: String,
+        x: Double,
+        y: Double,
+        z: Double,
+        rx: Double,
+        ry: Double,
+        rz: Double,
+        dx: Double,
+        dy: Double,
+        dz: Double,
+        nx: Double,
+        ny: Double,
+        nz: Double,
+        scale: Double,
+        increase: Boolean,
+        shadow: Boolean,
+        blackBox: Int,
+        anchor: Int,
+        alignX: Int,
+        parseMode: Int,
+        lineHeight: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        backfaceCull: Boolean,
+        chroma: Int
+    ) = addString(Color(color), string, x, y, z, rx, ry, rz, dx, dy, dz, nx, ny, nz, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma)
+    fun addString(
+        color: List<Double>,
+        string: String,
+        x: Double,
+        y: Double,
+        z: Double,
+        rx: Double,
+        ry: Double,
+        rz: Double,
+        dx: Double,
+        dy: Double,
+        dz: Double,
+        nx: Double,
+        ny: Double,
+        nz: Double,
+        scale: Double,
+        increase: Boolean,
+        shadow: Boolean,
+        blackBox: Int,
+        anchor: Int,
+        alignX: Int,
+        parseMode: Int,
+        lineHeight: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        backfaceCull: Boolean,
+        chroma: Int
+    ) = addString(Color(color), string, x, y, z, rx, ry, rz, dx, dy, dz, nx, ny, nz, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma)
+    fun addString(
+        color: Color,
+        string: String,
+        _x: Double,
+        _y: Double,
+        _z: Double,
+        _rx: Double,
+        _ry: Double,
+        _rz: Double,
+        _dx: Double,
+        _dy: Double,
+        _dz: Double,
+        nx: Double,
+        ny: Double,
+        nz: Double,
+        _scale: Double,
+        increase: Boolean,
+        shadow: Boolean,
+        blackBox: Int,
+        anchor: Int,
+        alignX: Int,
+        parseMode: Int,
+        lineHeight: Double,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        backfaceCull: Boolean,
+        chroma: Int
+    ) {
+        val lines = StringParser.parse(string, parseMode)
+        if (lines.isEmpty()) return
+
+        val maxW = lines.maxOf { it.getWidth() }
+        val totalH = lineHeight * (lines.size - 1) + StringParser.CHAR_HEIGHT
+        val realXOff = when (anchor shr 2) {
+            0 -> 0.0
+            1 -> -maxW * 0.5
+            2 -> -maxW.toDouble()
+            else -> throw IllegalArgumentException("bad anchor: $anchor")
+        }
+        val realYOff = when (anchor and 3) {
+            0 -> 0.0
+            1 -> -totalH * 0.5
+            2 -> -totalH
+            else -> throw IllegalArgumentException("bad anchor: $anchor")
+        }
+        val xOff = DoubleArray(lines.size) {
+            val l = lines[it]
+            when (alignX) {
+                0 -> 0.0
+                1 -> (maxW - l.getWidth()).toDouble()
+                2 -> (maxW - l.getWidth()) * 0.5
+                else -> throw IllegalArgumentException("bad alignX: $alignX")
+            }
+        }
+
+        val (x, y, z, s) = Geometry.rescale(_x, _y, _z)
+        val scale = _scale * (if (increase) sqrt((Geometry.getRenderX() - x).pow(2) + (Geometry.getRenderY() - y).pow(2) + (Geometry.getRenderZ() - z).pow(2)) / Geometry.getFarPlaneDist() else 0.02) * s
+        val rx = _rx * scale
+        val ry = _ry * scale
+        val rz = _rz * scale
+        val dx = _dx * scale
+        val dy = _dy * scale
+        val dz = _dz * scale
+
+        val origin = Point(
+            x + rx * realXOff + dx * realYOff,
+            y + ry * realXOff + dy * realYOff,
+            z + rz * realXOff + dz * realYOff
+        )
+        val baseCol = Color(color.r, color.g, color.b, 1f)
+        val baseColShadow = Color(color.r * 0.25f, color.g * 0.25f, color.b * 0.25f, 1f)
+
+        val bounds = lines.mapIndexed { i, l ->
+            if (!cull) return@mapIndexed Pair(0, l.chars.size - 1)
+            val px = xOff[i]
+            val py = lineHeight * i
+            val tl = Point(
+                origin.x + rx * px + dx * py,
+                origin.y + ry * px + dy * py,
+                origin.z + rz * px + dz * py
+            )
+            val tr = Point(
+                tl.x + rx * l.getWidth(),
+                tl.y + ry * l.getWidth(),
+                tl.z + rz * l.getWidth()
+            )
+            val bl = Point(
+                tl.x + dx * StringParser.CHAR_HEIGHT,
+                tl.y + dy * StringParser.CHAR_HEIGHT,
+                tl.z + dz * StringParser.CHAR_HEIGHT
+            )
+            val br = Point(
+                bl.x + rx * l.getWidth(),
+                bl.y + ry * l.getWidth(),
+                bl.z + rz * l.getWidth()
+            )
+            val (ts, te) = Frustum.clipParam(tl, tr)
+            val (bs, be) = Frustum.clipParam(bl, br)
+            val tx1 = if (ts.isNaN()) Int.MAX_VALUE else l.getWidthUpperBound(ts * l.getWidth())
+            val tx2 = if (te.isNaN()) Int.MIN_VALUE else l.getWidthLowerBound(te * l.getWidth())
+            val bx1 = if (bs.isNaN()) Int.MAX_VALUE else l.getWidthUpperBound(bs * l.getWidth())
+            val bx2 = if (be.isNaN()) Int.MAX_VALUE else l.getWidthLowerBound(be * l.getWidth())
+            return@mapIndexed Pair(min(tx1, bx1), max(tx2, bx2))
+        }
+
+        val decoratorTris = mutableListOf<Double>()
+        val charTris = mutableMapOf<ResourceLocation, MutableList<Double>>()
+        lines.forEachIndexed { i, l ->
+            val (minI, maxI) = bounds[i]
+            if (minI >= maxI) return@forEachIndexed
+            val xo = xOff[i]
+            val yo = lineHeight * i
+            val p = Point(
+                origin.x + rx * xo + dx * yo,
+                origin.y + ry * xo + dy * yo,
+                origin.z + rz * xo + dz * yo
+            )
+            val sp = Point(
+                p.x + (rx + dx) - nx * 0.01,
+                p.y + (ry + dy) - ny * 0.01,
+                p.z + (rz + dz) - nz * 0.01
+            )
+            val d = Point(
+                p.x + nx * 0.02,
+                p.y + ny * 0.02,
+                p.z + nz * 0.02
+            )
+            val sd = Point(
+                d.x + (rx + dx) - nx * 0.01,
+                d.y + (ry + dy) - ny * 0.01,
+                d.z + (rz + dz) - nz * 0.01
+            )
+            l.decorators.forEach {
+                val x1 = max(l.getXOff(minI), it.s)
+                val x2 = min(l.cumWidth[maxI], it.e)
+                if (x1 >= x2) return@forEach
+                val y1 = it.yO
+                val y2 = it.yO + it.h
+
+                if (shadow) {
+                    val col = if (it.c == '\u0000') baseColShadow else StringParser.COLORS_SHADOW.get(it.c)
+                    decoratorTris.add(col.r.toDouble())
+                    decoratorTris.add(col.g.toDouble())
+                    decoratorTris.add(col.b.toDouble())
+                    decoratorTris.add((col.a * color.a).toDouble())
+
+                    decoratorTris.add(sd.x + rx * x1 + dx * y1)
+                    decoratorTris.add(sd.y + ry * x1 + dy * y1)
+                    decoratorTris.add(sd.z + rz * x1 + dz * y1)
+
+                    decoratorTris.add(sd.x + rx * x1 + dx * y2)
+                    decoratorTris.add(sd.y + ry * x1 + dy * y2)
+                    decoratorTris.add(sd.z + rz * x1 + dz * y2)
+
+                    decoratorTris.add(sd.x + rx * x2 + dx * y1)
+                    decoratorTris.add(sd.y + ry * x2 + dy * y1)
+                    decoratorTris.add(sd.z + rz * x2 + dz * y1)
+
+                    decoratorTris.add(sd.x + rx * x1 + dx * y2)
+                    decoratorTris.add(sd.y + ry * x1 + dy * y2)
+                    decoratorTris.add(sd.z + rz * x1 + dz * y2)
+
+                    decoratorTris.add(sd.x + rx * x2 + dx * y2)
+                    decoratorTris.add(sd.y + ry * x2 + dy * y2)
+                    decoratorTris.add(sd.z + rz * x2 + dz * y2)
+
+                    decoratorTris.add(sd.x + rx * x2 + dx * y1)
+                    decoratorTris.add(sd.y + ry * x2 + dy * y1)
+                    decoratorTris.add(sd.z + rz * x2 + dz * y1)
+                }
+
+                val col = if (it.c == '\u0000') baseCol else StringParser.COLORS_NORMAL.get(it.c)
+                decoratorTris.add(col.r.toDouble())
+                decoratorTris.add(col.g.toDouble())
+                decoratorTris.add(col.b.toDouble())
+                decoratorTris.add((col.a * color.a).toDouble())
+
+                decoratorTris.add(d.x + rx * x1 + dx * y1)
+                decoratorTris.add(d.y + ry * x1 + dy * y1)
+                decoratorTris.add(d.z + rz * x1 + dz * y1)
+
+                decoratorTris.add(d.x + rx * x1 + dx * y2)
+                decoratorTris.add(d.y + ry * x1 + dy * y2)
+                decoratorTris.add(d.z + rz * x1 + dz * y2)
+
+                decoratorTris.add(d.x + rx * x2 + dx * y1)
+                decoratorTris.add(d.y + ry * x2 + dy * y1)
+                decoratorTris.add(d.z + rz * x2 + dz * y1)
+
+                decoratorTris.add(d.x + rx * x1 + dx * y2)
+                decoratorTris.add(d.y + ry * x1 + dy * y2)
+                decoratorTris.add(d.z + rz * x1 + dz * y2)
+
+                decoratorTris.add(d.x + rx * x2 + dx * y2)
+                decoratorTris.add(d.y + ry * x2 + dy * y2)
+                decoratorTris.add(d.z + rz * x2 + dz * y2)
+
+                decoratorTris.add(d.x + rx * x2 + dx * y1)
+                decoratorTris.add(d.y + ry * x2 + dy * y1)
+                decoratorTris.add(d.z + rz * x2 + dz * y1)
+            }
+
+            val iter = l.chars.listIterator(minI)
+            while (iter.hasNext() && iter.nextIndex() <= maxI) {
+                val c = iter.next().get()
+                val t = charTris.getOrPut(c.info.rl) { mutableListOf() }
+
+                if (shadow) {
+                    val col = if (c.co == '\u0000') baseColShadow else StringParser.COLORS_SHADOW.get(c.co)
+                    t.add(col.r.toDouble())
+                    t.add(col.g.toDouble())
+                    t.add(col.b.toDouble())
+                    t.add((col.a * color.a).toDouble())
+
+                    t.add(sp.x + rx * (c.x + if (c.ital) 1f else 0f) + dx * c.y)
+                    t.add(sp.y + ry * (c.x + if (c.ital) 1f else 0f) + dy * c.y)
+                    t.add(sp.z + rz * (c.x + if (c.ital) 1f else 0f) + dz * c.y)
+                    t.add(c.info.u.toDouble())
+                    t.add(c.info.v.toDouble())
+
+                    t.add(sp.x + rx * (c.x + if (c.ital) -1f else 0f) + dx * (c.y + c.info.h))
+                    t.add(sp.y + ry * (c.x + if (c.ital) -1f else 0f) + dy * (c.y + c.info.h))
+                    t.add(sp.z + rz * (c.x + if (c.ital) -1f else 0f) + dz * (c.y + c.info.h))
+                    t.add(c.info.u.toDouble())
+                    t.add((c.info.v + c.info.vh).toDouble())
+
+                    t.add(sp.x + rx * (c.x + c.info.w + if (c.ital) 1f else 0f) + dx * c.y)
+                    t.add(sp.y + ry * (c.x + c.info.w + if (c.ital) 1f else 0f) + dy * c.y)
+                    t.add(sp.z + rz * (c.x + c.info.w + if (c.ital) 1f else 0f) + dz * c.y)
+                    t.add((c.info.u + c.info.uw).toDouble())
+                    t.add(c.info.v.toDouble())
+
+                    t.add(sp.x + rx * (c.x + if (c.ital) -1f else 0f) + dx * (c.y + c.info.h))
+                    t.add(sp.y + ry * (c.x + if (c.ital) -1f else 0f) + dy * (c.y + c.info.h))
+                    t.add(sp.z + rz * (c.x + if (c.ital) -1f else 0f) + dz * (c.y + c.info.h))
+                    t.add(c.info.u.toDouble())
+                    t.add((c.info.v + c.info.vh).toDouble())
+
+                    t.add(sp.x + rx * (c.x + c.info.w + if (c.ital) -1f else 0f) + dx * (c.y + c.info.h))
+                    t.add(sp.y + ry * (c.x + c.info.w + if (c.ital) -1f else 0f) + dy * (c.y + c.info.h))
+                    t.add(sp.z + rz * (c.x + c.info.w + if (c.ital) -1f else 0f) + dz * (c.y + c.info.h))
+                    t.add((c.info.u + c.info.uw).toDouble())
+                    t.add((c.info.v + c.info.vh).toDouble())
+
+                    t.add(sp.x + rx * (c.x + c.info.w + if (c.ital) 1f else 0f) + dx * c.y)
+                    t.add(sp.y + ry * (c.x + c.info.w + if (c.ital) 1f else 0f) + dy * c.y)
+                    t.add(sp.z + rz * (c.x + c.info.w + if (c.ital) 1f else 0f) + dz * c.y)
+                    t.add((c.info.u + c.info.uw).toDouble())
+                    t.add(c.info.v.toDouble())
+                }
+
+                val col = if (c.co == '\u0000') baseCol else StringParser.COLORS_NORMAL.get(c.co)
+                t.add(col.r.toDouble())
+                t.add(col.g.toDouble())
+                t.add(col.b.toDouble())
+                t.add((col.a * color.a).toDouble())
+
+                t.add(p.x + rx * (c.x + if (c.ital) 1f else 0f) + dx * c.y)
+                t.add(p.y + ry * (c.x + if (c.ital) 1f else 0f) + dy * c.y)
+                t.add(p.z + rz * (c.x + if (c.ital) 1f else 0f) + dz * c.y)
+                t.add(c.info.u.toDouble())
+                t.add(c.info.v.toDouble())
+
+                t.add(p.x + rx * (c.x + if (c.ital) -1f else 0f) + dx * (c.y + c.info.h))
+                t.add(p.y + ry * (c.x + if (c.ital) -1f else 0f) + dy * (c.y + c.info.h))
+                t.add(p.z + rz * (c.x + if (c.ital) -1f else 0f) + dz * (c.y + c.info.h))
+                t.add(c.info.u.toDouble())
+                t.add((c.info.v + c.info.vh).toDouble())
+
+                t.add(p.x + rx * (c.x + c.info.w + if (c.ital) 1f else 0f) + dx * c.y)
+                t.add(p.y + ry * (c.x + c.info.w + if (c.ital) 1f else 0f) + dy * c.y)
+                t.add(p.z + rz * (c.x + c.info.w + if (c.ital) 1f else 0f) + dz * c.y)
+                t.add((c.info.u + c.info.uw).toDouble())
+                t.add(c.info.v.toDouble())
+
+                t.add(p.x + rx * (c.x + if (c.ital) -1f else 0f) + dx * (c.y + c.info.h))
+                t.add(p.y + ry * (c.x + if (c.ital) -1f else 0f) + dy * (c.y + c.info.h))
+                t.add(p.z + rz * (c.x + if (c.ital) -1f else 0f) + dz * (c.y + c.info.h))
+                t.add(c.info.u.toDouble())
+                t.add((c.info.v + c.info.vh).toDouble())
+
+                t.add(p.x + rx * (c.x + c.info.w + if (c.ital) -1f else 0f) + dx * (c.y + c.info.h))
+                t.add(p.y + ry * (c.x + c.info.w + if (c.ital) -1f else 0f) + dy * (c.y + c.info.h))
+                t.add(p.z + rz * (c.x + c.info.w + if (c.ital) -1f else 0f) + dz * (c.y + c.info.h))
+                t.add((c.info.u + c.info.uw).toDouble())
+                t.add((c.info.v + c.info.vh).toDouble())
+
+                t.add(p.x + rx * (c.x + c.info.w + if (c.ital) 1f else 0f) + dx * c.y)
+                t.add(p.y + ry * (c.x + c.info.w + if (c.ital) 1f else 0f) + dy * c.y)
+                t.add(p.z + rz * (c.x + c.info.w + if (c.ital) 1f else 0f) + dz * c.y)
+                t.add((c.info.u + c.info.uw).toDouble())
+                t.add(c.info.v.toDouble())
+            }
+        }
+
+        if (blackBox != 0) {
+            val boxTris = mutableListOf(GL_TRIANGLES.toDouble())
+            when (blackBox) {
+                1 -> {
+                    val d = Point(
+                        origin.x - nx * 0.02,
+                        origin.y - ny * 0.02,
+                        origin.z - nz * 0.02
+                    )
+
+                    boxTris.add(d.x - rx - dx)
+                    boxTris.add(d.y - ry - dy)
+                    boxTris.add(d.z - rz - dz)
+
+                    boxTris.add(d.x + dx * totalH - rx + dx)
+                    boxTris.add(d.y + dy * totalH - ry + dy)
+                    boxTris.add(d.z + dz * totalH - rz + dz)
+
+                    boxTris.add(d.x + rx * maxW + rx - dx)
+                    boxTris.add(d.y + ry * maxW + ry - dy)
+                    boxTris.add(d.z + rz * maxW + rz - dz)
+
+                    boxTris.add(d.x + dx * totalH - rx + dx)
+                    boxTris.add(d.y + dy * totalH - ry + dy)
+                    boxTris.add(d.z + dz * totalH - rz + dz)
+
+                    boxTris.add(d.x + rx * maxW + dx * totalH + rx + dx)
+                    boxTris.add(d.y + ry * maxW + dy * totalH + ry + dy)
+                    boxTris.add(d.z + rz * maxW + dz * totalH + rz + dz)
+
+                    boxTris.add(d.x + rx * maxW + rx - dx)
+                    boxTris.add(d.y + ry * maxW + ry - dy)
+                    boxTris.add(d.z + rz * maxW + rz - dz)
+                }
+                2 -> {
+                    lines.forEachIndexed { i, l ->
+                        val (minI, maxI) = bounds[i]
+                        if (minI < 0) return@forEachIndexed
+                        val xo = xOff[i]
+                        val yo = lineHeight * i
+                        val p = Point(
+                            origin.x + rx * xo + dx * yo,
+                            origin.y + ry * xo + dy * yo,
+                            origin.z + rz * xo + dz * yo
+                        )
+                        val d = Point(
+                            p.x - nx * 0.02,
+                            p.y - ny * 0.02,
+                            p.z - nz * 0.02
+                        )
+                        val x1 = l.getXOff(minI)
+                        val x2 = l.cumWidth[maxI]
+                        val y1 = 0.0
+                        val y2 = StringParser.CHAR_HEIGHT
+                        boxTris.add(d.x + rx * x1 + dx * y1 - rx - dx)
+                        boxTris.add(d.y + ry * x1 + dy * y1 - ry - dy)
+                        boxTris.add(d.z + rz * x1 + dz * y1 - rz - dz)
+
+                        boxTris.add(d.x + rx * x1 + dx * y2 - rx + dx)
+                        boxTris.add(d.y + ry * x1 + dy * y2 - ry + dy)
+                        boxTris.add(d.z + rz * x1 + dz * y2 - rz + dz)
+
+                        boxTris.add(d.x + rx * x2 + dx * y1 + rx - dx)
+                        boxTris.add(d.y + ry * x2 + dy * y1 + ry - dy)
+                        boxTris.add(d.z + rz * x2 + dz * y1 + rz - dz)
+
+                        boxTris.add(d.x + rx * x1 + dx * y2 - rx + dx)
+                        boxTris.add(d.y + ry * x1 + dy * y2 - ry + dy)
+                        boxTris.add(d.z + rz * x1 + dz * y2 - rz + dz)
+
+                        boxTris.add(d.x + rx * x2 + dx * y2 + rx + dx)
+                        boxTris.add(d.y + ry * x2 + dy * y2 + ry + dy)
+                        boxTris.add(d.z + rz * x2 + dz * y2 + rz + dz)
+
+                        boxTris.add(d.x + rx * x2 + dx * y1 + rx - dx)
+                        boxTris.add(d.y + ry * x2 + dy * y1 + ry - dy)
+                        boxTris.add(d.z + rz * x2 + dz * y1 + rz - dz)
+                    }
+                }
+            }
+            if (boxTris.size > 1) addThing(
+                Thingamabob(
+                    Thingamabob.Type.Primitive,
+                    boxTris,
+                    Color(0f, 0f, 0f, 0.25f),
+                    1f,
+                    lighting,
+                    phase,
+                    false,
+                    cull,
+                    backfaceCull,
+                    0
+                )
+            )
+        }
+
+        if (decoratorTris.isNotEmpty()) addThing(
+            Thingamabob(
+                Thingamabob.Type.PrimitiveInternal,
+                decoratorTris,
+                color,
+                1f,
+                lighting,
+                phase,
+                false,
+                cull,
+                backfaceCull,
+                chroma
+            )
+        )
+        charTris.forEach { (rl, t) ->
+            addTexturedThing(
+                Thingamabob(
+                    Thingamabob.Type.PrimitiveUVInternal,
+                    t,
+                    color,
+                    1f,
+                    lighting,
+                    phase,
+                    false,
+                    cull,
+                    backfaceCull,
+                    chroma,
+                    rl
+                )
+            )
+        }
+    }
+
     @JvmField
     var USE_NEW_SHIT: Boolean = false
     @JvmField
@@ -1747,6 +2291,8 @@ object Renderer {
         }
 
         Geometry.cacheValues()
+        StringParser.removeUnused()
+        StringParser.setUnused()
 
         val prof = Minecraft.getMinecraft().mcProfiler
         prof.startSection("Apelles")

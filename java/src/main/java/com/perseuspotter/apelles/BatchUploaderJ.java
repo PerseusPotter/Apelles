@@ -987,6 +987,110 @@ class BatchUploaderJ {
                     );
                     break;
                 }
+                case 34: {
+                    if (isArrCol) Renderer.INSTANCE.addString(
+                            (List<Double>) color,
+                            (String) arr.get(2),
+                            asDouble(arr.get(3)),
+                            asDouble(arr.get(4)),
+                            asDouble(arr.get(5)),
+                            asDouble(arr.get(6)),
+                            asDouble(arr.get(7)),
+                            asDouble(arr.get(8)),
+                            asDouble(arr.get(9)),
+                            asDouble(arr.get(10)),
+                            asDouble(arr.get(11)),
+                            asDouble(arr.get(12)),
+                            asDouble(arr.get(13)),
+                            asDouble(arr.get(14)),
+                            asDouble(arr.get(15)),
+                            (Boolean) arr.get(16),
+                            (Boolean) arr.get(17),
+                            asInt(arr.get(18)),
+                            asInt(arr.get(19)),
+                            asInt(arr.get(20)),
+                            asInt(arr.get(21)),
+                            asDouble(arr.get(22)),
+                            asInt(arr.get(23)),
+                            (Boolean) arr.get(24),
+                            (Boolean) arr.get(25),
+                            (Boolean) arr.get(26),
+                            asInt(arr.get(27))
+                    );
+                    else Renderer.INSTANCE.addString(
+                            asLong(color),
+                            (String) arr.get(2),
+                            asDouble(arr.get(3)),
+                            asDouble(arr.get(4)),
+                            asDouble(arr.get(5)),
+                            asDouble(arr.get(6)),
+                            asDouble(arr.get(7)),
+                            asDouble(arr.get(8)),
+                            asDouble(arr.get(9)),
+                            asDouble(arr.get(10)),
+                            asDouble(arr.get(11)),
+                            asDouble(arr.get(12)),
+                            asDouble(arr.get(13)),
+                            asDouble(arr.get(14)),
+                            asDouble(arr.get(15)),
+                            (Boolean) arr.get(16),
+                            (Boolean) arr.get(17),
+                            asInt(arr.get(18)),
+                            asInt(arr.get(19)),
+                            asInt(arr.get(20)),
+                            asInt(arr.get(21)),
+                            asDouble(arr.get(22)),
+                            asInt(arr.get(23)),
+                            (Boolean) arr.get(24),
+                            (Boolean) arr.get(25),
+                            (Boolean) arr.get(26),
+                            asInt(arr.get(27))
+                    );
+                    break;
+                }
+                case 35: {
+                    if (isArrCol) Renderer.INSTANCE.addBillboardString(
+                            (List<Double>) color,
+                            (String) arr.get(2),
+                            asDouble(arr.get(3)),
+                            asDouble(arr.get(4)),
+                            asDouble(arr.get(5)),
+                            asDouble(arr.get(6)),
+                            (Boolean) arr.get(7),
+                            (Boolean) arr.get(8),
+                            asInt(arr.get(9)),
+                            asInt(arr.get(10)),
+                            asInt(arr.get(11)),
+                            asInt(arr.get(12)),
+                            asDouble(arr.get(13)),
+                            asInt(arr.get(14)),
+                            (Boolean) arr.get(15),
+                            (Boolean) arr.get(16),
+                            (Boolean) arr.get(17),
+                            asInt(arr.get(18))
+                    );
+                    else Renderer.INSTANCE.addBillboardString(
+                            asLong(color),
+                            (String) arr.get(2),
+                            asDouble(arr.get(3)),
+                            asDouble(arr.get(4)),
+                            asDouble(arr.get(5)),
+                            asDouble(arr.get(6)),
+                            (Boolean) arr.get(7),
+                            (Boolean) arr.get(8),
+                            asInt(arr.get(9)),
+                            asInt(arr.get(10)),
+                            asInt(arr.get(11)),
+                            asInt(arr.get(12)),
+                            asDouble(arr.get(13)),
+                            asInt(arr.get(14)),
+                            (Boolean) arr.get(15),
+                            (Boolean) arr.get(16),
+                            (Boolean) arr.get(17),
+                            asInt(arr.get(18))
+                    );
+                    break;
+                }
             }
         });
     }

@@ -459,3 +459,9 @@ abstract class Geometry {
 }
 operator fun <E> List<E>.component6() = get(5)
 operator fun <E> List<E>.component7() = get(6)
+operator fun <E> List<E>.component8() = get(7)
+operator fun <E> List<E>.component9() = get(8)
+operator fun <E> List<E>.component10() = get(9)
+operator fun <E> List<E>.component11() = get(10)
+operator fun <E> List<E>.component12() = get(11)
+operator fun <E> List<E>.component13() = get(12)
