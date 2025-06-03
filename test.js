@@ -1,4 +1,4 @@
-import { begin, clipLine, createPassthroughOutlineTester, createPerEntityOutliner, draw, isInView, packChromaParams, pos, renderAABBOutline, renderBeacon, renderBoxFilled, renderBoxOutline, renderBoxOutlineMiter, renderCircle, renderLine, renderOctahedronFilled, renderOctahedronOutline, renderPrimitive, renderPyramidFilled, renderPyramidOutline, renderSphere, renderStairFilled, renderStairOutline, renderTracer, renderVerticalCylinder } from './index';
+import { begin, clipLine, createPassthroughOutlineTester, createPerEntityOutliner, draw, isInView, packChromaParams, pos, renderAABBOutline, renderBeacon, renderBillboard, renderBillboardString, renderBoxFilled, renderBoxOutline, renderBoxOutlineMiter, renderCircle, renderLine, renderOctahedronFilled, renderOctahedronOutline, renderPrimitive, renderPyramidFilled, renderPyramidOutline, renderSphere, renderStairFilled, renderStairOutline, renderString, renderTracer, renderVerticalCylinder } from './index';
 
 const egg = r => {
   let guess = Math.sqrt(1 - 2 * r * r);
@@ -64,6 +64,11 @@ register('renderWorld', () => {
 
   renderBoxOutlineMiter(0x00FFFFFF, -50, 10, 0, 10, 10, 3);
   renderBoxOutline(0xFF0000FF, -50, 25, 0, 10, 10, { lw: 10 });
+
+  renderBillboard(0x000000A0, 30, 10, 0, 2, 4);
+
+  renderString(0xFFFFFFFF, 'this is a test string with some 中文\nnow for some &l&4SCARY&r &m&af&bo&cr&dm&ea&ft&0t&1i&2n&3g&r and &o&neven&r more &kshit', 30, 15, 0, 1, 0, 0, 0, -1, 0, 0, 0, 1, { backfaceCull: false });
+  renderBillboardString(0xFFFFFFFF, 'this moves', 30, 17, 0);
 });
 
 const tester = createPassthroughOutlineTester();

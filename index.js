@@ -77,11 +77,15 @@ export function disableBatching() {
  */
 
 /**
- * @typedef {RenderOptions & LineOptions} RenderOptions & LineOptions
- */
-
-/**
- * @typedef {RenderOptions & FaceOptions} FaceRenderOptions
+ * @typedef StringOptions
+ * @property {number} [scale=1] `1`
+ * @property {boolean} [increase=false] `false` - increase with distance
+ * @property {boolean} [shadow=true] `true` - backdrop shadow
+ * @property {number} [blackBox=1] `1` - gray box behind text, 0: no box | 1: box around entire text | 2: box around each line
+ * @property {number} [anchor=0] `5` - how text is positioned around the point. [visual](https://i.imgur.com/GRwBx0H.png) 0: top left | 1: middle left | 2: bottom left | 4: top middle | 5: center | 6: bottom middle | 8: top right | 9: middle right | 10: bottom right
+ * @property {number} [alignX=0] `2` - how text is aligned on the x-axis. [visual](https://i.imgur.com/YWWa3AL.png) 0: left | 1: right | 2: center
+ * @property {number} [parseMode=3] `3` - how formatting is parsed, 0: ignore | 1: only parse § | 2: only parse § but ignore effects | 3: parse both § and & | 4: parse both § and & but ignore effects
+ * @property {number} [lineHeight=9] `9` - height of each line (not height of characters, not affected by scaling). each character is 8 units tall
  */
 
 const ResourceLocation = JavaTypeOrNull('net.minecraft.util.ResourceLocation') ?? throwExp('failed to load minecraft???');
@@ -674,6 +678,44 @@ const addBillboard = APRendererI.addBillboard ?? throwExp('bad');
 export function renderBillboard(color, x, y, z, w, h, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([33, color, x, y, z, w, h, lighting, phase, cull, backfaceCull, chroma]);
   else addBillboard.call(APRendererI, color, x, y, z, w, h, lighting, phase, cull, backfaceCull, chroma);
+}
+
+const addString = APRendererI.addString ?? throwExp('bad');
+/**
+ * @param {ColorLike} color color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {string} string
+ * @param {number} x position anchor
+ * @param {number} y position anchor
+ * @param {number} z position anchor
+ * @param {number} rx right-facing vector
+ * @param {number} ry right-facing vector
+ * @param {number} rz right-facing vector
+ * @param {number} dx down-facing vector
+ * @param {number} dy down-facing vector
+ * @param {number} dz down-facing vector
+ * @param {number} nx normal vector
+ * @param {number} ny normal vector
+ * @param {number} nz normal vector
+ * @param {RenderOptions & FaceOptions & StringOptions} options
+ */
+export function renderString(color, string, x, y, z, rx, ry, rz, dx, dy, dz, nx, ny, nz, { scale = 1, increase = false, shadow = true, blackBox = 1, anchor = 5, alignX = 2, parseMode = 3, lineHeight = 9, lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([34, color, string, x, y, z, rx, ry, rz, dx, dy, dz, nx, ny, nz, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma]);
+  else addString.call(APRendererI, color, string, x, y, z, rx, ry, rz, dx, dy, dz, nx, ny, nz, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma);
+}
+
+const addBillboardString = APRendererI.addBillboardString ?? throwExp('bad');
+/**
+ * will always face player
+ * @param {ColorLike} color color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {string} string
+ * @param {number} x position anchor
+ * @param {number} y position anchor
+ * @param {number} z position anchor
+ * @param {RenderOptions & FaceOptions & StringOptions} options
+ */
+export function renderBillboardString(color, string, x, y, z, { scale = 1, increase = false, shadow = true, blackBox = 1, anchor = 5, alignX = 2, parseMode = 3, lineHeight = 9, lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([35, color, string, x, y, z, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma]);
+  else addBillboardString.call(APRendererI, color, string, x, y, z, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma);
 }
 
 /**
