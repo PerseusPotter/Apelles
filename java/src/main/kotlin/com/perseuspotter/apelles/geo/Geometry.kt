@@ -364,7 +364,6 @@ abstract class Geometry {
             currBufI = null
             prevK = null
             bufInfo.forEach{ (k, s) ->
-                if (s.vert == 0 || s.index == 0) return
                 unusedBufs.remove(k)
                 if (!currBufM.containsKey(k)) currBufM[k] = VAO(s.vert, s.index, s.c, s.n, s.t, s.m)
                 else if (currBufM[k]!!.MAX_VERTEX_COUNT < s.vert || currBufM[k]!!.MAX_INDEX_COUNT < s.index) {
