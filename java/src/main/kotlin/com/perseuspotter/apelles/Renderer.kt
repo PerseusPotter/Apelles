@@ -551,6 +551,79 @@ object Renderer {
         )
     }
 
+    fun addDisk(
+        color: Long,
+        x: Double,
+        y: Double,
+        z: Double,
+        r: Double,
+        segments: Int,
+        up: Boolean,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        backfaceCull: Boolean,
+        chroma: Int
+    ) = addDisk(Color(color), x, y, z, r, segments, up, lighting, phase, cull, backfaceCull, chroma)
+    fun addDisk(
+        color: List<Double>,
+        x: Double,
+        y: Double,
+        z: Double,
+        r: Double,
+        segments: Int,
+        up: Boolean,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        backfaceCull: Boolean,
+        chroma: Int
+    ) = addDisk(Color(color), x, y, z, r, segments, up, lighting, phase, cull, backfaceCull, chroma)
+    fun addDisk(
+        color: Color,
+        x: Double,
+        y: Double,
+        z: Double,
+        r: Double,
+        segments: Int,
+        up: Boolean,
+        lighting: Int,
+        phase: Boolean,
+        cull: Boolean,
+        backfaceCull: Boolean,
+        chroma: Int
+    ) {
+        val points = mutableListOf<Double>()
+        points.add(GL_TRIANGLE_FAN.toDouble())
+        points.add(x)
+        points.add(y)
+        points.add(z)
+        for (i in 0 until segments) {
+            val t = 2.0 * PI * (if (up) segments - i else i) / segments
+            points.add(x + cos(t) * r)
+            points.add(y)
+            points.add(z + sin(t) * r)
+        }
+        // something something floating point cos(0) ~= cos(2pi)
+        points.add(points[4])
+        points.add(points[5])
+        points.add(points[6])
+        addThing(
+            Thingamabob(
+                Thingamabob.Type.Primitive,
+                points,
+                color,
+                1f,
+                lighting,
+                phase,
+                false,
+                cull,
+                backfaceCull,
+                chroma
+            )
+        )
+    }
+
     fun addIcosphere(
         color: Long,
         x: Double,

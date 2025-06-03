@@ -304,6 +304,22 @@ export function renderCircle(color, x, y, z, r, segments, { lw = 1, lighting = 0
   else addCircle.call(APRendererI, color, x, y, z, r, segments, lw, lighting, phase, smooth, cull, chroma);
 }
 
+const addDisk = APRendererI.addDisk ?? throwExp('bad');
+/**
+ * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @param {number} r
+ * @param {number} segments
+ * @param {boolean} up whether this disk is to be viewed from above; alternatively, disable `backfaceCull`
+ * @param {RenderOptions & FaceOptions} options
+ */
+export function renderDisk(color, x, y, z, r, segments, up, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([36, color, x, y, z, r, segments, up, lighting, phase, cull, backfaceCull, chroma]);
+  else addDisk.call(APRendererI, color, x, y, z, r, segments, up, lighting, phase, cull, backfaceCull, chroma);
+}
+
 const addIcosphere = APRendererI.addIcosphere ?? throwExp('bad');
 /**
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])

@@ -1091,6 +1091,37 @@ class BatchUploaderJ {
                     );
                     break;
                 }
+                case 36: {
+                    if (isArrCol) Renderer.INSTANCE.addDisk(
+                            (List<Double>) color,
+                            asDouble(arr.get(2)),
+                            asDouble(arr.get(3)),
+                            asDouble(arr.get(4)),
+                            asDouble(arr.get(5)),
+                            asInt(arr.get(6)),
+                            (Boolean) arr.get(7),
+                            asInt(arr.get(8)),
+                            (Boolean) arr.get(9),
+                            (Boolean) arr.get(10),
+                            (Boolean) arr.get(11),
+                            asInt(arr.get(12))
+                    );
+                    else Renderer.INSTANCE.addDisk(
+                            asLong(color),
+                            asDouble(arr.get(2)),
+                            asDouble(arr.get(3)),
+                            asDouble(arr.get(4)),
+                            asDouble(arr.get(5)),
+                            asInt(arr.get(6)),
+                            (Boolean) arr.get(7),
+                            asInt(arr.get(8)),
+                            (Boolean) arr.get(9),
+                            (Boolean) arr.get(10),
+                            (Boolean) arr.get(11),
+                            asInt(arr.get(12))
+                    );
+                    break;
+                }
             }
         });
     }
