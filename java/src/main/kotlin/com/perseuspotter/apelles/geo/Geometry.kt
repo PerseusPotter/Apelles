@@ -1,6 +1,5 @@
 package com.perseuspotter.apelles.geo
 
-import akka.actor.dsl.Creators.Act
 import com.perseuspotter.apelles.Renderer
 import com.perseuspotter.apelles.depression.VAO
 import com.perseuspotter.apelles.state.Color
@@ -12,7 +11,6 @@ import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.entity.RenderManager
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
