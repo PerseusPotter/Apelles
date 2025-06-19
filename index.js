@@ -210,7 +210,7 @@ const addAABBOM = APRendererI.addAABBOM ?? throwExp('bad');
  */
 export function renderMCAABBOutline(color, aabb, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([30, color, aabb, lw, lighting, phase, smooth, cull, chroma]);
-  else addAABBOM.call(APRendererI, color, lw, lighting, phase, smooth, cull, chroma);
+  else addAABBOM.call(APRendererI, color, aabb, lw, lighting, phase, smooth, cull, chroma);
 }
 
 const addBoxF = APRendererI.addBoxF ?? throwExp('bad');
@@ -434,7 +434,7 @@ const addStraightStairO = APRendererI.addStraightStairO ?? throwExp('bad');
  * @param {RenderOptions & LineOptions} options
  */
 export function renderStraightStairOutline(color, x, y, z, type, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([14, color, x, y, z, type, lighting, phase, cull, chroma]);
+  if (batchCalls) batched.push([14, color, x, y, z, type, lw, lighting, phase, smooth, cull, chroma]);
   else addStraightStairO.call(APRendererI, color, x, y, z, type, lw, lighting, phase, smooth, cull, chroma);
 }
 
