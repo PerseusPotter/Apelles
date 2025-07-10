@@ -11,25 +11,52 @@ class BatchUploaderJ {
     private static int asInt(Object v) {
         if (v instanceof Integer) {
             return (Integer) v;
-        } else {
+        } else if (v instanceof Double) {
             return ((Double) v).intValue();
+        } else if (v instanceof Float) {
+            return ((Float) v).intValue();
+        } else if (v instanceof Character) {
+            return (int) ((Character) v);
+        } else if (v instanceof Short) {
+            return ((Short) v).intValue();
+        } else if (v instanceof Byte) {
+            return ((Byte) v).intValue();
         }
+        throw new IllegalArgumentException("expected an integer, found a " + (v == null ? "null" : v.getClass().getSimpleName()));
     }
 
     private static double asDouble(Object v) {
         if (v instanceof Double) {
             return (Double) v;
-        } else {
+        } else if (v instanceof Integer) {
             return ((Integer) v).doubleValue();
+        } else if (v instanceof Float) {
+            return ((Float) v).doubleValue();
+        } else if (v instanceof Character) {
+            return (double) ((Character) v);
+        } else if (v instanceof Short) {
+            return ((Short) v).doubleValue();
+        } else if (v instanceof Byte) {
+            return ((Byte) v).doubleValue();
         }
+        throw new IllegalArgumentException("expected a double, found a " + (v == null ? "null" : v.getClass().getSimpleName()));
     }
 
     private static long asLong(Object v) {
         if (v instanceof Integer) {
             return ((Integer) v).longValue();
-        } else {
+        } else if (v instanceof Double) {
             return ((Double) v).longValue();
+        } else if (v instanceof Float) {
+            return ((Float) v).longValue();
+        } else if (v instanceof Character) {
+            return (long) ((Character) v);
+        } else if (v instanceof Short) {
+            return ((Short) v).longValue();
+        } else if (v instanceof Byte) {
+            return ((Byte) v).longValue();
         }
+        throw new IllegalArgumentException("expected a long, found a " + (v == null ? "null" : v.getClass().getSimpleName()));
     }
     
     private static String asString(Object v) {
