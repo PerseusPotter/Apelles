@@ -1985,7 +1985,7 @@ object Renderer {
         }
 
         val (x, y, z, s) = Geometry.rescale(_x, _y, _z)
-        val scale = _scale * 0.02 * (if (increase) Geometry.increase(_x, _y, _z) else 1.0) * s
+        val scale = _scale * (if (increase) sqrt((Geometry.getRenderX() - x).pow(2) + (Geometry.getRenderY() - y).pow(2) + (Geometry.getRenderZ() - z).pow(2)) / Geometry.getFarPlaneDist() else 0.02) * s
         val rx = _rx * scale
         val ry = _ry * scale
         val rz = _rz * scale
