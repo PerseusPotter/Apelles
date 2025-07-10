@@ -13,24 +13,24 @@ object Billboard : Geometry() {
 
         begin(GL11.GL_TRIANGLE_STRIP, false, x, y, z)
         pos(
-            x + w * cameraRV.x + h * cameraUV.x,
-            y + w * cameraRV.y + h * cameraUV.y,
-            z + w * cameraRV.z + h * cameraUV.z
+            x + w * getCameraRV().x + h * getCameraUV().x,
+            y + w * getCameraRV().y + h * getCameraUV().y,
+            z + w * getCameraRV().z + h * getCameraUV().z
         )
         pos(
-            x - w * cameraRV.x + h * cameraUV.x,
-            y - w * cameraRV.y + h * cameraUV.y,
-            z - w * cameraRV.z + h * cameraUV.z
+            x - w * getCameraRV().x + h * getCameraUV().x,
+            y - w * getCameraRV().y + h * getCameraUV().y,
+            z - w * getCameraRV().z + h * getCameraUV().z
         )
         pos(
-            x + w * cameraRV.x - h * cameraUV.x,
-            y + w * cameraRV.y - h * cameraUV.y,
-            z + w * cameraRV.z - h * cameraUV.z
+            x + w * getCameraRV().x - h * getCameraUV().x,
+            y + w * getCameraRV().y - h * getCameraUV().y,
+            z + w * getCameraRV().z - h * getCameraUV().z
         )
         pos(
-            x - w * cameraRV.x - h * cameraUV.x,
-            y - w * cameraRV.y - h * cameraUV.y,
-            z - w * cameraRV.z - h * cameraUV.z
+            x - w * getCameraRV().x - h * getCameraUV().x,
+            y - w * getCameraRV().y - h * getCameraUV().y,
+            z - w * getCameraRV().z - h * getCameraUV().z
         )
         draw()
     }
