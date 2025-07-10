@@ -35,12 +35,12 @@ object PrimitiveColorInternal : GeometryInternal() {
                 val g = params[i + 1].toFloat()
                 val b = params[i + 2].toFloat()
                 val a = params[i + 3].toFloat()
-                worldRen.pos(params[i + 4] - rxc, params[i + 5] - ryc, params[i + 6] - rzc).color(r, g, b, a).endVertex()
-                worldRen.pos(params[i + 7] - rxc, params[i + 8] - ryc, params[i + 9] - rzc).color(r, g, b, a).endVertex()
-                worldRen.pos(params[i + 10] - rxc, params[i + 11] - ryc, params[i + 12] - rzc).color(r, g, b, a).endVertex()
-                worldRen.pos(params[i + 10] - rxc, params[i + 11] - ryc, params[i + 12] - rzc).color(r, g, b, a).endVertex()
-                worldRen.pos(params[i + 7] - rxc, params[i + 8] - ryc, params[i + 9] - rzc).color(r, g, b, a).endVertex()
-                worldRen.pos(params[i + 13] - rxc, params[i + 14] - ryc, params[i + 15] - rzc).color(r, g, b, a).endVertex()
+                worldRen.pos(params[i + 4] - getRenderX(), params[i + 5] - getRenderY(), params[i + 6] - getRenderZ()).color(r, g, b, a).endVertex()
+                worldRen.pos(params[i + 7] - getRenderX(), params[i + 8] - getRenderY(), params[i + 9] - getRenderZ()).color(r, g, b, a).endVertex()
+                worldRen.pos(params[i + 10] - getRenderX(), params[i + 11] - getRenderY(), params[i + 12] - getRenderZ()).color(r, g, b, a).endVertex()
+                worldRen.pos(params[i + 10] - getRenderX(), params[i + 11] - getRenderY(), params[i + 12] - getRenderZ()).color(r, g, b, a).endVertex()
+                worldRen.pos(params[i + 7] - getRenderX(), params[i + 8] - getRenderY(), params[i + 9] - getRenderZ()).color(r, g, b, a).endVertex()
+                worldRen.pos(params[i + 13] - getRenderX(), params[i + 14] - getRenderY(), params[i + 15] - getRenderZ()).color(r, g, b, a).endVertex()
             }
             draw()
         }

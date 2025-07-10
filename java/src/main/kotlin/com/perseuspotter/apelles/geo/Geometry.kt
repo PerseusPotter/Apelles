@@ -1,6 +1,7 @@
 package com.perseuspotter.apelles.geo
 
 import com.perseuspotter.apelles.Renderer
+import com.perseuspotter.apelles.depression.PerFrameCache
 import com.perseuspotter.apelles.depression.VAO
 import com.perseuspotter.apelles.state.Color
 import com.perseuspotter.apelles.state.GlState
@@ -22,21 +23,28 @@ abstract class Geometry {
         val tess = Tessellator.getInstance()
         @JvmField
         val worldRen = tess.worldRenderer
+        @JvmField
+        val rm = Minecraft.getMinecraft().renderManager
         private val rxf = RenderManager::class.java.getDeclaredField("field_78725_b").also { it.isAccessible = true }
         private val ryf = RenderManager::class.java.getDeclaredField("field_78726_c").also { it.isAccessible = true }
         private val rzf = RenderManager::class.java.getDeclaredField("field_78723_d").also { it.isAccessible = true }
         @JvmStatic
-        protected var rxc = 0.0
+        protected var rxc = PerFrameCache(0.0) { rxf.getDouble(rm) }
         @JvmStatic
-        protected var ryc = 0.0
+        protected var ryc = PerFrameCache(0.0) { ryf.getDouble(rm) }
         @JvmStatic
-        protected var rzc = 0.0
+        protected var rzc = PerFrameCache(0.0) { rzf.getDouble(rm) }
         @JvmStatic
-        fun getRenderX(): Double = rxc
+        fun getRenderX(): Double = rxc.get()
         @JvmStatic
-        fun getRenderY(): Double = ryc
+        fun getRenderY(): Double = ryc.get()
         @JvmStatic
-        fun getRenderZ(): Double = rzc
+        fun getRenderZ(): Double = rzc.get()
+
+        private val SQRT_2 = sqrt(2.0)
+        private var fpdc = PerFrameCache(0.0) { (Minecraft.getMinecraft().gameSettings.renderDistanceChunks shl 4) * SQRT_2 }
+        @JvmStatic
+        fun getFarPlaneDist() = fpdc.get()
 
         @JvmField
         val viewProjMatrix = BufferUtils.createFloatBuffer(16)
@@ -45,22 +53,18 @@ abstract class Geometry {
         @JvmField
         val PROJECTION: FloatBuffer = ActiveRenderInfo::class.java.getDeclaredField("field_178813_c").also { it.isAccessible = true }.get(null) as FloatBuffer
 
-        @JvmField
-        var cameraFV = Point(0.0, 0.0, 0.0)
-        @JvmField
-        var cameraUV = Point(0.0, 0.0, 0.0)
-        @JvmField
-        var cameraRV = Point(0.0, 0.0, 0.0)
+        private val dummyCameraCache = PerFrameCache(null) { updateCameraInfo() }
+        private var cameraFV = Point(0.0, 0.0, 0.0)
+        private var cameraUV = Point(0.0, 0.0, 0.0)
+        private var cameraRV = Point(0.0, 0.0, 0.0)
+        @JvmStatic
+        fun getCameraFV() = dummyCameraCache.get().let { cameraFV }
+        @JvmStatic
+        fun getCameraUV() = dummyCameraCache.get().let { cameraUV }
+        @JvmStatic
+        fun getCameraRV() = dummyCameraCache.get().let { cameraRV }
 
-        fun cacheValues() {
-            rxc = rxf.getDouble(rm)
-            ryc = ryf.getDouble(rm)
-            rzc = rzf.getDouble(rm)
-            fpdc = (Minecraft.getMinecraft().gameSettings.renderDistanceChunks shl 4) * SQRT_2
-            updateInfo()
-        }
-
-        private fun updateInfo() {
+        private fun updateCameraInfo() {
             val view = FloatArray(16)
             val proj = FloatArray(16)
             MODELVIEW.get(view).rewind()
@@ -106,8 +110,26 @@ abstract class Geometry {
                 cameraFV.x * cameraUV.y - cameraFV.y * cameraUV.x
             )
         }
-        @JvmField
-        val rm = Minecraft.getMinecraft().renderManager
+
+        @JvmStatic
+        fun rescale(x: Double, y: Double, z: Double): DoubleArray {
+            val dy = (Minecraft.getMinecraft().thePlayer?.getEyeHeight() ?: 0f) - 0.1
+            val rx = getRenderX()
+            val ry = getRenderY()
+            val rz = getRenderZ()
+            val d = (rx - x).pow(2) + (ry + dy - y).pow(2) + (rz - z).pow(2)
+            val fd = getFarPlaneDist()
+            if (d >= fd * fd) {
+                val f = fd / sqrt(d)
+                return doubleArrayOf(
+                    rx + (x - rx) * f,
+                    ry + dy + (y - ry - dy) * f,
+                    rz + (z - rz) * f,
+                    f
+                )
+            }
+            return doubleArrayOf(x, y, z, 1.0)
+        }
 
         @JvmStatic
         fun begin(mode: Int, tex: Boolean, x: Double, y: Double, z: Double) {
@@ -138,7 +160,7 @@ abstract class Geometry {
                 return
             }
             if (GlState.isLightingEnabled()) pos(x, y, z, x - cx, y - cy, z - cz)
-            else worldRen.pos(x - rxc, y - ryc, z - rzc).endVertex()
+            else worldRen.pos(x - getRenderX(), y - getRenderY(), z - getRenderZ()).endVertex()
         }
         @JvmStatic
         fun pos(x: Double, y: Double, z: Double, u: Double, v: Double) {
@@ -148,7 +170,7 @@ abstract class Geometry {
                 return
             }
             if (GlState.isLightingEnabled()) pos(x, y, z, u, v, x - cx, y - cy, z - cz)
-            else worldRen.pos(x - rxc, y - ryc, z - rzc).tex(u, v).endVertex()
+            else worldRen.pos(x - getRenderX(), y - getRenderY(), z - getRenderZ()).tex(u, v).endVertex()
         }
         @JvmStatic
         fun pos(x: Double, y: Double, z: Double, nx: Double, ny: Double, nz: Double) {
@@ -159,8 +181,8 @@ abstract class Geometry {
             }
             if (GlState.isLightingEnabled()) {
                 val l = 1.0 / sqrt(nx * nx + ny * ny + nz * nz)
-                worldRen.pos(x - rxc, y - ryc, z - rzc).normal((nx * l).toFloat(), (ny * l).toFloat(), (nz * l).toFloat()).endVertex()
-            } else worldRen.pos(x - rxc, y - ryc, z - rzc).endVertex()
+                worldRen.pos(x - getRenderX(), y - getRenderY(), z - getRenderZ()).normal((nx * l).toFloat(), (ny * l).toFloat(), (nz * l).toFloat()).endVertex()
+            } else worldRen.pos(x - getRenderX(), y - getRenderY(), z - getRenderZ()).endVertex()
         }
         @JvmStatic
         fun pos(x: Double, y: Double, z: Double, u: Double, v: Double, nx: Double, ny: Double, nz: Double) {
@@ -171,28 +193,8 @@ abstract class Geometry {
             }
             if (GlState.isLightingEnabled()) {
                 val l = 1.0 / sqrt(nx * nx + ny * ny + nz * nz)
-                worldRen.pos(x - rxc, y - ryc, z - rzc).tex(u, v).normal((nx * l).toFloat(), (ny * l).toFloat(), (nz * l).toFloat()).endVertex()
-            } else worldRen.pos(x - rxc, y - ryc, z - rzc).tex(u, v).endVertex()
-        }
-
-        private val SQRT_2 = sqrt(2.0)
-        private var fpdc = 0.0
-        fun getFarPlaneDist() = fpdc
-        @JvmStatic
-        fun rescale(x: Double, y: Double, z: Double): DoubleArray {
-            val dy = (Minecraft.getMinecraft().thePlayer?.getEyeHeight() ?: 0f) - 0.1
-            val d = (rxc - x).pow(2) + (ryc + dy - y).pow(2) + (rzc - z).pow(2)
-            val rd = getFarPlaneDist()
-            if (d >= rd * rd) {
-                val f = rd / sqrt(d)
-                return doubleArrayOf(
-                    rxc + (x - rxc) * f,
-                    ryc + dy + (y - ryc - dy) * f,
-                    rzc + (z - rzc) * f,
-                    f
-                )
-            }
-            return doubleArrayOf(x, y, z, 1.0)
+                worldRen.pos(x - getRenderX(), y - getRenderY(), z - getRenderZ()).tex(u, v).normal((nx * l).toFloat(), (ny * l).toFloat(), (nz * l).toFloat()).endVertex()
+            } else worldRen.pos(x - getRenderX(), y - getRenderY(), z - getRenderZ()).tex(u, v).endVertex()
         }
 
         @JvmStatic
@@ -417,13 +419,13 @@ abstract class Geometry {
         }
         @JvmStatic
         fun addVert(x: Double, y: Double, z: Double, nx: Double, ny: Double, nz: Double) {
-            currBuf!!.putP((x - rxc).toFloat(), (y - ryc).toFloat(), (z - rzc).toFloat())
+            currBuf!!.putP((x - getRenderX()).toFloat(), (y - getRenderY()).toFloat(), (z - getRenderZ()).toFloat())
             currBuf!!.putC(currCol!!.r, currCol!!.g, currCol!!.b, currCol!!.a)
             addNormVert(nx, ny, nz)
         }
         @JvmStatic
         fun addVert(x: Double, y: Double, z: Double, u: Double, v: Double, nx: Double, ny: Double, nz: Double) {
-            currBuf!!.putP((x - rxc).toFloat(), (y - ryc).toFloat(), (z - rzc).toFloat())
+            currBuf!!.putP((x - getRenderX()).toFloat(), (y - getRenderY()).toFloat(), (z - getRenderZ()).toFloat())
             currBuf!!.putC(currCol!!.r, currCol!!.g, currCol!!.b, currCol!!.a)
             addNormVert(nx, ny, nz)
             currBuf!!.putT(u.toFloat(), v.toFloat())

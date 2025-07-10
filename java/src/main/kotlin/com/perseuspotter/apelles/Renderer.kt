@@ -1820,7 +1820,7 @@ object Renderer {
         cull: Boolean,
         backfaceCull: Boolean,
         chroma: Int
-    ) = addString(color, string, x, y, z, Geometry.cameraRV.x, Geometry.cameraRV.y, Geometry.cameraRV.z, -Geometry.cameraUV.x, -Geometry.cameraUV.y, -Geometry.cameraUV.z, -Geometry.cameraFV.x, -Geometry.cameraFV.y, -Geometry.cameraFV.z, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma)
+    ) = addString(color, string, x, y, z, Geometry.getCameraRV().x, Geometry.getCameraRV().y, Geometry.getCameraRV().z, -Geometry.getCameraUV().x, -Geometry.getCameraUV().y, -Geometry.getCameraUV().z, -Geometry.getCameraFV().x, -Geometry.getCameraFV().y, -Geometry.getCameraFV().z, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma)
     fun addBillboardString(
         color: List<Double>,
         string: String,
@@ -1840,7 +1840,7 @@ object Renderer {
         cull: Boolean,
         backfaceCull: Boolean,
         chroma: Int
-    ) = addString(color, string, x, y, z, Geometry.cameraRV.x, Geometry.cameraRV.y, Geometry.cameraRV.z, -Geometry.cameraUV.x, -Geometry.cameraUV.y, -Geometry.cameraUV.z, -Geometry.cameraFV.x, -Geometry.cameraFV.y, -Geometry.cameraFV.z, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma)
+    ) = addString(color, string, x, y, z, Geometry.getCameraRV().x, Geometry.getCameraRV().y, Geometry.getCameraRV().z, -Geometry.getCameraUV().x, -Geometry.getCameraUV().y, -Geometry.getCameraUV().z, -Geometry.getCameraFV().x, -Geometry.getCameraFV().y, -Geometry.getCameraFV().z, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma)
     fun addBillboardString(
         color: Color,
         string: String,
@@ -1860,7 +1860,7 @@ object Renderer {
         cull: Boolean,
         backfaceCull: Boolean,
         chroma: Int
-    ) = addString(color, string, x, y, z, Geometry.cameraRV.x, Geometry.cameraRV.y, Geometry.cameraRV.z, -Geometry.cameraUV.x, -Geometry.cameraUV.y, -Geometry.cameraUV.z, -Geometry.cameraFV.x, -Geometry.cameraFV.y, -Geometry.cameraFV.z, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma)
+    ) = addString(color, string, x, y, z, Geometry.getCameraRV().x, Geometry.getCameraRV().y, Geometry.getCameraRV().z, -Geometry.getCameraUV().x, -Geometry.getCameraUV().y, -Geometry.getCameraUV().z, -Geometry.getCameraFV().x, -Geometry.getCameraFV().y, -Geometry.getCameraFV().z, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma)
     fun addString(
         color: Long,
         string: String,
@@ -2325,7 +2325,6 @@ object Renderer {
             // })
         }
 
-        Geometry.cacheValues()
         StringParser.removeUnused()
         StringParser.setUnused()
 

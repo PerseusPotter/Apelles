@@ -2,6 +2,7 @@ import { JavaTypeOrNull, throwExp } from './util';
 
 const APRenderer = JavaTypeOrNull('com.perseuspotter.apelles.Renderer') ?? throwExp('jar not loaded correctly');
 const APRendererI = APRenderer.INSTANCE;
+const PerFrameCache = JavaTypeOrNull('com.perseuspotter.apelles.depression.PerFrameCache')?.Companion ?? throwExp('jar not loaded correctly');
 export function ___________________________________shhh() {
   let t = 0;
   register('tick', () => t++);
@@ -9,6 +10,7 @@ export function ___________________________________shhh() {
     uploadBatched();
     APRendererI.render(pt, t);
   }).setPriority(Priority.LOWEST);
+  register(net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent, () => PerFrameCache.increaseFrameCounter());
 }
 const GlState = JavaTypeOrNull('com.perseuspotter.apelles.state.GlState')?.INSTANCE ?? throwExp('jar not loaded correctly');
 const Frustum = JavaTypeOrNull('com.perseuspotter.apelles.geo.Frustum')?.INSTANCE ?? throwExp('jar not loaded correctly');
@@ -29,17 +31,9 @@ function uploadBatched() {
     batched = [];
   }
 }
-let frame = 0;
 register('renderWorld', () => {
   uploadBatched();
-  frame++;
 }).setPriority(Priority.LOWEST);
-let lastUpdateFrame = 0;
-function notShitCodeTM() {
-  if (frame === lastUpdateFrame) return;
-  lastUpdateFrame = frame;
-  GeometryC.cacheValues();
-}
 /**
  * use if you need a more detailed error message (sc. you are passing the wrong parameters and getting a class cast exception and need to find the exact method call)
  */
@@ -291,7 +285,6 @@ const addBeacon = APRendererI.addBeacon ?? throwExp('bad');
  * @param {RenderOptions & FaceOptions & BeaconOptions} options
  */
 export function renderBeacon(color, x, y, z, { centered = true, h = 300 - y, lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
-  notShitCodeTM();
   if (!centered) {
     x += 0.5;
     z += 0.5;
@@ -703,7 +696,6 @@ const addBillboard = APRendererI.addBillboard ?? throwExp('bad');
  * @param {RenderOptions & FaceOptions} options
  */
 export function renderBillboard(color, x, y, z, w, h, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
-  notShitCodeTM();
   if (batchCalls) batched.push([33, color, x, y, z, w, h, lighting, phase, cull, backfaceCull, chroma]);
   else addBillboard.call(APRendererI, color, x, y, z, w, h, lighting, phase, cull, backfaceCull, chroma);
 }
@@ -727,7 +719,6 @@ const addString = APRendererI.addString ?? throwExp('bad');
  * @param {RenderOptions & FaceOptions & StringOptions} options
  */
 export function renderString(color, string, x, y, z, rx, ry, rz, dx, dy, dz, nx, ny, nz, { scale = 1, increase = false, shadow = true, blackBox = 1, anchor = 5, alignX = 2, parseMode = 3, lineHeight = 9, lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
-  notShitCodeTM();
   if (batchCalls) batched.push([34, color, string, x, y, z, rx, ry, rz, dx, dy, dz, nx, ny, nz, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma]);
   else addString.call(APRendererI, color, string, x, y, z, rx, ry, rz, dx, dy, dz, nx, ny, nz, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma);
 }
@@ -743,7 +734,6 @@ const addBillboardString = APRendererI.addBillboardString ?? throwExp('bad');
  * @param {RenderOptions & FaceOptions & StringOptions} options
  */
 export function renderBillboardString(color, string, x, y, z, { scale = 1, increase = false, shadow = true, blackBox = 1, anchor = 5, alignX = 2, parseMode = 3, lineHeight = 9, lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
-  notShitCodeTM();
   if (batchCalls) batched.push([35, color, string, x, y, z, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma]);
   else addBillboardString.call(APRendererI, color, string, x, y, z, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma);
 }
@@ -758,7 +748,6 @@ export function renderBillboardString(color, string, x, y, z, { scale = 1, incre
 export function renderTracer(color, x, y, z, { lw = 1, lighting = 0, phase = false, smooth = false, cull = true, chroma = 0 } = {}) {
   const p = Player.getPlayer();
   if (!p) return;
-  notShitCodeTM();
   const look = p.func_70676_i(Tessellator.partialTicks);
   renderLine(color, [
     [x, y, z],
@@ -842,7 +831,6 @@ const _test = Frustum['test(double,double,double)'] ?? throwExp('bad');
  * @returns {boolean}
  */
 export function isInView(x, y, z) {
-  notShitCodeTM();
   return _test.call(Frustum, x, y, z);
 }
 
@@ -858,7 +846,6 @@ const _clip = Frustum['clip(com.perseuspotter.apelles.geo.Point,com.perseuspotte
  * @returns {[null, null] | [{ x: number, y: number, z: number}, { x: number, y: number, z: number }]}
  */
 export function clipLine(x1, y1, z1, x2, y2, z2) {
-  notShitCodeTM();
   return _clip.call(Frustum, new Point(x1, y1, z1), new Point(x2, y2, z2));
 }
 
@@ -869,21 +856,18 @@ const _getRenderZ = GeometryC['getRenderZ()'] ?? throwExp('bad');
  * @returns {number}
  */
 export function getRenderX() {
-  notShitCodeTM();
   return _getRenderX.call(GeometryC);
 };
 /**
  * @returns {number}
  */
 export function getRenderY() {
-  notShitCodeTM();
   return _getRenderY.call(GeometryC);
 };
 /**
  * @returns {number}
  */
 export function getRenderZ() {
-  notShitCodeTM();
   return _getRenderZ.call(GeometryC);
 };
 

@@ -35,12 +35,12 @@ object PrimitiveColorUVInternal : GeometryInternal() {
                 val g = params[i + 1].toFloat()
                 val b = params[i + 2].toFloat()
                 val a = params[i + 3].toFloat()
-                worldRen.pos(params[i + 4] - rxc, params[i + 5] - ryc, params[i + 6] - rzc).tex(params[i + 7], params[i + 8]).color(r, g, b, a).endVertex()
-                worldRen.pos(params[i + 9] - rxc, params[i + 10] - ryc, params[i + 11] - rzc).tex(params[i + 12], params[i + 13]).color(r, g, b, a).endVertex()
-                worldRen.pos(params[i + 14] - rxc, params[i + 15] - ryc, params[i + 16] - rzc).tex(params[i + 17], params[i + 18]).color(r, g, b, a).endVertex()
-                worldRen.pos(params[i + 14] - rxc, params[i + 15] - ryc, params[i + 16] - rzc).tex(params[i + 17], params[i + 18]).color(r, g, b, a).endVertex()
-                worldRen.pos(params[i + 9] - rxc, params[i + 10] - ryc, params[i + 11] - rzc).tex(params[i + 12], params[i + 13]).color(r, g, b, a).endVertex()
-                worldRen.pos(params[i + 19] - rxc, params[i + 20] - ryc, params[i + 21] - rzc).tex(params[i + 22], params[i + 23]).color(r, g, b, a).endVertex()
+                worldRen.pos(params[i + 4] - getRenderX(), params[i + 5] - getRenderY(), params[i + 6] - getRenderZ()).tex(params[i + 7], params[i + 8]).color(r, g, b, a).endVertex()
+                worldRen.pos(params[i + 9] - getRenderX(), params[i + 10] - getRenderY(), params[i + 11] - getRenderZ()).tex(params[i + 12], params[i + 13]).color(r, g, b, a).endVertex()
+                worldRen.pos(params[i + 14] - getRenderX(), params[i + 15] - getRenderY(), params[i + 16] - getRenderZ()).tex(params[i + 17], params[i + 18]).color(r, g, b, a).endVertex()
+                worldRen.pos(params[i + 14] - getRenderX(), params[i + 15] - getRenderY(), params[i + 16] - getRenderZ()).tex(params[i + 17], params[i + 18]).color(r, g, b, a).endVertex()
+                worldRen.pos(params[i + 9] - getRenderX(), params[i + 10] - getRenderY(), params[i + 11] - getRenderZ()).tex(params[i + 12], params[i + 13]).color(r, g, b, a).endVertex()
+                worldRen.pos(params[i + 19] - getRenderX(), params[i + 20] - getRenderY(), params[i + 21] - getRenderZ()).tex(params[i + 22], params[i + 23]).color(r, g, b, a).endVertex()
             }
             draw()
         }
