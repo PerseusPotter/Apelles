@@ -81,9 +81,13 @@ export function disableBatching() {
  */
 
 /**
+ * @typedef IncreaseOption
+ * @property {boolean} [increase=false] `false` - increase with distance
+ */
+
+/**
  * @typedef StringOptions
  * @property {number} [scale=1] `1`
- * @property {boolean} [increase=false] `false` - increase with distance
  * @property {boolean} [shadow=true] `true` - backdrop shadow
  * @property {number} [blackBox=1] `1` - gray box behind text, 0: no box | 1: box around entire text | 2: box around each line
  * @property {number} [anchor=0] `5` - how text is positioned around the point. [visual](https://i.imgur.com/GRwBx0H.png) 0: top left | 1: middle left | 2: bottom left | 4: top middle | 5: center | 6: bottom middle | 8: top right | 9: middle right | 10: bottom right
@@ -613,11 +617,11 @@ const addBoxOJ = APRendererI.addBoxOJ ?? throwExp('bad');
  * @param {number} w
  * @param {number} h
  * @param {number} lw warning: `lw` units are different than all other methods; measured in 1/16ths of a block
- * @param {RenderOptions & FaceOptions & AABBOptions} options
+ * @param {RenderOptions & FaceOptions & AABBOptions & IncreaseOption} options
  */
-export function renderBoxOutlineMiter(color, x, y, z, w, h, lw, { centered = true, wz = w, lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([28, color, x, y, z, w, h, wz, centered, lw, lighting, phase, cull, backfaceCull, chroma]);
-  else addBoxOJ.call(APRendererI, color, x, y, z, w, h, wz, centered, lw, lighting, phase, cull, backfaceCull, chroma);
+export function renderBoxOutlineMiter(color, x, y, z, w, h, lw, { centered = true, wz = w, increase = false, lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([28, color, x, y, z, w, h, wz, centered, lw, increase, lighting, phase, cull, backfaceCull, chroma]);
+  else addBoxOJ.call(APRendererI, color, x, y, z, w, h, wz, centered, lw, increase, lighting, phase, cull, backfaceCull, chroma);
 }
 
 const addAABBOJ = APRendererI.addAABBOJ ?? throwExp('bad');
@@ -633,9 +637,9 @@ const addAABBOJ = APRendererI.addAABBOJ ?? throwExp('bad');
  * @param {number} y2
  * @param {number} z2
  * @param {number} lw warning: `lw` units are different than all other methods; measured in 1/16ths of a block
- * @param {RenderOptions & FaceOptions} options
+ * @param {RenderOptions & FaceOptions & IncreaseOption} options
  */
-export function renderAABBOutlineMiter(color, x1, y1, z1, x2, y2, z2, lw, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+export function renderAABBOutlineMiter(color, x1, y1, z1, x2, y2, z2, lw, { increase = false, lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([
     29,
     color,
@@ -646,6 +650,7 @@ export function renderAABBOutlineMiter(color, x1, y1, z1, x2, y2, z2, lw, { ligh
     Math.max(y1, y2),
     Math.max(z1, z2),
     lw,
+    increase,
     lighting,
     phase,
     cull,
@@ -661,6 +666,7 @@ export function renderAABBOutlineMiter(color, x1, y1, z1, x2, y2, z2, lw, { ligh
     Math.max(y1, y2),
     Math.max(z1, z2),
     lw,
+    increase,
     lighting,
     phase,
     cull,
@@ -677,11 +683,11 @@ const addAABBOJM = APRendererI.addAABBOJM ?? throwExp('bad');
  * @param {ColorLike} color packed int (RGBA) or float[] (length 3/4, all [0, 1])
  * @param aabb net.minecraft.util.AxisAlignedBB
  * @param {number} lw warning: `lw` units are different than all other methods; measured in 1/16ths of a block
- * @param {RenderOptions & FaceOptions} options
+ * @param {RenderOptions & FaceOptions & IncreaseOption} options
  */
-export function renderMCAABBOutlineMiter(color, aabb, lw, { lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
-  if (batchCalls) batched.push([32, color, aabb, lw, lighting, phase, cull, backfaceCull, chroma]);
-  else addAABBOJM.call(APRendererI, color, aabb, lw, lighting, phase, cull, backfaceCull, chroma);
+export function renderMCAABBOutlineMiter(color, aabb, lw, { increase = false, lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+  if (batchCalls) batched.push([32, color, aabb, lw, increase, lighting, phase, cull, backfaceCull, chroma]);
+  else addAABBOJM.call(APRendererI, color, aabb, lw, increase, lighting, phase, cull, backfaceCull, chroma);
 }
 
 const addBillboard = APRendererI.addBillboard ?? throwExp('bad');
@@ -716,7 +722,7 @@ const addString = APRendererI.addString ?? throwExp('bad');
  * @param {number} nx normal vector
  * @param {number} ny normal vector
  * @param {number} nz normal vector
- * @param {RenderOptions & FaceOptions & StringOptions} options
+ * @param {RenderOptions & FaceOptions & StringOptions & IncreaseOption} options
  */
 export function renderString(color, string, x, y, z, rx, ry, rz, dx, dy, dz, nx, ny, nz, { scale = 1, increase = false, shadow = true, blackBox = 1, anchor = 5, alignX = 2, parseMode = 3, lineHeight = 9, lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([34, color, string, x, y, z, rx, ry, rz, dx, dy, dz, nx, ny, nz, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma]);
@@ -731,7 +737,7 @@ const addBillboardString = APRendererI.addBillboardString ?? throwExp('bad');
  * @param {number} x position anchor
  * @param {number} y position anchor
  * @param {number} z position anchor
- * @param {RenderOptions & FaceOptions & StringOptions} options
+ * @param {RenderOptions & FaceOptions & StringOptions & IncreaseOption} options
  */
 export function renderBillboardString(color, string, x, y, z, { scale = 1, increase = false, shadow = true, blackBox = 1, anchor = 5, alignX = 2, parseMode = 3, lineHeight = 9, lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
   if (batchCalls) batched.push([35, color, string, x, y, z, scale, increase, shadow, blackBox, anchor, alignX, parseMode, lineHeight, lighting, phase, cull, backfaceCull, chroma]);

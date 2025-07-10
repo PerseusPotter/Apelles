@@ -1617,12 +1617,13 @@ object Renderer {
         wz: Double,
         centered: Boolean,
         lw: Double,
+        increase: Boolean,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
         backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBOJ(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, cull, backfaceCull, chroma)
+    ) = addAABBOJ(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, increase, lighting, phase, cull, backfaceCull, chroma)
     fun addBoxOJ(
         color: List<Double>,
         x: Double,
@@ -1633,12 +1634,13 @@ object Renderer {
         wz: Double,
         centered: Boolean,
         lw: Double,
+        increase: Boolean,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
         backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBOJ(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, cull, backfaceCull, chroma)
+    ) = addAABBOJ(Color(color), if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, increase, lighting, phase, cull, backfaceCull, chroma)
     fun addBoxOJ(
         color: Color,
         x: Double,
@@ -1649,42 +1651,46 @@ object Renderer {
         wz: Double,
         centered: Boolean,
         lw: Double,
+        increase: Boolean,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
         backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBOJ(color, if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, lighting, phase, cull, backfaceCull, chroma)
+    ) = addAABBOJ(color, if (centered) x - wx * 0.5 else x, y, if (centered) z - wz * 0.5 else z, if (centered) x + wx * 0.5 else x + wx, y + h, if (centered) z + wz * 0.5 else z + wz, lw, increase, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBOJM(
         color: Long,
         aabb: AxisAlignedBB,
         lw: Double,
+        increase: Boolean,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
         backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBOJ(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, lighting, phase, cull, backfaceCull, chroma)
+    ) = addAABBOJ(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, increase, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBOJM(
         color: List<Double>,
         aabb: AxisAlignedBB,
         lw: Double,
+        increase: Boolean,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
         backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBOJ(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, lighting, phase, cull, backfaceCull, chroma)
+    ) = addAABBOJ(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, increase, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBOJM(
         color: Color,
         aabb: AxisAlignedBB,
         lw: Double,
+        increase: Boolean,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
         backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBOJ(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, lighting, phase, cull, backfaceCull, chroma)
+    ) = addAABBOJ(color, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, lw, increase, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBOJ(
         color: Long,
         x1: Double,
@@ -1694,12 +1700,13 @@ object Renderer {
         y2: Double,
         z2: Double,
         lw: Double,
+        increase: Boolean,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
         backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBOJ(Color(color), x1, y1, z1, x2, y2, z2, lw, lighting, phase, cull, backfaceCull, chroma)
+    ) = addAABBOJ(Color(color), x1, y1, z1, x2, y2, z2, lw, increase, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBOJ(
         color: List<Double>,
         x1: Double,
@@ -1709,12 +1716,13 @@ object Renderer {
         y2: Double,
         z2: Double,
         lw: Double,
+        increase: Boolean,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
         backfaceCull: Boolean,
         chroma: Int
-    ) = addAABBOJ(Color(color), x1, y1, z1, x2, y2, z2, lw, lighting, phase, cull, backfaceCull, chroma)
+    ) = addAABBOJ(Color(color), x1, y1, z1, x2, y2, z2, lw, increase, lighting, phase, cull, backfaceCull, chroma)
     fun addAABBOJ(
         color: Color,
         x1: Double,
@@ -1724,6 +1732,7 @@ object Renderer {
         y2: Double,
         z2: Double,
         lw: Double,
+        increase: Boolean,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
@@ -1733,7 +1742,7 @@ object Renderer {
         addThing(
             Thingamabob(
                 Thingamabob.Type.AABBOJ,
-                listOf(x1, y1, z1, x2, y2, z2, lw),
+                listOf(x1, y1, z1, x2, y2, z2, lw * (if (increase) Geometry.increase((x1 + x2) * 0.5, (y1 + y2) * 0.5, (z1 + z2) * 0.5) else 1.0)),
                 color,
                 1f,
                 lighting,
@@ -1976,7 +1985,7 @@ object Renderer {
         }
 
         val (x, y, z, s) = Geometry.rescale(_x, _y, _z)
-        val scale = _scale * (if (increase) sqrt((Geometry.getRenderX() - x).pow(2) + (Geometry.getRenderY() - y).pow(2) + (Geometry.getRenderZ() - z).pow(2)) / Geometry.getFarPlaneDist() else 0.02) * s
+        val scale = _scale * 0.02 * (if (increase) Geometry.increase(_x, _y, _z) else 1.0) * s
         val rx = _rx * scale
         val ry = _ry * scale
         val rz = _rz * scale
