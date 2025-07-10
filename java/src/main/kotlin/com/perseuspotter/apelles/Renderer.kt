@@ -1993,7 +1993,7 @@ object Renderer {
         val baseColShadow = Color(color.r * 0.25f, color.g * 0.25f, color.b * 0.25f, 1f)
 
         val bounds = lines.mapIndexed { i, l ->
-            if (!cull) return@mapIndexed Pair(0, l.chars.size - 1)
+            if (!cull) return@mapIndexed Pair(0, l.chars.size)
             val px = xOff[i]
             val py = lineHeight * i
             val tl = Point(
@@ -2107,7 +2107,7 @@ object Renderer {
             }
 
             var ci = minI
-            while (ci <= maxI) {
+            while (ci < maxI) {
                 val c = l.chars[ci++].get()
                 val t = charTris.getOrPut(c.info.rl) { DoubleArrayList((l.charCount[c.info.rl] ?: 10) * 24 * (if (shadow) 2 else 1)) }
 

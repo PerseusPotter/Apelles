@@ -8,10 +8,10 @@ import kotlin.math.min
 class StringParser(key: StringKey) {
     private val decoratorsList = mutableListOf<Decorator>()
     private val charsList = mutableListOf<CharacterRenderInfoWrapped>()
-    private val cumWidthList = mutableListOf<Int>()
+    private val cumWidthList = mutableListOf(0)
     val decorators: Array<Decorator>
     val chars: Array<CharacterRenderInfoWrapped>
-    val cumWidth: Array<Int>
+    val cumWidth: IntArray
     val charCount = mutableMapOf<ResourceLocation, Int>()
 
     fun getWidthLowerBound(w: Double): Int {
@@ -34,9 +34,9 @@ class StringParser(key: StringKey) {
         }
         return max(l - 1, 0)
     }
-    fun getWidth() = cumWidth.lastOrNull() ?: 0
-    private fun getLength() = cumWidthList.lastOrNull() ?: 0
-    fun getXOff(i: Int) = if (i <= 0) 0 else cumWidthList[i - 1]
+    fun getWidth() = cumWidth.last()
+    private fun getLength() = cumWidthList.last()
+    fun getXOff(i: Int) = if (i <= 0) 0 else cumWidth[i]
 
     private var obfu = false
     private var bold = false
@@ -124,7 +124,7 @@ class StringParser(key: StringKey) {
 
         decorators = decoratorsList.toTypedArray()
         chars = charsList.toTypedArray()
-        cumWidth = cumWidthList.toTypedArray()
+        cumWidth = cumWidthList.toIntArray()
     }
 
     companion object {
