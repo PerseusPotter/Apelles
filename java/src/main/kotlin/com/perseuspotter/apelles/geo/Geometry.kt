@@ -132,6 +132,19 @@ abstract class Geometry {
         }
 
         @JvmStatic
+        fun increase(x: Double, y: Double, z: Double): Double {
+            val dy = (Minecraft.getMinecraft().thePlayer?.getEyeHeight() ?: 0f) - 0.1
+            val rx = getRenderX()
+            val ry = getRenderY()
+            val rz = getRenderZ()
+            val d = (rx - x).pow(2) + (ry + dy - y).pow(2) + (rz - z).pow(2)
+            val near = 10
+            if (d < near) return 1.0
+            val f = ((d - near) / (getFarPlaneDist() - near)).coerceIn(0.0, 1.0)
+            return f * f * (3.0 - 2.0 * f)
+        }
+
+        @JvmStatic
         fun begin(mode: Int, tex: Boolean, x: Double, y: Double, z: Double) {
             cx = x
             cy = y
