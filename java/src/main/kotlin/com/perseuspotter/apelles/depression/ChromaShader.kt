@@ -18,17 +18,26 @@ open class ChromaShader(fragSrc: String?, vertSrc: String?, private val twoD: Bo
             return if (tex) (if (is2D) CHROMA_2D_TEX else CHROMA_3D_TEX) else (if (is2D) CHROMA_2D else CHROMA_3D)
         }
 
-        fun updateUniforms(pt: Double, t: Int) {
-            instances.forEach {
-                it.bind()
-                it.updateUniforms(pt, t)
-            }
-            GlState.bindShader(0)
+        var cRtPt = 0.0
+        var cRtT = 0
+        fun markUniformsDirty(pt: Double, t: Int) {
+            instances.forEach { it.needUpdateUniforms = true }
+            cRtPt = pt
+            cRtT = t
         }
     }
 
     init {
         instances.add(this)
+    }
+
+    protected var needUpdateUniforms = false
+    override fun bind() {
+        super.bind()
+        if (needUpdateUniforms) {
+            needUpdateUniforms = false
+            updateUniforms(cRtPt, cRtT)
+        }
     }
 
     protected open fun updateUniforms(pt: Double, t: Int) {
