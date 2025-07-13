@@ -14,7 +14,7 @@ open class Shader(val fragSrc: String?, val vertSrc: String?, val createProgram:
     var fragId = 0
     var vertId = 0
 
-    fun build() {
+    open fun build() {
         init = true
 
         if (fragLeech != null) fragId = fragLeech!!.fragId
@@ -104,9 +104,9 @@ open class Shader(val fragSrc: String?, val vertSrc: String?, val createProgram:
 
     open fun init() {}
 
-    fun getUniformLoc(name: String) = uniformCache.getOrPut(name) { GL20.glGetUniformLocation(progId, name) }
+    open fun getUniformLoc(name: String) = uniformCache.getOrPut(name) { GL20.glGetUniformLocation(progId, name) }
 
-    fun destroy() {
+    open fun destroy() {
         if (createProgram) GL20.glDeleteProgram(progId)
         if (!deleteShaders) {
             if (fragId != 0) GL20.glDeleteShader(fragId)
@@ -114,13 +114,13 @@ open class Shader(val fragSrc: String?, val vertSrc: String?, val createProgram:
         }
     }
 
-    fun bind() {
+    open fun bind() {
         if (!createProgram) throw IllegalStateException("erm no")
         if (!init) build()
         GlState.bindShader(progId)
     }
 
-    fun unbind() {
+    open fun unbind() {
         GlState.bindShader(0)
     }
 
