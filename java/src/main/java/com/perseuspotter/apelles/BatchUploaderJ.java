@@ -239,11 +239,12 @@ class BatchUploaderJ {
                         asDouble(arr.get(3)),
                         asDouble(arr.get(4)),
                         asDouble(arr.get(5)),
-                        asInt(arr.get(6)),
-                        (Boolean) arr.get(7),
+                        (Boolean) arr.get(6),
+                        asInt(arr.get(7)),
                         (Boolean) arr.get(8),
                         (Boolean) arr.get(9),
-                        asInt(arr.get(10))
+                        (Boolean) arr.get(10),
+                        asInt(arr.get(11))
                     );
                     else Renderer.INSTANCE.addBeacon(
                         asLong(color),
@@ -251,11 +252,12 @@ class BatchUploaderJ {
                         asDouble(arr.get(3)),
                         asDouble(arr.get(4)),
                         asDouble(arr.get(5)),
-                        asInt(arr.get(6)),
-                        (Boolean) arr.get(7),
+                        (Boolean) arr.get(6),
+                        asInt(arr.get(7)),
                         (Boolean) arr.get(8),
                         (Boolean) arr.get(9),
-                        asInt(arr.get(10))
+                        (Boolean) arr.get(10),
+                        asInt(arr.get(11))
                     );
                     break;
                 }
