@@ -1985,7 +1985,16 @@ object Renderer {
         }
 
         val (x, y, z, s) = Geometry.rescale(_x, _y, _z)
-        val scale = _scale * (if (increase) Geometry.increase(_x, _y, _z) else 0.02) * s
+        var scale = _scale * s
+        if (increase) {
+            val dy = (Minecraft.getMinecraft().thePlayer?.getEyeHeight() ?: 0f) - 0.1
+            val rx = Geometry.getRenderX()
+            val ry = Geometry.getRenderY()
+            val rz = Geometry.getRenderZ()
+            val d = sqrt((rx - x).pow(2) + (ry + dy - y).pow(2) + (rz - z).pow(2))
+            val sig = 1.0 / (1.0 + exp(-0.15 * (d - 20.0)))
+            scale *= (1.0 - sig) * (d * 0.0005 + 0.04) + sig * d * 0.0025
+        } else scale *= 0.02;
         val rx = _rx * scale
         val ry = _ry * scale
         val rz = _rz * scale
