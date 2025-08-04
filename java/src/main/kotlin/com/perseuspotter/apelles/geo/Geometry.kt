@@ -137,11 +137,8 @@ abstract class Geometry {
             val rx = getRenderX()
             val ry = getRenderY()
             val rz = getRenderZ()
-            val d = (rx - x).pow(2) + (ry + dy - y).pow(2) + (rz - z).pow(2)
-            val near = 10
-            if (d < near) return 1.0
-            val f = ((d - near) / (getFarPlaneDist() - near)).coerceIn(0.0, 1.0)
-            return 2.0 * f * f * (3.0 - 2.0 * f) + 1.0
+            val d = sqrt((rx - x).pow(2) + (ry + dy - y).pow(2) + (rz - z).pow(2))
+            return min(10.0, d * 0.05 + 1.0)
         }
 
         @JvmStatic
