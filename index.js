@@ -7,10 +7,9 @@ export function ___________________________________shhh() {
   let t = 0;
   register('tick', () => t++);
   register('renderWorld', pt => {
-    uploadBatched();
     APRendererI.render(pt, t);
-  }).setPriority(Priority.LOWEST);
-  register(net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent, () => PerFrameCache.increaseFrameCounter());
+  }).setPriority(Priority.LOWEST).unregister().register();
+  register('renderWorld', () => PerFrameCache.increaseFrameCounter()).setPriority(Priority.HIGHEST).unregister().register();
 }
 const GlState = JavaTypeOrNull('com.perseuspotter.apelles.state.GlState')?.INSTANCE ?? throwExp('jar not loaded correctly');
 const Frustum = JavaTypeOrNull('com.perseuspotter.apelles.geo.Frustum')?.INSTANCE ?? throwExp('jar not loaded correctly');
