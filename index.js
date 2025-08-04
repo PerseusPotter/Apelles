@@ -32,7 +32,7 @@ function uploadBatched() {
 }
 register('renderWorld', () => {
   uploadBatched();
-}).setPriority(Priority.LOWEST);
+}).setPriority(Priority.LOW).unregister().register();
 /**
  * use if you need a more detailed error message (sc. you are passing the wrong parameters and getting a class cast exception and need to find the exact method call)
  */
@@ -285,15 +285,15 @@ const addBeacon = APRendererI.addBeacon ?? throwExp('bad');
  * @param {number} x
  * @param {number} y
  * @param {number} z
- * @param {RenderOptions & FaceOptions & BeaconOptions} options
+ * @param {RenderOptions & FaceOptions & BeaconOptions & IncreaseOption} options
  */
-export function renderBeacon(color, x, y, z, { centered = true, h = 300 - y, lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
+export function renderBeacon(color, x, y, z, { centered = true, h = 300 - y, increase = false, lighting = 0, phase = false, cull = true, backfaceCull = true, chroma = 0 } = {}) {
   if (!centered) {
     x += 0.5;
     z += 0.5;
   }
-  if (batchCalls) batched.push([6, color, x, y, z, h, lighting, phase, cull, backfaceCull, chroma]);
-  else addBeacon.call(APRendererI, color, x, y, z, h, lighting, phase, cull, backfaceCull, chroma);
+  if (batchCalls) batched.push([6, color, x, y, z, h, increase, lighting, phase, cull, backfaceCull, chroma]);
+  else addBeacon.call(APRendererI, color, x, y, z, h, increase, lighting, phase, cull, backfaceCull, chroma);
 }
 
 const addCircle = APRendererI.addCircle ?? throwExp('bad');

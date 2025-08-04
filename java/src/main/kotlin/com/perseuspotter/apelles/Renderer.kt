@@ -368,30 +368,33 @@ object Renderer {
         y: Double,
         z: Double,
         h: Double,
+        increase: Boolean,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
         backfaceCull: Boolean,
         chroma: Int
-    ) = addBeacon(Color(color), x, y, z, h, lighting, phase, cull, backfaceCull, chroma)
+    ) = addBeacon(Color(color), x, y, z, h, increase, lighting, phase, cull, backfaceCull, chroma)
     fun addBeacon(
         color: List<Double>,
         x: Double,
         y: Double,
         z: Double,
         h: Double,
+        increase: Boolean,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
         backfaceCull: Boolean,
         chroma: Int
-    ) = addBeacon(Color(color), x, y, z, h, lighting, phase, cull, backfaceCull, chroma)
+    ) = addBeacon(Color(color), x, y, z, h, increase, lighting, phase, cull, backfaceCull, chroma)
     fun addBeacon(
         color: Color,
         x: Double,
         y: Double,
         z: Double,
         h: Double,
+        increase: Boolean,
         lighting: Int,
         phase: Boolean,
         cull: Boolean,
@@ -425,7 +428,7 @@ object Renderer {
         addTexturedThing(
             Thingamabob(
                 Thingamabob.Type.BeaconI,
-                listOf(sx, y1, sz, y2 - y1, s),
+                listOf(sx, y1, sz, y2 - y1, s * (if (increase) Geometry.increase(x, y, z) else 1.0)),
                 color,
                 1f,
                 lighting,
