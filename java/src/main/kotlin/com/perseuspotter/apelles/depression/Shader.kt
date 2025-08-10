@@ -1,11 +1,8 @@
 package com.perseuspotter.apelles.depression
 
 import com.perseuspotter.apelles.state.GlState
-import net.minecraft.client.renderer.ActiveRenderInfo
-import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
-import java.nio.FloatBuffer
 
 open class Shader(val fragSrc: String?, val vertSrc: String?, val createProgram: Boolean = true, val deleteShaders: Boolean = true, var fragLeech: Shader? = null, var vertLeech: Shader? = null) {
     var init = false
@@ -98,7 +95,7 @@ open class Shader(val fragSrc: String?, val vertSrc: String?, val createProgram:
             if (vertId != 0) GL20.glDeleteShader(vertId)
         }
 
-        GlState.bindShader(progId)
+        GlState.bindShader(this)
         init()
     }
 
@@ -117,12 +114,14 @@ open class Shader(val fragSrc: String?, val vertSrc: String?, val createProgram:
     open fun bind() {
         if (!createProgram) throw IllegalStateException("erm no")
         if (!init) build()
-        GlState.bindShader(progId)
+        GlState.bindShader(this)
     }
 
     open fun unbind() {
         GlState.bindShader(0)
     }
+
+    open fun unbindCleanup() {}
 
     companion object {
         @JvmStatic

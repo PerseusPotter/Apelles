@@ -43,7 +43,7 @@ register('renderWorld', () => {
   renderVerticalCylinder(0xC0FF33A0, 30, 10, 30, 1, 4, 20, { lighting: 1 });
 
   renderOctahedronOutline(0xDADD1EFF, 30, 10, 10, 2, 3);
-  renderOctahedronFilled(0xDADD1EFF, 30, 15, 10, 3, 4, { lighting: 2 });
+  renderOctahedronFilled(packChromaParams(0.3, 0.1, 0.8, 0.2, 1.0), 30, 15, 10, 3, 4, { lighting: 2, chroma: 1 });
 
   for (let d = 0; d < 5; d++) {
     for (let i = 0; i < 8; i++) {

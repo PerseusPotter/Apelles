@@ -1,107 +1,60 @@
 package com.perseuspotter.apelles.geo.dim3.stair.straight
 
-import com.perseuspotter.apelles.Renderer
 import com.perseuspotter.apelles.geo.Frustum
 import com.perseuspotter.apelles.geo.Geometry
 import org.lwjgl.opengl.GL11
 
 object StairStraightFilled : Geometry() {
     override val name: String = "stairStraightF"
-    override fun render(pt: Double, params: List<Double>) {
-        val (_x, _y, _z, _c) = params
+    override fun render(pt: Double) {
+        val (_x, _y, _z, _c) = currentParams
         val (x, y, z, s) = rescale(_x, _y , _z)
         val verts = OrientationStraight.vertices[_c.toInt()]
 
-        begin(GL11.GL_TRIANGLE_STRIP, false, x + verts[0].x * s, y + verts[0].y * s, z + verts[0].z * s)
-        if (Renderer.USE_NEW_SHIT) {
-            verts.forEachIndexed { i, v -> if (i > 0) addVert(x + v.x * s, y + v.y * s, z + v.z * s) }
+        begin(GL11.GL_TRIANGLES, false)
 
-            index(0)
-            index(1)
-            index(4)
-            index(5)
-            index(6)
-            index(7)
-            index(8)
-            index(9)
-            index(10)
-            index(11)
-            index(2)
-            index(3)
-            index(0)
-            index(1)
+        verts.forEach { addVert(x + it.x * s, y + it.y * s, z + it.z * s) }
 
-            reset()
-            index(10)
-            index(10)
-            index(8)
-            index(2)
-            index(6)
-            index(0)
-            index(4)
+        addTri(0, 1, 4)
+        addTri(4, 1, 5)
+        addTri(4, 5, 6)
+        addTri(6, 5, 7)
+        addTri(6, 7, 8)
+        addTri(8, 7, 9)
+        addTri(8, 9, 10)
+        addTri(10, 9, 11)
+        addTri(10, 11, 2)
+        addTri(2, 11, 3)
+        addTri(2, 3, 0)
+        addTri(0, 3, 1)
 
-            reset()
-            index(11)
-            index(9)
-            index(3)
-            index(7)
-            index(1)
-            index(5)
-        } else {
-            fun emit(i: Int) = pos(x + verts[i + 1].x * s, y + verts[i + 1].y * s, z + verts[i + 1].z * s)
+        addTri(8, 10, 2)
+        addTri(8, 2, 6)
+        addTri(6, 2, 0)
+        addTri(6, 0, 4)
 
-            emit(0)
-            emit(1)
-            emit(4)
-            emit(5)
-            emit(6)
-            emit(7)
-            emit(8)
-            emit(9)
-            emit(10)
-            emit(11)
-            emit(2)
-            emit(3)
-            emit(0)
-            emit(1)
+        addTri(11, 9, 3)
+        addTri(3, 9, 7)
+        addTri(3, 7, 1)
+        addTri(1, 7, 5)
 
-            emit(1)
-            emit(10)
-            emit(10)
-            emit(10)
-            emit(8)
-            emit(2)
-            emit(6)
-            emit(0)
-            emit(4)
-
-            emit(4)
-            emit(11)
-            emit(11)
-            emit(11)
-            emit(9)
-            emit(3)
-            emit(7)
-            emit(1)
-            emit(5)
-        }
         draw()
     }
 
-    override fun inView(params: List<Double>): Boolean {
-        val (x, y, z) = params
+    override fun inView(): Boolean {
+        val (x, y, z) = currentParams
         return false ||
-                Frustum.test(x + 0.5, y + 0.5, z + 0.5) ||
-                Frustum.test(x + 0.5, y + 0.5, z - 0.5) ||
-                Frustum.test(x + 0.5, y - 0.5, z + 0.5) ||
-                Frustum.test(x + 0.5, y - 0.5, z - 0.5) ||
-                Frustum.test(x - 0.5, y + 0.5, z + 0.5) ||
-                Frustum.test(x - 0.5, y + 0.5, z - 0.5) ||
-                Frustum.test(x - 0.5, y - 0.5, z + 0.5) ||
-                Frustum.test(x - 0.5, y - 0.5, z - 0.5)
+            Frustum.test(x + 0.5, y + 0.5, z + 0.5) ||
+            Frustum.test(x + 0.5, y + 0.5, z - 0.5) ||
+            Frustum.test(x + 0.5, y - 0.5, z + 0.5) ||
+            Frustum.test(x + 0.5, y - 0.5, z - 0.5) ||
+            Frustum.test(x - 0.5, y + 0.5, z + 0.5) ||
+            Frustum.test(x - 0.5, y + 0.5, z - 0.5) ||
+            Frustum.test(x - 0.5, y - 0.5, z + 0.5) ||
+            Frustum.test(x - 0.5, y - 0.5, z - 0.5)
     }
 
-    override fun getVertexCount(params: List<Double>): Int = 12
-    override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 29 else 32
-    override fun getDrawMode(params: List<Double>): Int = GL11.GL_TRIANGLE_STRIP
+    override fun getVertexCount(): Int = 12
+    override fun getIndexCount(): Int = 20 * 3
+    override fun getDrawMode(): Int = GL11.GL_TRIANGLES
 }

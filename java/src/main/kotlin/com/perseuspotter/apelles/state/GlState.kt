@@ -1,12 +1,13 @@
 package com.perseuspotter.apelles.state
 
+import com.perseuspotter.apelles.Renderer
+import com.perseuspotter.apelles.depression.Shader
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.texture.SimpleTexture
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL20
-import org.lwjgl.opengl.GL31
 import java.lang.reflect.Field
 
 object GlState {
@@ -548,6 +549,7 @@ object GlState {
     }
     private var lighting: Int? = null
     fun setLighting(light: Int) {
+        if (Renderer.USE_NEW_SHIT) return
         if (lighting != light) {
             if (light > 0 && (lighting == null || lighting == 0)) glEnable(GL_LIGHTING)
             when (light) {
@@ -558,43 +560,20 @@ object GlState {
             lighting = light
         }
     }
-    fun isLightingEnabled() = lighting!! > 0
     private var boundShader: Int? = null
+    private var boundShaderInst: Shader? = null
     fun bindShader(shader: Int) {
         if (boundShader != shader) {
             GL20.glUseProgram(shader)
             boundShader = shader
+            boundShaderInst = null
         }
     }
-    private var colorArray: Boolean? = null
-    fun setColorArray(enabled: Boolean) {
-        if (enabled != colorArray) {
-            if (enabled) glEnable(GL_COLOR_ARRAY)
-            else glDisable(GL_COLOR_ARRAY)
-            colorArray = enabled
-        }
-    }
-    private var normalArray: Boolean? = null
-    fun setNormalArray(enabled: Boolean) {
-        if (enabled != normalArray) {
-            if (enabled) glEnable(GL_NORMAL_ARRAY)
-            else glDisable(GL_NORMAL_ARRAY)
-            normalArray = enabled
-        }
-    }
-    private var texArray: Boolean? = null
-    fun setTexArray(enabled: Boolean) {
-        if (enabled != texArray) {
-            if (enabled) glEnable(GL_TEXTURE_COORD_ARRAY)
-            else glDisable(GL_TEXTURE_COORD_ARRAY)
-            texArray = enabled
-        }
-    }
-    private var primitiveRestart: Int? = null
-    fun setPrimitiveRestart(restart: Int) {
-        if (restart != primitiveRestart) {
-            GL31.glPrimitiveRestartIndex(restart)
-            primitiveRestart = restart
+    fun bindShader(shader: Shader?) {
+        if (boundShaderInst != shader) {
+            boundShaderInst?.unbindCleanup()
+            bindShader(shader?.progId ?: 0)
+            boundShaderInst = shader
         }
     }
     private var backfaceCull: Boolean? = null
@@ -603,6 +582,14 @@ object GlState {
             if (cull) glEnable(GL_CULL_FACE)
             else glDisable(GL_CULL_FACE)
             backfaceCull = cull
+        }
+    }
+    private var alphaTest: Boolean? = null
+    fun setAlphaTest(test: Boolean) {
+        if (test != alphaTest) {
+            if (test) glEnable(GL_ALPHA_TEST)
+            else glDisable(GL_ALPHA_TEST)
+            alphaTest = test
         }
     }
 
@@ -618,10 +605,8 @@ object GlState {
         depthTest = null
         lighting = null
         boundShader = null
-        colorArray = null
-        normalArray = null
-        texArray = null
-        primitiveRestart = null
+        boundShaderInst = null
         backfaceCull = null
+        alphaTest = null
     }
 }

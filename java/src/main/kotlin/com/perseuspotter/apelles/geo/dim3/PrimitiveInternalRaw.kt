@@ -3,8 +3,8 @@ package com.perseuspotter.apelles.geo.dim3
 import com.perseuspotter.apelles.geo.GeometryInternal
 import org.lwjgl.opengl.GL11.GL_TRIANGLES
 
-object PrimitiveInternal : GeometryInternal() {
-    override val name = "primitiveinternal"
+object PrimitiveInternalRaw : GeometryInternal() {
+    override val name = "primitiveinternalraw"
     override fun render(pt: Double, params: DoubleArray, N: Int) {
         val mode = params[0].toInt()
         begin(mode, false)
@@ -12,22 +12,16 @@ object PrimitiveInternal : GeometryInternal() {
         if (mode == GL_TRIANGLES) {
             var i = 1
             while (i < N) {
-                val (x1, y1, z1) = rescale(params[i++], params[i++], params[i++])
-                val (x2, y2, z2) = rescale(params[i++], params[i++], params[i++])
-                val (x3, y3, z3) = rescale(params[i++], params[i++], params[i++])
-
                 addTri(
-                    addVert(x1, y1, z1),
-                    addVert(x2, y2, z2),
-                    addVert(x3, y3, z3)
+                    addVertRaw(params[i++], params[i++], params[i++]),
+                    addVertRaw(params[i++], params[i++], params[i++]),
+                    addVertRaw(params[i++], params[i++], params[i++])
                 )
             }
         } else {
             var i = 1
             while (i < N) {
-                val (x, y, z) = rescale(params[i++], params[i++], params[i++])
-                
-                pos(x, y, z, 0.0, 1.0, 0.0)
+                posRaw(params[i++], params[i++], params[i++], 0.0, 1.0, 0.0)
             }
         }
 

@@ -8,8 +8,9 @@ export function ___________________________________shhh() {
   register('tick', () => t++);
   register('renderWorld', pt => {
     APRendererI.render(pt, t);
+    // please dont call getRenderX/Y/Z in non rendering contexts :pray:
+    PerFrameCache.increaseFrameCounter();
   }).setPriority(Priority.LOWEST).unregister().register();
-  register('renderWorld', () => PerFrameCache.increaseFrameCounter()).setPriority(Priority.HIGHEST).unregister().register();
 }
 const GlState = JavaTypeOrNull('com.perseuspotter.apelles.state.GlState')?.INSTANCE ?? throwExp('jar not loaded correctly');
 const Frustum = JavaTypeOrNull('com.perseuspotter.apelles.geo.Frustum')?.INSTANCE ?? throwExp('jar not loaded correctly');

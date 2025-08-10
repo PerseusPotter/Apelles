@@ -1,104 +1,66 @@
 package com.perseuspotter.apelles.geo.dim3.stair.outer
 
-import com.perseuspotter.apelles.Renderer
 import com.perseuspotter.apelles.geo.Frustum
 import com.perseuspotter.apelles.geo.Geometry
 import org.lwjgl.opengl.GL11
 
 object StairOuterOutline : Geometry() {
     override val name: String = "stairOuterO"
-    override fun render(pt: Double, params: List<Double>) {
-        val (_x, _y, _z, _c) = params
+    override fun render(pt: Double) {
+        val (_x, _y, _z, _c) = currentParams
         val (x, y, z, s) = rescale(_x, _y , _z)
         val verts = OrientationOuter.vertices[_c.toInt()]
 
-        if (Renderer.USE_NEW_SHIT) {
-            begin(GL11.GL_LINE_STRIP, false, x + verts[0].x * s, y + verts[0].y * s, z + verts[0].z * s)
-            verts.forEachIndexed { i, v -> if (i > 0) addVert(x + v.x * s, y + v.y * s, z + v.z * s) }
+        begin(GL11.GL_LINES, false)
 
-            index(0)
-            index(1)
-            index(5)
-            reset()
-            index(1)
-            index(3)
-            index(13)
-            reset()
-            index(3)
-            index(2)
-            index(8)
-            reset()
-            index(2)
-            index(0)
-            index(4)
+        verts.forEach { addVert(x + it.x * s, y + it.y * s, z + it.z * s) }
 
-            index(5)
-            index(7)
-            index(6)
-            index(9)
-            index(8)
-            index(4)
+        emitVert(0); emitVert(1)
+        emitVert(1); emitVert(5)
 
-            reset()
-            index(7)
-            index(11)
-            index(10)
-            index(6)
-            reset()
-            index(11)
-            index(13)
-            index(12)
-            index(9)
+        emitVert(1); emitVert(3)
+        emitVert(3); emitVert(13)
 
-            reset()
-            index(10)
-            index(12)
-        } else {
-            begin(GL11.GL_LINES, false, x + verts[0].x * s, y + verts[0].y * s, z + verts[0].z * s)
-            fun emit(i: Int) = pos(x + verts[i + 1].x * s, y + verts[i + 1].y * s, z + verts[i + 1].z * s)
+        emitVert(3); emitVert(2)
+        emitVert(2); emitVert(8)
 
-            emit(0); emit(1)
-            emit(1); emit(5)
-            emit(1); emit(3)
-            emit(3); emit(13)
-            emit(3); emit(2)
-            emit(2); emit(8)
-            emit(2); emit(0)
-            emit(0); emit(4)
+        emitVert(2); emitVert(0)
+        emitVert(0); emitVert(4)
 
-            emit(4); emit(5)
-            emit(5); emit(7)
-            emit(7); emit(6)
-            emit(6); emit(9)
-            emit(9); emit(8)
-            emit(8); emit(4)
+        emitVert(4); emitVert(5)
+        emitVert(5); emitVert(7)
+        emitVert(7); emitVert(6)
+        emitVert(6); emitVert(9)
+        emitVert(9); emitVert(8)
+        emitVert(8); emitVert(4)
 
-            emit(7); emit(11)
-            emit(11); emit(10)
-            emit(10); emit(6)
-            emit(11); emit(13)
-            emit(13); emit(12)
-            emit(12); emit(9)
+        emitVert(7); emitVert(11)
+        emitVert(11); emitVert(10)
+        emitVert(10); emitVert(6)
 
-            emit(10); emit(12)
-        }
+        emitVert(11); emitVert(13)
+        emitVert(13); emitVert(12)
+        emitVert(12); emitVert(9)
+
+        emitVert(10); emitVert(12)
+
         draw()
     }
 
-    override fun inView(params: List<Double>): Boolean {
-        val (x, y, z) = params
+    override fun inView(): Boolean {
+        val (x, y, z) = currentParams
         return false ||
-                Frustum.test(x + 0.5, y + 0.5, z + 0.5) ||
-                Frustum.test(x + 0.5, y + 0.5, z - 0.5) ||
-                Frustum.test(x + 0.5, y - 0.5, z + 0.5) ||
-                Frustum.test(x + 0.5, y - 0.5, z - 0.5) ||
-                Frustum.test(x - 0.5, y + 0.5, z + 0.5) ||
-                Frustum.test(x - 0.5, y + 0.5, z - 0.5) ||
-                Frustum.test(x - 0.5, y - 0.5, z + 0.5) ||
-                Frustum.test(x - 0.5, y - 0.5, z - 0.5)
+            Frustum.test(x + 0.5, y + 0.5, z + 0.5) ||
+            Frustum.test(x + 0.5, y + 0.5, z - 0.5) ||
+            Frustum.test(x + 0.5, y - 0.5, z + 0.5) ||
+            Frustum.test(x + 0.5, y - 0.5, z - 0.5) ||
+            Frustum.test(x - 0.5, y + 0.5, z + 0.5) ||
+            Frustum.test(x - 0.5, y + 0.5, z - 0.5) ||
+            Frustum.test(x - 0.5, y - 0.5, z + 0.5) ||
+            Frustum.test(x - 0.5, y - 0.5, z - 0.5)
     }
 
-    override fun getVertexCount(params: List<Double>): Int = 14
-    override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 34 else 42
-    override fun getDrawMode(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) GL11.GL_LINE_STRIP else GL11.GL_LINES
+    override fun getVertexCount(): Int = 14
+    override fun getIndexCount(): Int = 21 * 2
+    override fun getDrawMode(): Int = GL11.GL_LINES
 }

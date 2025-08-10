@@ -1,7 +1,6 @@
 package com.perseuspotter.apelles.depression
 
 import com.perseuspotter.apelles.geo.Geometry
-import com.perseuspotter.apelles.state.GlState
 import net.minecraft.client.Minecraft
 import org.lwjgl.opengl.GL20
 
