@@ -26,6 +26,6 @@ abstract class Orientation(vertices: Array<Point>) {
             object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(+z, -y, +x) },
             object : Rotater { override fun transform(x: Double, y: Double, z: Double): Point = Point(-z, -y, -x) }
         )
-        val ep = 0.01
+        const val ep = 0.01
     }
 }

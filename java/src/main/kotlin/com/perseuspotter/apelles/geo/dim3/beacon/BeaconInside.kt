@@ -9,8 +9,8 @@ import kotlin.math.sin
 
 object BeaconInside : Geometry() {
     override val name = "beaconI"
-    override fun render(pt: Double, params: List<Double>) {
-        val (x, y1, z, h, s) = params
+    override fun render(pt: Double) {
+        val (x, y1, z, h, s) = currentParams
 
         val time = 0.2 * ((Minecraft.getMinecraft()?.theWorld?.totalWorldTime ?: 0L) + pt)
         val v0 = ceil(time) - time - 1
@@ -30,26 +30,34 @@ object BeaconInside : Geometry() {
         val d7 = d4
         val y2 = y1 + h
 
-        begin(GL11.GL_TRIANGLE_STRIP, true, x, y1 + h / 2.0, z)
-        pos(x + d0, y1, z + d1, 0.0, v0)
-        pos(x + d0, y2, z + d1, 0.0, v1)
-        pos(x + d2, y1, z + d3, 1.0, v0)
-        pos(x + d2, y2, z + d3, 1.0, v1)
+        begin(GL11.GL_TRIANGLES, true)
 
-        pos(x + d4, y1, z + d5, 2.0, v0)
-        pos(x + d4, y2, z + d5, 2.0, v1)
+        addVert(x + d0, y1, z + d1, 0.0, v0) // 0
+        addVert(x + d0, y2, z + d1, 0.0, v1) // 1
+        addVert(x + d2, y1, z + d3, 1.0, v0) // 2
+        addVert(x + d2, y2, z + d3, 1.0, v1) // 3
+        addVert(x + d4, y1, z + d5, 2.0, v0) // 4
+        addVert(x + d4, y2, z + d5, 2.0, v1) // 5
+        addVert(x + d6, y1, z + d7, 3.0, v0) // 6
+        addVert(x + d6, y2, z + d7, 3.0, v1) // 7
+        addVert(x + d0, y1, z + d1, 4.0, v0) // 8
+        addVert(x + d0, y2, z + d1, 4.0, v1) // 9
 
-        pos(x + d6, y1, z + d7, 3.0, v0)
-        pos(x + d6, y2, z + d7, 3.0, v1)
+        addTri(0, 1, 2)
+        addTri(2, 1, 3)
+        addTri(2, 3, 4)
+        addTri(4, 3, 5)
+        addTri(4, 5, 6)
+        addTri(6, 5, 7)
+        addTri(6, 7, 8)
+        addTri(8, 7, 9)
 
-        pos(x + d0, y1, z + d1, 4.0, v0)
-        pos(x + d0, y2, z + d1, 4.0, v1)
         draw()
     }
 
-    override fun inView(params: List<Double>): Boolean = true
+    override fun inView(): Boolean = true
 
-    override fun getVertexCount(params: List<Double>): Int = 10
-    override fun getIndicesCount(params: List<Double>): Int = 10
-    override fun getDrawMode(params: List<Double>): Int = GL11.GL_TRIANGLE_STRIP
+    override fun getVertexCount(): Int = 10
+    override fun getIndexCount(): Int = 8 * 3
+    override fun getDrawMode(): Int = GL11.GL_TRIANGLES
 }

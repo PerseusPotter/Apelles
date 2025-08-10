@@ -1,6 +1,5 @@
 package com.perseuspotter.apelles.geo.dim3
 
-import com.perseuspotter.apelles.Renderer
 import com.perseuspotter.apelles.geo.Frustum
 import com.perseuspotter.apelles.geo.Geometry
 import com.perseuspotter.apelles.geo.Point
@@ -11,8 +10,6 @@ object Icosphere : Geometry() {
     override val name = "icosphere"
     val icoVertices = mutableListOf<Array<Point>>()
     val icoTriangles = mutableListOf<Array<IntArray>>()
-    val icoStripsD = mutableListOf<DoubleArray>()
-    val icoStripsI = mutableListOf<IntArray>()
     init {
         val V_ANGLE = atan(0.5)
         val V_HEIGHT = sin(V_ANGLE)
@@ -55,21 +52,6 @@ object Icosphere : Geometry() {
             intArrayOf(11, 9, 10),
             intArrayOf(11, 10, 6)
         )
-        var strip = toTriangleStrip(12, tris, true)
-
-        val stripI = IntArray(strip.remaining())
-        strip.get(stripI)
-        icoStripsI.add(stripI)
-
-        strip = toTriangleStrip(verts.size, tris, false)
-        val stripD = DoubleArray(strip.remaining() * 3)
-        for (i in 0 until strip.remaining()) {
-            val v = strip.get()
-            stripD[i * 3 + 0] = verts[v].x
-            stripD[i * 3 + 1] = verts[v].y
-            stripD[i * 3 + 2] = verts[v].z
-        }
-        icoStripsD.add(stripD)
 
         icoVertices.add(verts)
         icoTriangles.add(tris)
@@ -108,24 +90,9 @@ object Icosphere : Geometry() {
             tris[i * 4 + 3][1] = getVert(v[0], v[1])
             tris[i * 4 + 3][2] = v[1]
         }
+
         icoVertices.add(verts as Array<Point>)
         icoTriangles.add(tris)
-
-        var strip = toTriangleStrip(verts.size, tris, true)
-
-        val stripI = IntArray(strip.remaining())
-        strip.get(stripI)
-        icoStripsI.add(stripI)
-
-        strip = toTriangleStrip(verts.size, tris, false)
-        val stripD = DoubleArray(strip.remaining() * 3)
-        for (i in 0 until strip.remaining()) {
-            val v = strip.get()
-            stripD[i * 3 + 0] = verts[v].x
-            stripD[i * 3 + 1] = verts[v].y
-            stripD[i * 3 + 2] = verts[v].z
-        }
-        icoStripsD.add(stripD)
     }
 
     fun slerp(p1: Point, p2: Point, f: Double): Point {
@@ -148,58 +115,45 @@ object Icosphere : Geometry() {
         )
     }
 
-    override fun render(pt: Double, params: List<Double>) {
-        val (_x, _y, _z, _r, d) = params
+    override fun render(pt: Double) {
+        val (_x, _y, _z, _r, d) = currentParams
         val (x, y, z, s) = rescale(_x, _y, _z)
         val r = _r * s
 
         checkIcosphere(d.toInt())
-        begin(GL11.GL_TRIANGLE_STRIP, false, x, y, z)
+        begin(GL11.GL_TRIANGLES, false)
 
-        if (Renderer.USE_NEW_SHIT) {
-            val verts = icoVertices[d.toInt()]
-            val strip = icoStripsI[d.toInt()]
-            for (v in verts) addVert(x + v.x * r, y + v.y * r, z + v.z * r)
-            for (i in strip) {
-                if (i < 0) reset()
-                else index(i)
-            }
-        } else {
-            val strip = icoStripsD[d.toInt()]
-            for (i in strip.indices step 3) {
-                pos(
-                    x + strip[i + 0] * r,
-                    y + strip[i + 1] * r,
-                    z + strip[i + 2] * r
-                )
-            }
-        }
+        val verts = icoVertices[d.toInt()]
+        val tris = icoTriangles[d.toInt()]
+        for (v in verts) addVert(x + v.x * r, y + v.y * r, z + v.z * r)
+        for (tri in tris) addTri(tri[0], tri[1], tri[2])
+
         draw()
     }
 
-    override fun inView(params: List<Double>): Boolean {
-        val (x, y, z, r) = params
+    override fun inView(): Boolean {
+        val (x, y, z, r) = currentParams
         return false ||
-                Frustum.test(x, y, z) ||
-                Frustum.test(x - r, y - r, z - r) ||
-                Frustum.test(x - r, y - r, z + r) ||
-                Frustum.test(x - r, y + r, z - r) ||
-                Frustum.test(x - r, y + r, z + r) ||
-                Frustum.test(x + r, y - r, z - r) ||
-                Frustum.test(x + r, y - r, z + r) ||
-                Frustum.test(x + r, y + r, z - r) ||
-                Frustum.test(x + r, y + r, z + r)
+            Frustum.test(x, y, z) ||
+            Frustum.test(x - r, y - r, z - r) ||
+            Frustum.test(x - r, y - r, z + r) ||
+            Frustum.test(x - r, y + r, z - r) ||
+            Frustum.test(x - r, y + r, z + r) ||
+            Frustum.test(x + r, y - r, z - r) ||
+            Frustum.test(x + r, y - r, z + r) ||
+            Frustum.test(x + r, y + r, z - r) ||
+            Frustum.test(x + r, y + r, z + r)
     }
 
-    override fun getVertexCount(params: List<Double>): Int {
-        val d = params[4].toInt()
+    override fun getVertexCount(): Int {
+        val d = currentParams[4].toInt()
         checkIcosphere(d)
         return icoVertices[d].size
     }
-    override fun getIndicesCount(params: List<Double>): Int {
-        val d = params[4].toInt()
+    override fun getIndexCount(): Int {
+        val d = currentParams[4].toInt()
         checkIcosphere(d)
-        return if (Renderer.USE_NEW_SHIT) icoStripsI[d].size else icoStripsD[d].size / 3
+        return icoTriangles[d].size * 3
     }
-    override fun getDrawMode(params: List<Double>): Int = GL11.GL_TRIANGLE_STRIP
+    override fun getDrawMode(): Int = GL11.GL_TRIANGLES
 }

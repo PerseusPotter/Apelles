@@ -1,4 +1,4 @@
-package com.perseuspotter.apelles.geo.dim3.pyramid
+package com.perseuspotter.apelles.geo.dim3
 
 import com.perseuspotter.apelles.geo.Frustum
 import com.perseuspotter.apelles.geo.Geometry
@@ -8,8 +8,8 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-object PyramidFilled : Geometry() {
-    override val name = "pyramidF"
+object VerticalCylinderFilled : Geometry() {
+    override val name = "vertCylinderF"
     override fun render(pt: Double) {
         val (_x, _y, _z, _r, _h, _n) = currentParams
         val (x, y, z, s) = rescale(_x, _y, _z)
@@ -17,27 +17,37 @@ object PyramidFilled : Geometry() {
         val h = _h * s
         val n = _n.toInt()
 
-        val a0 = if (n == 4) PI / 4.0 else 0.0
-
         begin(GL11.GL_TRIANGLES, false)
-
         addVert(x, y, z)
         addVert(x, y + h, z)
-        for (i in 0 until n) {
-            val a = a0 + 2.0 * PI * (if (h > 0) n - i else i) / n
+        addVert(x + r, y, z)
+        addVert(x + r, y + h, z)
+        for (i in 1 until n) {
+            val a = 2.0 * PI * i / n
+            val rx = cos(a) * r
+            val rz = sin(a) * r
             addVert(
-                x + cos(a) * r,
+                x + rx,
                 y,
-                z + sin(a) * r
+                z + rz
+            )
+            addVert(
+                x + rx,
+                y + h,
+                z + rz
             )
         }
 
-        for (i in 3..n + 1) {
-            addTri(1, i - 1, i)
-            addTri(0, i, i - 1)
+        addTri(0, 2 * n, 2)
+        addTri(1, 3, 2 * n + 1)
+        addTri(2 * n, 2 * n + 1, 2)
+        addTri(2, 2 * n + 1, 3)
+        for (i in 1 until n) {
+            addTri(0, 2 * i, 2 * i + 2)
+            addTri(1, 2 * i + 3, 2 * i + 1)
+            addTri(2 * i, 2 * i + 1, 2 * i + 2)
+            addTri(2 * i + 2, 2 * i + 1, 2 * i + 3)
         }
-        addTri(1, n + 1, 2)
-        addTri(0, 2, n + 1)
 
         draw()
     }
@@ -52,7 +62,7 @@ object PyramidFilled : Geometry() {
             Frustum.test(x - r, y, z - r)
     }
 
-    override fun getVertexCount(): Int = 2 + currentParams[5].toInt()
-    override fun getIndexCount(): Int = 2 * currentParams[5].toInt() * 3
+    override fun getVertexCount(): Int = 2 * (currentParams[5].toInt() + 1)
+    override fun getIndexCount(): Int = 4 * currentParams[5].toInt() * 3
     override fun getDrawMode(): Int = GL11.GL_TRIANGLES
 }

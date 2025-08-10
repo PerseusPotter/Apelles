@@ -1,6 +1,5 @@
 package com.perseuspotter.apelles.geo.dim3.beacon
 
-import com.perseuspotter.apelles.Renderer
 import com.perseuspotter.apelles.geo.Geometry
 import net.minecraft.client.Minecraft
 import org.lwjgl.opengl.GL11
@@ -9,8 +8,8 @@ import kotlin.math.sin
 
 object BeaconTopInside : Geometry() {
     override val name = "beaconTI"
-    override fun render(pt: Double, params: List<Double>) {
-        val (x, y1, z, h, s) = params
+    override fun render(pt: Double) {
+        val (x, y1, z, h, s) = currentParams
 
         val time = 0.2 * ((Minecraft.getMinecraft()?.theWorld?.totalWorldTime ?: 0L) + pt)
         val t = time * -0.1875
@@ -28,36 +27,29 @@ object BeaconTopInside : Geometry() {
         val d7 = d4
         val y2 = y1 + h
 
-        if (Renderer.USE_NEW_SHIT) {
-            begin(GL11.GL_TRIANGLE_STRIP, false, x, y1 + h / 2.0, z)
-            pos(x + d0, y1, z + d1)
-            pos(x + d2, y1, z + d3)
-            pos(x + d6, y1, z + d7)
-            pos(x + d4, y1, z + d5)
+        begin(GL11.GL_TRIANGLES, false)
 
-            reset()
-            pos(x + d6, y2, z + d7)
-            pos(x + d4, y2, z + d5)
-            pos(x + d0, y2, z + d1)
-            pos(x + d2, y2, z + d3)
-        } else {
-            begin(GL11.GL_QUADS, false, x, y1 + h / 2.0, z)
-            pos(x + d0, y1, z + d1)
-            pos(x + d2, y1, z + d3)
-            pos(x + d4, y1, z + d5)
-            pos(x + d6, y1, z + d7)
+        addVert(x + d0, y1, z + d1) // 0
+        addVert(x + d2, y1, z + d3) // 1
+        addVert(x + d6, y1, z + d7) // 2
+        addVert(x + d4, y1, z + d5) // 3
+        addVert(x + d6, y2, z + d7) // 4
+        addVert(x + d4, y2, z + d5) // 5
+        addVert(x + d0, y2, z + d1) // 6
+        addVert(x + d2, y2, z + d3) // 7
 
-            pos(x + d6, y2, z + d7)
-            pos(x + d4, y2, z + d5)
-            pos(x + d2, y2, z + d3)
-            pos(x + d0, y2, z + d1)
-        }
+        addTri(0, 1, 2)
+        addTri(2, 1, 3)
+
+        addTri(4, 5, 6)
+        addTri(6, 5, 7)
+
         draw()
     }
 
-    override fun inView(params: List<Double>): Boolean = true
+    override fun inView(): Boolean = true
 
-    override fun getVertexCount(params: List<Double>): Int = 8
-    override fun getIndicesCount(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) 9 else 8
-    override fun getDrawMode(params: List<Double>): Int = if (Renderer.USE_NEW_SHIT) GL11.GL_TRIANGLE_STRIP else GL11.GL_QUADS
+    override fun getVertexCount(): Int = 8
+    override fun getIndexCount(): Int = 4 * 3
+    override fun getDrawMode(): Int = GL11.GL_TRIANGLES
 }

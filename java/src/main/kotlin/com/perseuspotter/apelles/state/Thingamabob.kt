@@ -3,6 +3,7 @@ package com.perseuspotter.apelles.state
 import com.perseuspotter.apelles.Renderer
 import com.perseuspotter.apelles.depression.ChromaShader
 import com.perseuspotter.apelles.depression.DoubleArrayList
+import com.perseuspotter.apelles.depression.RenderShader
 import com.perseuspotter.apelles.geo.Geometry
 import com.perseuspotter.apelles.geo.GeometryInternal
 import com.perseuspotter.apelles.geo.dim3.*
@@ -13,8 +14,6 @@ import com.perseuspotter.apelles.geo.dim3.beacon.BeaconInside
 import com.perseuspotter.apelles.geo.dim3.beacon.BeaconOutside
 import com.perseuspotter.apelles.geo.dim3.beacon.BeaconTopInside
 import com.perseuspotter.apelles.geo.dim3.beacon.BeaconTopOutside
-import com.perseuspotter.apelles.geo.dim3.cylinder.VerticalCylinderFilledCircle
-import com.perseuspotter.apelles.geo.dim3.cylinder.VerticalCylinderFilledRectangle
 import com.perseuspotter.apelles.geo.dim3.octahedron.OctahedronFilled
 import com.perseuspotter.apelles.geo.dim3.octahedron.OctahedronOutline
 import com.perseuspotter.apelles.geo.dim3.pyramid.PyramidFilled
@@ -38,24 +37,28 @@ open class Thingamabob(
     val cull: Boolean,
     val backfaceCull: Boolean,
     val chroma: Int,
-    val tex: ResourceLocation? = null
+    val tex: ResourceLocation? = null,
+    val alphaTest: Boolean = false
 ) : Comparable<Thingamabob> {
     fun prerender(pt: Double) {
         GlState.lineWidth(lw)
-        GlState.setLighting(lighting)
-        if (!Renderer.USE_NEW_SHIT) {
+        if (Renderer.USE_NEW_SHIT) {
+            RenderShader.get(lighting, chroma, tex != null, alphaTest).bind()
+        } else {
+            GlState.setLighting(lighting)
             GlState.color(
                 color.r,
                 color.g,
                 color.b,
                 color.a
             )
-        }
-        if (Renderer.CAN_USE_CHROMA) {
-            if (chroma > 0) {
-                val shader = ChromaShader.get(chroma == 1, tex != null)
-                shader.bind()
-            } else GlState.bindShader(0)
+            GlState.setAlphaTest(alphaTest)
+            if (Renderer.CAN_USE_CHROMA) {
+                if (chroma > 0) {
+                    val shader = ChromaShader.get(chroma == 1, tex != null)
+                    shader.bind()
+                } else GlState.bindShader(0)
+            }
         }
         GlState.setDepthTest(!phase)
         GlState.lineSmooth(smooth)
@@ -63,8 +66,7 @@ open class Thingamabob(
         GlState.setBackfaceCull(backfaceCull)
     }
 
-    fun getRenderer(): Geometry = when (type) {
-        Type.Primitive -> Primitive
+    open fun getRenderer(): Geometry = when (type) {
         Type.AABBO -> AABBOutline
         Type.AABBF -> AABBFilled
         Type.BeaconI -> BeaconInside
@@ -74,8 +76,7 @@ open class Thingamabob(
         Type.Icosphere -> Icosphere
         Type.PyramidO -> PyramidOutline
         Type.PyramidF -> PyramidFilled
-        Type.VertCylinderR -> VerticalCylinderFilledRectangle
-        Type.VertCylinderC -> VerticalCylinderFilledCircle
+        Type.VertCylinder -> VerticalCylinderFilled
         Type.OctahedronO -> OctahedronOutline
         Type.OctahedronF -> OctahedronFilled
         Type.StairStraightO -> StairStraightOutline
@@ -86,50 +87,49 @@ open class Thingamabob(
         Type.StairOuterF -> StairOuterFilled
         Type.AABBOJ -> AABBOutlineJoined
         Type.Billboard -> Billboard
-        Type.PrimitiveInternal -> PrimitiveInternal
-        Type.PrimitiveColorInternal -> PrimitiveColorInternal
-        Type.PrimitiveColorUVInternal -> PrimitiveColorUVInternal
-    }
+        else -> throw IllegalStateException()
+    }.also { it.currentParams = params }
 
     open fun render(pt: Double) {
         if (color.a == 0f) return
 
         val geo = getRenderer()
 
-        if (cull && !geo.inView(params)) return
+        if (cull && !geo.inView()) return
 
         if (!Renderer.USE_NEW_SHIT) prerender(pt)
 
-        geo.render(pt, params)
+        geo.render(pt)
     }
 
-    open fun getVertexCount() = getRenderer().getVertexCount(params)
-    open fun getIndicesCount() = getRenderer().getIndicesCount(params)
-    open fun getDrawMode() = getRenderer().getDrawMode(params)
+    open fun getVertexCount(): Int = if (lighting == 2) getRenderer().getIndexCount() else getRenderer().getVertexCount()
+    open fun getIndexCount() = getRenderer().getIndexCount()
+    open fun getDrawMode() = getRenderer().getDrawMode()
 
     // who cares about sorting translucent objects by distance?
     fun getRenderPriority(): Int {
-        return (if (lighting > 0) 16 else 0) or
-                (if (chroma > 0) 8 else 0) or
-                (if (phase) 4 else 0) or
-                (if (smooth) 2 else 0) or
-                (if (backfaceCull) 1 else 0)
+        return (if (lighting > 0) 32 else 0) or
+            (if (chroma > 0) 16 else 0) or
+            (if (alphaTest) 8 else 0) or
+            (if (phase) 4 else 0) or
+            (if (smooth) 2 else 0) or
+            (if (backfaceCull) 1 else 0)
     }
 
     // praying for no collisions
     fun getVBOGroupingId(): Int {
         return getRenderPriority() xor
-                lw.toRawBits() xor
-                (if (lighting == 1) 32 else 0) xor
-                (if (lighting == 2) 64 else 0) xor
-                (if (chroma == 1) 128 else 0) xor
-                (if (chroma == 2) 256 else 0) xor
-                (getDrawMode() shl 8) xor
-                // color.r.toRawBits() xor
-                // color.g.toRawBits() xor
-                // color.b.toRawBits() xor
-                // color.a.toRawBits() xor
-                (tex?.hashCode() ?: 0)
+            lw.toRawBits() xor
+            (if (lighting == 1) 64 else 0) xor
+            (if (lighting == 2) 128 else 0) xor
+            (if (chroma == 1) 256 else 0) xor
+            (if (chroma == 2) 512 else 0) xor
+            (getDrawMode() shl 10) xor
+            // color.r.toRawBits() xor
+            // color.g.toRawBits() xor
+            // color.b.toRawBits() xor
+            // color.a.toRawBits() xor
+            (tex?.hashCode() ?: 0)
     }
 
     companion object {
@@ -142,7 +142,6 @@ open class Thingamabob(
     }
 
     enum class Type {
-        Primitive,
         AABBO,
         AABBF,
         BeaconTI,
@@ -150,8 +149,7 @@ open class Thingamabob(
         Icosphere,
         PyramidO,
         PyramidF,
-        VertCylinderR,
-        VertCylinderC,
+        VertCylinder,
         OctahedronO,
         OctahedronF,
         StairStraightO,
@@ -164,6 +162,7 @@ open class Thingamabob(
         Billboard,
         PrimitiveInternal,
         PrimitiveColorInternal,
+        PrimitiveInternalRaw,
 
         BeaconI,
         BeaconO,
@@ -172,7 +171,7 @@ open class Thingamabob(
 
     class InternalThingamabob(
         type: Type,
-        paramsDAL: DoubleArrayList,
+        private val paramsDA: DoubleArray,
         color: Color,
         lw: Float,
         lighting: Int,
@@ -181,7 +180,8 @@ open class Thingamabob(
         cull: Boolean,
         backfaceCull: Boolean,
         chroma: Int,
-        tex: ResourceLocation? = null
+        tex: ResourceLocation? = null,
+        alphaTest: Boolean = false
     ) : Thingamabob(
         type,
         emptyList(),
@@ -193,25 +193,78 @@ open class Thingamabob(
         cull,
         backfaceCull,
         chroma,
-        tex
+        tex,
+        alphaTest
     ) {
-        val paramsA = paramsDAL.elems
-        val paramsL = paramsDAL.length
+        override fun render(pt: Double) {
+            if (color.a == 0f) return
+
+            val geo = getRenderer()
+
+            if (cull && !geo.inView()) return
+
+            if (!Renderer.USE_NEW_SHIT) prerender(pt)
+
+            geo.render(pt)
+        }
+
+        override fun getRenderer(): GeometryInternal = when (type) {
+            Type.PrimitiveInternal -> PrimitiveInternal
+            Type.PrimitiveColorInternal -> PrimitiveColorInternal
+            Type.PrimitiveColorUVInternal -> PrimitiveColorUVInternal
+            Type.PrimitiveInternalRaw -> PrimitiveInternalRaw
+            else -> throw IllegalStateException()
+        }.also { it.currentParamsArr = paramsDA; it.currentParamsLen = paramsDA.size }
+    }
+
+    class InternalThingamabobList(
+        type: Type,
+        paramsDAL: DoubleArrayList,
+        color: Color,
+        lw: Float,
+        lighting: Int,
+        phase: Boolean,
+        smooth: Boolean,
+        cull: Boolean,
+        backfaceCull: Boolean,
+        chroma: Int,
+        tex: ResourceLocation? = null,
+        alphaTest: Boolean = false
+    ) : Thingamabob(
+        type,
+        emptyList(),
+        color,
+        lw,
+        lighting,
+        phase,
+        smooth,
+        cull,
+        backfaceCull,
+        chroma,
+        tex,
+        alphaTest
+    ) {
+        private val paramsA = paramsDAL.elems
+        private val paramsL = paramsDAL.length
 
         override fun render(pt: Double) {
             if (color.a == 0f) return
 
-            val geo = getRenderer() as GeometryInternal
+            val geo = getRenderer()
 
-            if (cull && !geo.inView(params)) return
+            if (cull && !geo.inView()) return
 
             if (!Renderer.USE_NEW_SHIT) prerender(pt)
 
             geo.render(pt, paramsA, paramsL)
         }
 
-        override fun getVertexCount(): Int = (getRenderer() as GeometryInternal).getVertexCount(paramsA, paramsL)
-        override fun getIndicesCount(): Int = (getRenderer() as GeometryInternal).getIndicesCount(paramsA, paramsL)
-        override fun getDrawMode(): Int = (getRenderer() as GeometryInternal).getDrawMode(paramsA, paramsL)
+        override fun getRenderer(): GeometryInternal = when (type) {
+            Type.PrimitiveInternal -> PrimitiveInternal
+            Type.PrimitiveColorInternal -> PrimitiveColorInternal
+            Type.PrimitiveColorUVInternal -> PrimitiveColorUVInternal
+            Type.PrimitiveInternalRaw -> PrimitiveInternalRaw
+            else -> throw IllegalStateException()
+        }.also { it.currentParamsArr = paramsA; it.currentParamsLen = paramsL }
     }
 }

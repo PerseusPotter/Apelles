@@ -20,13 +20,13 @@ abstract class UBOColorShader(fragSrc: String?, vertSrc: String?) : ChromaShader
         GL15.glBindBuffer(GL31.GL_UNIFORM_BUFFER, uboId)
         GL15.glBufferData(GL31.GL_UNIFORM_BUFFER, 256L * Float.SIZE_BYTES, GL15.GL_STREAM_DRAW)
         GL30.glBindBufferBase(GL31.GL_UNIFORM_BUFFER, 0, uboId)
-        GL31.glUniformBlockBinding(progId, 0, GL31.glGetUniformBlockIndex(progId, "colorsUbo"))
+        GL31.glUniformBlockBinding(progId, GL31.glGetUniformBlockIndex(progId, "colorsUbo"), 0)
         unbindUbo()
     }
 
     fun bindUbo() {
-        GL30.glBindBufferBase(GL31.GL_UNIFORM_BUFFER, 0, uboId)
         GL15.glBindBuffer(GL31.GL_UNIFORM_BUFFER, uboId)
+        GL30.glBindBufferBase(GL31.GL_UNIFORM_BUFFER, 0, uboId)
     }
 
     fun unbindUbo() {

@@ -1,54 +1,41 @@
 package com.perseuspotter.apelles.geo.dim3
 
-import com.perseuspotter.apelles.Renderer
 import com.perseuspotter.apelles.geo.GeometryInternal
-import com.perseuspotter.apelles.state.Color
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import org.lwjgl.opengl.GL11
 
 object PrimitiveColorInternal : GeometryInternal() {
     override val name = "primitivecolorinternal"
     override fun render(pt: Double, params: DoubleArray, N: Int) {
-        if (Renderer.USE_NEW_SHIT) {
-            begin(GL11.GL_TRIANGLES, false, params[0], params[1], params[2])
-            var v = 0
-            for (i in 0 until N step 16) {
-                val r = params[i + 0]
-                val g = params[i + 1]
-                val b = params[i + 2]
-                val a = params[i + 3]
-                currCol = Color(r, g, b, a)
-                for (k in 0 until 4) addVert(params[i + 4 + 3 * k], params[i + 5 + 3 * k], params[i + 6 + 3 * k])
-                index(v + 0)
-                index(v + 1)
-                index(v + 2)
-                index(v + 2)
-                index(v + 1)
-                index(v + 3)
-                v += 4
-            }
-            draw()
-        } else {
-            worldRen.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR)
-            for (i in 0 until N step 16) {
-                val r = params[i + 0].toFloat()
-                val g = params[i + 1].toFloat()
-                val b = params[i + 2].toFloat()
-                val a = params[i + 3].toFloat()
-                worldRen.pos(params[i + 4] - getRenderX(), params[i + 5] - getRenderY(), params[i + 6] - getRenderZ()).color(r, g, b, a).endVertex()
-                worldRen.pos(params[i + 7] - getRenderX(), params[i + 8] - getRenderY(), params[i + 9] - getRenderZ()).color(r, g, b, a).endVertex()
-                worldRen.pos(params[i + 10] - getRenderX(), params[i + 11] - getRenderY(), params[i + 12] - getRenderZ()).color(r, g, b, a).endVertex()
-                worldRen.pos(params[i + 10] - getRenderX(), params[i + 11] - getRenderY(), params[i + 12] - getRenderZ()).color(r, g, b, a).endVertex()
-                worldRen.pos(params[i + 7] - getRenderX(), params[i + 8] - getRenderY(), params[i + 9] - getRenderZ()).color(r, g, b, a).endVertex()
-                worldRen.pos(params[i + 13] - getRenderX(), params[i + 14] - getRenderY(), params[i + 15] - getRenderZ()).color(r, g, b, a).endVertex()
-            }
-            draw()
+        begin(GL11.GL_TRIANGLES, false, true)
+
+        var v = 0
+        for (i in 0 until N step 16) {
+            val r = params[i + 0]
+            val g = params[i + 1]
+            val b = params[i + 2]
+            val a = params[i + 3]
+
+            for (k in 0 until 4) addVert(
+                params[i + 4 + 3 * k],
+                params[i + 5 + 3 * k],
+                params[i + 6 + 3 * k],
+                r.toFloat(),
+                g.toFloat(),
+                b.toFloat(),
+                a.toFloat()
+            )
+            addTri(v + 0, v + 1, v + 2)
+            addTri(v + 2, v + 1, v + 3)
+
+            v += 4
         }
+
+        draw()
     }
 
-    override fun inView(params: List<Double>): Boolean = true
+    override fun inView(params: DoubleArray, N: Int): Boolean = true
 
-    override fun getVertexCount(params: DoubleArray, N: Int): Int = N / 16 * 6
-    override fun getIndicesCount(params: DoubleArray, N: Int): Int = N / 16 * 6
+    override fun getVertexCount(params: DoubleArray, N: Int): Int = N / 16 * 4
+    override fun getIndexCount(params: DoubleArray, N: Int): Int = N / 16 * 2 * 3
     override fun getDrawMode(params: DoubleArray, N: Int): Int = GL11.GL_TRIANGLES
 }

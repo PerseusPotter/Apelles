@@ -2,6 +2,7 @@ package com.perseuspotter.apelles
 
 import com.perseuspotter.apelles.depression.ChromaShader
 import com.perseuspotter.apelles.depression.DoubleArrayList
+import com.perseuspotter.apelles.depression.RenderShader
 import com.perseuspotter.apelles.font.StringParser
 import com.perseuspotter.apelles.geo.Frustum
 import com.perseuspotter.apelles.geo.Geometry
@@ -13,12 +14,11 @@ import com.perseuspotter.apelles.state.Thingamabob
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.OpenGlHelper
+import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.BlockPos
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL15
-import org.lwjgl.opengl.GL31
 import org.lwjgl.opengl.GLContext
 import kotlin.math.*
 
@@ -74,11 +74,92 @@ object Renderer {
         backfaceCull: Boolean,
         chroma: Int
     ) {
-        val params = points.flatten().toMutableList()
-        params.add(0, mode.toDouble())
+        val params = if (lighting != 0) when (mode) {
+            GL_TRIANGLE_STRIP, GL_QUAD_STRIP -> {
+                val arr = DoubleArray(1 + (points.size - 2) * 3 * 3)
+                var idx = 0
+                arr[idx++] = mode.toDouble()
+
+                var cw = false
+                for (i in 2 until points.size) {
+                    if (cw) {
+                        arr[idx++] = points[i - 1][0]
+                        arr[idx++] = points[i - 1][1]
+                        arr[idx++] = points[i - 1][2]
+                    }
+                    arr[idx++] = points[i - 2][0]
+                    arr[idx++] = points[i - 2][1]
+                    arr[idx++] = points[i - 2][2]
+                    if (!cw) {
+                        arr[idx++] = points[i - 1][0]
+                        arr[idx++] = points[i - 1][1]
+                        arr[idx++] = points[i - 1][2]
+                    }
+                    arr[idx++] = points[i][0]
+                    arr[idx++] = points[i][1]
+                    arr[idx++] = points[i][2]
+                    cw = !cw
+                }
+
+                arr
+            }
+            GL_TRIANGLE_FAN -> {
+                val arr = DoubleArray(1 + (points.size - 2) * 3 * 3)
+                var idx = 0
+                arr[idx++] = mode.toDouble()
+
+                val x = points[0][0]
+                val y = points[0][1]
+                val z = points[0][2]
+                for (i in 2 until points.size) {
+                    arr[idx++] = x
+                    arr[idx++] = y
+                    arr[idx++] = z
+                    arr[idx++] = points[i - 1][0]
+                    arr[idx++] = points[i - 1][1]
+                    arr[idx++] = points[i - 1][2]
+                    arr[idx++] = points[i][0]
+                    arr[idx++] = points[i][1]
+                    arr[idx++] = points[i][2]
+                }
+
+                arr
+            }
+            GL_QUADS -> {
+                val arr = DoubleArray(1 + points.size / 4 * 2 * 3 * 3)
+                var idx = 0
+                arr[idx++] = mode.toDouble()
+
+                for (i in points.indices step 4) {
+                    arr[idx++] = points[i - 3][0]
+                    arr[idx++] = points[i - 3][1]
+                    arr[idx++] = points[i - 3][2]
+                    arr[idx++] = points[i - 2][0]
+                    arr[idx++] = points[i - 2][1]
+                    arr[idx++] = points[i - 2][2]
+                    arr[idx++] = points[i - 1][0]
+                    arr[idx++] = points[i - 1][1]
+                    arr[idx++] = points[i - 1][2]
+
+                    arr[idx++] = points[i - 3][0]
+                    arr[idx++] = points[i - 3][1]
+                    arr[idx++] = points[i - 3][2]
+                    arr[idx++] = points[i - 1][0]
+                    arr[idx++] = points[i - 1][1]
+                    arr[idx++] = points[i - 1][2]
+                    arr[idx++] = points[i][0]
+                    arr[idx++] = points[i][1]
+                    arr[idx++] = points[i][2]
+                }
+
+                arr
+            }
+            else -> points.flatten().toMutableList().also { it.add(0, mode.toDouble()) }.toDoubleArray()
+        } else points.flatten().toMutableList().also { it.add(0, mode.toDouble()) }.toDoubleArray()
+
         addThing(
-            Thingamabob(
-                Thingamabob.Type.Primitive,
+            Thingamabob.InternalThingamabob(
+                Thingamabob.Type.PrimitiveInternal,
                 params,
                 color,
                 lw.toFloat(),
@@ -540,7 +621,7 @@ object Renderer {
         points.add(points.elems[2])
         points.add(points.elems[3])
         addThing(
-            Thingamabob.InternalThingamabob(
+            Thingamabob.InternalThingamabobList(
                 Thingamabob.Type.PrimitiveInternal,
                 points,
                 color,
@@ -597,21 +678,27 @@ object Renderer {
         backfaceCull: Boolean,
         chroma: Int
     ) {
-        val points = DoubleArrayList(1 + 3 + (segments + 1) * 3)
-        points.add(GL_TRIANGLE_FAN.toDouble())
-        points.add(x)
-        points.add(y)
-        points.add(z)
-        for (i in 0 until segments) {
+        val points = DoubleArray(1 + segments * 3 * 3)
+        var idx = 0
+        points[idx++] = GL_TRIANGLES.toDouble()
+        var px = x + r
+        var py = y
+        var pz = z
+        for (i in 1 .. segments) {
             val t = 2.0 * PI * (if (up) segments - i else i) / segments
-            points.add(x + cos(t) * r)
-            points.add(y)
-            points.add(z + sin(t) * r)
+            points[idx++] = x
+            points[idx++] = y
+            points[idx++] = z
+            points[idx++] = px
+            points[idx++] = py
+            points[idx++] = pz
+            px = x + cos(t) * r
+            py = y
+            pz = z + sin(t) * r
+            points[idx++] = px
+            points[idx++] = py
+            points[idx++] = pz
         }
-        // something something floating point cos(0) ~= cos(2pi)
-        points.add(points.elems[4])
-        points.add(points.elems[5])
-        points.add(points.elems[6])
         addThing(
             Thingamabob.InternalThingamabob(
                 Thingamabob.Type.PrimitiveInternal,
@@ -846,21 +933,7 @@ object Renderer {
     ) {
         addThing(
             Thingamabob(
-                Thingamabob.Type.VertCylinderR,
-                listOf(x, y, z, r, h, segments.toDouble()),
-                color,
-                1f,
-                lighting,
-                phase,
-                false,
-                cull,
-                backfaceCull,
-                chroma
-            )
-        )
-        addThing(
-            Thingamabob(
-                Thingamabob.Type.VertCylinderC,
+                Thingamabob.Type.VertCylinder,
                 listOf(x, y, z, r, h, segments.toDouble()),
                 color,
                 1f,
@@ -2278,7 +2351,7 @@ object Renderer {
                 }
             }
             if (boxTris.length > 1) addThing(
-                Thingamabob.InternalThingamabob(
+                Thingamabob.InternalThingamabobList(
                     Thingamabob.Type.PrimitiveInternal,
                     boxTris,
                     Color(0f, 0f, 0f, 0.25f),
@@ -2294,7 +2367,7 @@ object Renderer {
         }
 
         if (decoratorTris.length > 0) addThing(
-            Thingamabob.InternalThingamabob(
+            Thingamabob.InternalThingamabobList(
                 Thingamabob.Type.PrimitiveColorInternal,
                 decoratorTris,
                 color,
@@ -2309,7 +2382,7 @@ object Renderer {
         )
         charTris.forEach { (rl, t) ->
             addTexturedThing(
-                Thingamabob.InternalThingamabob(
+                Thingamabob.InternalThingamabobList(
                     Thingamabob.Type.PrimitiveColorUVInternal,
                     t,
                     color,
@@ -2320,12 +2393,14 @@ object Renderer {
                     cull,
                     backfaceCull,
                     chroma,
-                    rl
+                    rl,
+                    true
                 )
             )
         }
     }
 
+    var debugLines = DoubleArrayList().also { it.add(GL_LINES.toDouble()) }
     @JvmField
     var USE_NEW_SHIT: Boolean = false
     @JvmField
@@ -2335,15 +2410,34 @@ object Renderer {
     fun render(pt: Double, t: Int) {
         if (!checked) {
             val cap = GLContext.getCapabilities()
-            USE_NEW_SHIT = cap.GL_NV_primitive_restart && cap.OpenGL15 && !glGetString(GL_VENDOR).lowercase().contains("intel")
+            USE_NEW_SHIT = cap.OpenGL33
             CAN_USE_CHROMA = cap.OpenGL20
             checked = true
             // glEnable(GL43.GL_DEBUG_OUTPUT)
             // GL43.glDebugMessageCallback(KHRDebugCallback { source: Int, type: Int, id: Int, severity: Int, message: String? ->
             //     if (severity == GL43.GL_DEBUG_SEVERITY_NOTIFICATION) return@KHRDebugCallback
+            //     if (id == 131154) return@KHRDebugCallback
             //     println("ye fucked up")
             //     println("source: $source type: $type id: $id severity $severity message: $message")
             // })
+        }
+
+        if (debugLines.length > 0) {
+            addThing(
+                Thingamabob.InternalThingamabobList(
+                    Thingamabob.Type.PrimitiveInternalRaw,
+                    debugLines,
+                    Color(1f, 0f, 0f, 1f),
+                    1f,
+                    0,
+                    true,
+                    true,
+                    false,
+                    false,
+                    0
+                )
+            )
+            debugLines = DoubleArrayList().also { it.add(GL_LINES.toDouble()) }
         }
 
         StringParser.removeUnused()
@@ -2354,27 +2448,28 @@ object Renderer {
         GlState.reset()
         GlState.push()
 
-        glDisable(GL_ALPHA_TEST)
         glEnable(GL_CULL_FACE)
         glFrontFace(GL_CCW)
         glEnable(GL_DEPTH_TEST)
         glDisable(GL_FOG)
 
-        glShadeModel(GL_SMOOTH)
-        glEnable(GL_LIGHT0)
-        glEnable(GL_LIGHT1)
-        glEnable(GL_COLOR_MATERIAL)
-        glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE)
-
         if (USE_NEW_SHIT) {
-            glEnable(GL31.GL_PRIMITIVE_RESTART)
             glEnableClientState(GL_VERTEX_ARRAY)
+            RenderShader.markUniformsDirty(pt, t)
+            glDisable(GL_LIGHTING)
+        } else {
+            RenderHelper.enableStandardItemLighting()
+            glShadeModel(GL_SMOOTH)
+            glEnable(GL_LIGHT0)
+            glEnable(GL_LIGHT1)
+            glEnable(GL_COLOR_MATERIAL)
+            glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE)
         }
         if (CAN_USE_CHROMA) ChromaShader.markUniformsDirty(pt, t)
 
         glDisable(GL_BLEND)
         glDepthMask(true)
-        glEnable(GL_ALPHA_TEST)
+        GlState.setAlphaTest(true)
         glAlphaFunc(GL_GREATER, 0.5f)
 
         glEnable(GL_TEXTURE_2D)
@@ -2383,6 +2478,8 @@ object Renderer {
 
         prof.startSection("outlines")
         EntityOutlineRenderer.checkEntities(pt)
+
+        if (USE_NEW_SHIT) GlState.setAlphaTest(false)
 
         prof.endStartSection("texturedOpaque")
         texturedOpaque.sort()
@@ -2393,7 +2490,7 @@ object Renderer {
                 Geometry.allocate(
                     it.getVBOGroupingId(),
                     it.getVertexCount(),
-                    it.getIndicesCount() + 1,
+                    it.getIndexCount() + 1,
                     true,
                     it.lighting > 0,
                     true,
@@ -2406,7 +2503,7 @@ object Renderer {
         }
         prof.startSection("render")
         texturedOpaque.forEach {
-            if (USE_NEW_SHIT) Geometry.bind(it)
+            Geometry.bind(it, true, true)
             it.render(pt)
         }
         prof.endStartSection("postRender")
@@ -2428,7 +2525,7 @@ object Renderer {
                 Geometry.allocate(
                     it.getVBOGroupingId(),
                     it.getVertexCount(),
-                    it.getIndicesCount() + 1,
+                    it.getIndexCount() + 1,
                     true,
                     it.lighting > 0,
                     true,
@@ -2441,7 +2538,7 @@ object Renderer {
         }
         prof.startSection("render")
         texturedTranslucent.forEach {
-            if (USE_NEW_SHIT) Geometry.bind(it)
+            Geometry.bind(it, true, true)
             it.render(pt)
         }
         prof.endStartSection("postRender")
@@ -2462,7 +2559,7 @@ object Renderer {
                 Geometry.allocate(
                     it.getVBOGroupingId(),
                     it.getVertexCount(),
-                    it.getIndicesCount() + 1,
+                    it.getIndexCount() + 1,
                     true,
                     it.lighting > 0,
                     false,
@@ -2475,7 +2572,7 @@ object Renderer {
         }
         prof.startSection("render")
         opaque.forEach {
-            if (USE_NEW_SHIT) Geometry.bind(it)
+            Geometry.bind(it, true, false)
             it.render(pt)
         }
         prof.endStartSection("postRender")
@@ -2496,7 +2593,7 @@ object Renderer {
                 Geometry.allocate(
                     it.getVBOGroupingId(),
                     it.getVertexCount(),
-                    it.getIndicesCount() + 1,
+                    it.getIndexCount() + 1,
                     true,
                     it.lighting > 0,
                     false,
@@ -2509,7 +2606,7 @@ object Renderer {
         }
         prof.startSection("render")
         translucent.forEach {
-            if (USE_NEW_SHIT) Geometry.bind(it)
+            Geometry.bind(it, true, false)
             it.render(pt)
         }
         prof.endStartSection("postRender")
@@ -2517,15 +2614,7 @@ object Renderer {
         if (USE_NEW_SHIT) Geometry.render(pt)
         prof.endSection()
 
-        if (USE_NEW_SHIT) {
-            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
-            GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0)
-            glDisable(GL31.GL_PRIMITIVE_RESTART)
-            glDisableClientState(GL_VERTEX_ARRAY)
-            GlState.setColorArray(false)
-            GlState.setNormalArray(false)
-            GlState.setTexArray(false)
-        }
+        if (USE_NEW_SHIT) glDisableClientState(GL_VERTEX_ARRAY)
         if (CAN_USE_CHROMA) GlState.bindShader(0)
 
         if (!errored) {
