@@ -90,16 +90,11 @@ open class Thingamabob(
         else -> throw IllegalStateException()
     }.also { it.currentParams = params }
 
+    open fun shouldRender(): Boolean = color.a > 0f && (!cull || getRenderer().inView())
+
     open fun render(pt: Double) {
-        if (color.a == 0f) return
-
-        val geo = getRenderer()
-
-        if (cull && !geo.inView()) return
-
         if (!Renderer.USE_NEW_SHIT) prerender(pt)
-
-        geo.render(pt)
+        getRenderer().render(pt)
     }
 
     open fun getVertexCount(): Int = if (lighting == 2) getRenderer().getIndexCount() else getRenderer().getVertexCount()

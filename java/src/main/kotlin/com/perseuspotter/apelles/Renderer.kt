@@ -19,6 +19,7 @@ import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.BlockPos
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL31
 import org.lwjgl.opengl.GLContext
 import kotlin.math.*
 
@@ -2410,7 +2411,7 @@ object Renderer {
     fun render(pt: Double, t: Int) {
         if (!checked) {
             val cap = GLContext.getCapabilities()
-            USE_NEW_SHIT = cap.OpenGL33
+            USE_NEW_SHIT = cap.OpenGL33 && cap.GL_NV_primitive_restart
             CAN_USE_CHROMA = cap.OpenGL20
             checked = true
             // glEnable(GL43.GL_DEBUG_OUTPUT)
@@ -2457,6 +2458,7 @@ object Renderer {
             glEnableClientState(GL_VERTEX_ARRAY)
             RenderShader.markUniformsDirty(pt, t)
             glDisable(GL_LIGHTING)
+            glEnable(GL31.GL_PRIMITIVE_RESTART)
         } else {
             RenderHelper.enableStandardItemLighting()
             glShadeModel(GL_SMOOTH)
@@ -2503,8 +2505,10 @@ object Renderer {
         }
         prof.startSection("render")
         texturedOpaque.forEach {
-            Geometry.bind(it, true, true)
-            it.render(pt)
+            if (it.shouldRender()) {
+                Geometry.bind(it, true, true)
+                it.render(pt)
+            }
         }
         prof.endStartSection("postRender")
         texturedOpaque.clear()
@@ -2538,8 +2542,10 @@ object Renderer {
         }
         prof.startSection("render")
         texturedTranslucent.forEach {
-            Geometry.bind(it, true, true)
-            it.render(pt)
+            if (it.shouldRender()) {
+                Geometry.bind(it, true, true)
+                it.render(pt)
+            }
         }
         prof.endStartSection("postRender")
         texturedTranslucent.clear()
@@ -2572,8 +2578,10 @@ object Renderer {
         }
         prof.startSection("render")
         opaque.forEach {
-            Geometry.bind(it, true, false)
-            it.render(pt)
+            if (it.shouldRender()) {
+                Geometry.bind(it, true, false)
+                it.render(pt)
+            }
         }
         prof.endStartSection("postRender")
         opaque.clear()
@@ -2606,15 +2614,20 @@ object Renderer {
         }
         prof.startSection("render")
         translucent.forEach {
-            Geometry.bind(it, true, false)
-            it.render(pt)
+            if (it.shouldRender()) {
+                Geometry.bind(it, true, false)
+                it.render(pt)
+            }
         }
         prof.endStartSection("postRender")
         translucent.clear()
         if (USE_NEW_SHIT) Geometry.render(pt)
         prof.endSection()
 
-        if (USE_NEW_SHIT) glDisableClientState(GL_VERTEX_ARRAY)
+        if (USE_NEW_SHIT) {
+            glDisableClientState(GL_VERTEX_ARRAY)
+            glDisable(GL31.GL_PRIMITIVE_RESTART)
+        }
         if (CAN_USE_CHROMA) GlState.bindShader(0)
 
         if (!errored) {
