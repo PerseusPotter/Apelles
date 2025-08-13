@@ -4,6 +4,7 @@ import com.perseuspotter.apelles.Renderer
 import com.perseuspotter.apelles.depression.PerFrameCache
 import com.perseuspotter.apelles.depression.VAO
 import com.perseuspotter.apelles.state.Color
+import com.perseuspotter.apelles.state.GlState
 import com.perseuspotter.apelles.state.Thingamabob
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.ActiveRenderInfo
@@ -234,6 +235,7 @@ abstract class Geometry {
         val unusedBufs = mutableSetOf<Int>()
         val bufInfo = mutableMapOf<Int, VAOInfo>()
         var lightType = 0
+        var PRIMITIVE_RESTART_INDEX = 0xFFFF
         data class VAOInfo(var vert: Int, var index: Int, val c: Boolean, val n: Boolean, val t: Boolean, val m: Int, val th: Thingamabob) {
             fun add(v: Int, i: Int) = apply {
                 vert += v
@@ -268,10 +270,12 @@ abstract class Geometry {
                     currBufM[k]!!.destroy()
                     currBufM[k] = VAO(s.vert, s.index, s.c, s.n, s.t, s.m)
                 } else currBufM[k]!!.reset()
+                if (s.vert > PRIMITIVE_RESTART_INDEX) PRIMITIVE_RESTART_INDEX = s.vert
             }
             unusedBufs.forEach { currBufM.remove(it)!!.destroy() }
         }
         fun render(pt: Double) {
+            GlState.setPrimitiveRestart(PRIMITIVE_RESTART_INDEX)
             currBufM.forEach { (k, v) ->
                 val i = bufInfo[k]!!
                 i.th.prerender(pt)
@@ -289,11 +293,17 @@ abstract class Geometry {
             currCol = thing.color
             if (Renderer.USE_NEW_SHIT) vertOffset = currBuf!!.vertCount
             lightType = thing.lighting
+
+            if (Renderer.USE_NEW_SHIT && currBuf?.vertCount != 0) reset()
         }
 
         var vertOffset = 0
         fun index(i: Int) {
             currBuf!!.putI(i + vertOffset)
+        }
+
+        fun reset() {
+            currBuf!!.putI(PRIMITIVE_RESTART_INDEX)
         }
 
         val vertexFormats = arrayOf(
