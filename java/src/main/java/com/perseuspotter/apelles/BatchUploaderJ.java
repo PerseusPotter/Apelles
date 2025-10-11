@@ -21,6 +21,8 @@ class BatchUploaderJ {
             return ((Short) v).intValue();
         } else if (v instanceof Byte) {
             return ((Byte) v).intValue();
+        } else if (v instanceof Long) {
+            return ((Long) v).intValue();
         }
         throw new IllegalArgumentException("expected an integer, found a " + (v == null ? "null" : v.getClass().getSimpleName()));
     }
@@ -38,6 +40,8 @@ class BatchUploaderJ {
             return ((Short) v).doubleValue();
         } else if (v instanceof Byte) {
             return ((Byte) v).doubleValue();
+        } else if (v instanceof Long) {
+            return ((Long) v).doubleValue();
         }
         throw new IllegalArgumentException("expected a double, found a " + (v == null ? "null" : v.getClass().getSimpleName()));
     }
