@@ -20,6 +20,8 @@ const GeometryC = Geometry.Companion;
 const BatchUploader = JavaTypeOrNull('com.perseuspotter.apelles.BatchUploader')?.INSTANCE ?? throwExp('jar not loaded correctly');
 let batched = [];
 let batchCalls = true;
+let aBatchCalls = true;
+let buildCallCount = 0;
 function uploadBatched() {
   if (batched.length === 0) return;
   try {
@@ -38,7 +40,29 @@ register('renderWorld', () => {
  * use if you need a more detailed error message (sc. you are passing the wrong parameters and getting a class cast exception and need to find the exact method call)
  */
 export function disableBatching() {
-  batchCalls = false;
+  if (buildCallCount > 0) aBatchCalls = false;
+  else batchCalls = false;
+}
+
+/**
+ * Any future calls do not "render" anything, instead they are accumlated to form a static "conglomerate".
+ * This way, rendering a lot of static calls can be bundled into a single interop.
+ */
+export function beginBuildStatic() {
+  APRendererI.pushStatic();
+  if (buildCallCount++ === 0) {
+    aBatchCalls = batchCalls;
+    batchCalls = false;
+  }
+}
+
+/**
+ * @returns {{ render(): void }}
+ */
+export function endBuildStatic() {
+  if (buildCallCount === 0) throw 'not already building';
+  if (--buildCallCount === 0) batchCalls = aBatchCalls;
+  return APRendererI.popStatic();
 }
 
 /**

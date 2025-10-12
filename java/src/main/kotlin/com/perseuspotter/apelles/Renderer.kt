@@ -28,16 +28,37 @@ object Renderer {
     private val texturedTranslucent = mutableListOf<Thingamabob>()
     private val opaque = mutableListOf<Thingamabob>()
     private val translucent = mutableListOf<Thingamabob>()
+    private val staticBuilders = mutableListOf<Conglomerate>()
 
     fun addTexturedThing(thing: Thingamabob) {
+        if (staticBuilders.isEmpty()) {
         if (thing.color.a == 1f) texturedOpaque.add(thing)
         else if (thing.color.a > 0f) texturedTranslucent.add(thing)
+        } else staticBuilders.forEach { it.textured.add(thing) }
     }
 
     fun addThing(thing: Thingamabob) {
+        if (staticBuilders.isEmpty()) {
         if (thing.color.a == 1f) opaque.add(thing)
         else if (thing.color.a > 0f) translucent.add(thing)
+        } else staticBuilders.forEach { it.flat.add(thing) }
     }
+
+    class Conglomerate {
+        val textured = mutableListOf<Thingamabob>()
+        val flat = mutableListOf<Thingamabob>()
+
+        fun render() {
+            textured.forEach { addTexturedThing(it) }
+            flat.forEach { addThing(it) }
+        }
+    }
+
+    fun pushStatic() {
+        staticBuilders.add(Conglomerate())
+    }
+
+    fun popStatic() = staticBuilders.removeLastOrNull()
 
     fun addPrimitive(
         color: Long,
